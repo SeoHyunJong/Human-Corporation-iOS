@@ -8,13 +8,25 @@
 import SwiftUI
 
 struct HomeView: View {
+    @EnvironmentObject var viewModel: AuthenticationViewModel
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack {
+            HStack{
+                Spacer()
+                Button(action: viewModel.signOut){
+                    Text("Sign out")
+                        .padding()
+                }
+            }
+            Spacer()
+        }
     }
 }
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
         HomeView()
+            .environmentObject(AuthenticationViewModel())
     }
 }

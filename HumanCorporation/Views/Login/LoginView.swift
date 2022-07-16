@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct LoginView: View {
+    @EnvironmentObject var viewModel: AuthenticationViewModel
+    
     var body: some View {
         VStack(alignment: .center){
             Image("Mamong")
@@ -16,8 +18,13 @@ struct LoginView: View {
             Text("Sign with social login.")
                 .font(.system(size: 20))
                 .foregroundColor(.gray)
+                .padding()
             Spacer()
-            
+            GoogleSignInButton()
+                .padding()
+                .onTapGesture {
+                    viewModel.signIn()
+                }
             
         }
     }
