@@ -21,13 +21,13 @@ class AuthenticationViewModel: ObservableObject {
     @Published var state: SignInState = .signedOut
     
     func signIn() {
-      // 1. 이전에 로그인한 이력이 있으면 그 이력을 저장한다.
+      // 1. 이전에 로그인한 이력이 있으면 그 이력을 토대로 로그인한다.
       if GIDSignIn.sharedInstance.hasPreviousSignIn() {
         GIDSignIn.sharedInstance.restorePreviousSignIn { [unowned self] user, error in
             authenticateUser(for: user, with: error)
         }
       } else {
-        // 2. GoogleService-info에 들어있는 clientID를 fetch 한다.
+        // 2. GoogleService-info에 들어있는 clientID를 fetch 한다. 유저 정보 X 이 앱의 정보를 의미
         guard let clientID = FirebaseApp.app()?.options.clientID else { return }
         
         // 3. 이 clientID를 가지고 configuration object를 만든다.
