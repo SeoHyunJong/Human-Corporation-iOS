@@ -6,10 +6,11 @@
 //
 
 import SwiftUI
+import GoogleSignIn
 
 struct HomeView: View {
     @EnvironmentObject var viewModel: AuthenticationViewModel
-    
+    @Binding var profile: Profile
     var body: some View {
         VStack {
             HStack{
@@ -19,6 +20,15 @@ struct HomeView: View {
                         .padding()
                 }
             }
+            Text("Welcome! You're new.")
+                .font(.system(size: 25, weight: .bold, design: .monospaced))
+            Divider()
+            List {
+                HStack{
+                    Text("Username").bold()
+                    Divider()
+                }
+            }
             Spacer()
         }
     }
@@ -26,7 +36,7 @@ struct HomeView: View {
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        HomeView()
+        HomeView(profile: .constant(Profile()))
             .environmentObject(AuthenticationViewModel())
     }
 }

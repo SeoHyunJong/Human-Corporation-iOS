@@ -9,14 +9,13 @@ import SwiftUI
 
 struct LoginView: View {
     @EnvironmentObject var viewModel: AuthenticationViewModel
-    
     var body: some View {
         VStack(alignment: .center){
             Image("Mamong")
             Text("Human Corporation")
                 .font(.system(size: 25, weight: .bold, design: .monospaced))
             Text("Sign with social login.")
-                .font(.system(size: 20))
+                .font(.system(size: 15, design: .monospaced))
                 .foregroundColor(.gray)
                 .padding()
             Spacer()
@@ -25,7 +24,6 @@ struct LoginView: View {
                 .onTapGesture {
                     viewModel.signIn()
                 }
-            
         }
     }
 }
