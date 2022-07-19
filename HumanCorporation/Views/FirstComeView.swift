@@ -33,10 +33,13 @@ struct FirstComeView: View {
                     TextField("Your Goal", text: $profile.goal)
                 }
             }
-            Button(action:
-                    {profile.id = GIDSignIn.sharedInstance.currentUser!.userID!;
-                viewModel.userAdd(user: profile)}){
-                //Button action은 함수가 parameter를 안받기에 클로져로 감싸주었다.
+            Button{
+                profile.id = GIDSignIn.sharedInstance.currentUser!.userID!;
+                viewModel.userAdd(user: profile)
+                //button action 내에는 뷰를 불러올 수 없다.
+                //따라서 토글을 이용하여 띄울 것이다.
+                viewModel.isNewUser.toggle()
+            } label: {
                 Text("확인")
                     .padding(.horizontal)
             }

@@ -13,9 +13,12 @@ struct HomeView: View {
         VStack{
             HStack{
                 Spacer()
-                Button("Sign out") {
+                Button {
                     viewModel.signOut()
-                }.padding()
+                } label: {
+                    Label("Sign out", systemImage: "rectangle.portrait.and.arrow.right")
+                }
+                .padding()
             }
             Spacer()
         }
