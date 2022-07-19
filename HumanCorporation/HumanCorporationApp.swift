@@ -10,8 +10,7 @@ import Firebase
 
 @main
 struct HumanCorporationApp: App {
-    @StateObject var viewModel = AuthenticationViewModel()
-    @StateObject var db = ModelData()
+    @StateObject var viewModel = ViewModel()
     
     init() {
         FirebaseApp.configure()
@@ -21,7 +20,6 @@ struct HumanCorporationApp: App {
         WindowGroup {
             ContentView()
                 .environmentObject(viewModel)
-                .environmentObject(db)
         }
     }
 }

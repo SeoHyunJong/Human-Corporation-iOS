@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct LoginView: View {
-    @EnvironmentObject var viewModel: AuthenticationViewModel
+    @EnvironmentObject var viewModel: ViewModel
     var body: some View {
         VStack(alignment: .center){
             Image("Mamong")
@@ -31,6 +31,6 @@ struct LoginView: View {
 struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
         LoginView()
-            .environmentObject(AuthenticationViewModel())
+            .environmentObject(ViewModel())
     }
 }

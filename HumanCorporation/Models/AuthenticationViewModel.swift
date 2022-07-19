@@ -9,8 +9,11 @@ import Foundation
 import Firebase
 import FirebaseAuth
 import GoogleSignIn
+import FirebaseDatabase
 
-class AuthenticationViewModel: ObservableObject {
+class ViewModel: ObservableObject {
+    lazy var ref = Database.database().reference()
+    @Published var isNewUser = false
     // 1
     enum SignInState {
         case signedIn
@@ -60,7 +63,8 @@ class AuthenticationViewModel: ObservableObject {
           if let error = error {
             print(error.localizedDescription)
           } else {
-            self.state = .signedIn
+              self.state = .signedIn
+              userCheck()
           }
         }
     }
@@ -74,5 +78,24 @@ class AuthenticationViewModel: ObservableObject {
       } catch {
         print(error.localizedDescription)
       }
+    }
+    
+    func userAdd(user: Profile) {
+        let values: [String: Any] = ["name":"\(user.name)", "email":"\(user.email)", "goal":"\(user.goal)"]
+        self.ref.child("user").child("\(user.id)").setValue(values)
+    }
+    
+    private func userCheck(){
+        let uid = GIDSignIn.sharedInstance.currentUser!.userID!
+        ref.child("user").child(uid).observeSingleEvent(of: .value, with: { snapshot in
+            // Get user value
+            let value = snapshot.value as? NSDictionary
+            let username = value?["name"] as? String ?? "error"
+            if username == "error" {
+                self.isNewUser = true
+            }
+        }) { error in
+          print(error.localizedDescription)
+        }
     }
 }

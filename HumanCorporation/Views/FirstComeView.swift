@@ -9,8 +9,7 @@ import SwiftUI
 import GoogleSignIn
 
 struct FirstComeView: View {
-    @EnvironmentObject var viewModel: AuthenticationViewModel
-    @EnvironmentObject var db: ModelData
+    @EnvironmentObject var viewModel: ViewModel
     @State private var profile: Profile = Profile()
     var body: some View {
         VStack {
@@ -36,7 +35,7 @@ struct FirstComeView: View {
             }
             Button(action:
                     {profile.id = GIDSignIn.sharedInstance.currentUser!.userID!;
-                db.userAdd(user: profile)}){
+                viewModel.userAdd(user: profile)}){
                 //Button action은 함수가 parameter를 안받기에 클로져로 감싸주었다.
                 Text("확인")
                     .padding(.horizontal)
@@ -47,10 +46,9 @@ struct FirstComeView: View {
     }
 }
 
-struct HomeView_Previews: PreviewProvider {
+struct FirstComeView_Previews: PreviewProvider {
     static var previews: some View {
         FirstComeView()
-            .environmentObject(AuthenticationViewModel())
-            .environmentObject(ModelData())
+            .environmentObject(ViewModel())
     }
 }
