@@ -11,8 +11,8 @@ import FirebaseDatabase
 final class ModelData: ObservableObject{
     let ref = Database.database().reference()
     
-    func userAdd(id: String, name: String, email: String, goal: String) {
-        let values: [String: Any] = ["id":"\(id)", "name":"\(name)", "email":"\(email)", "goal":"\(goal)"]
+    func userAdd(user: Profile) {
+        let values: [String: Any] = ["id":"\(user.id)", "name":"\(user.name)", "email":"\(user.email)", "goal":"\(user.goal)"]
         self.ref.child("user").setValue(values)
     }
 }

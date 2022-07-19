@@ -8,18 +8,11 @@
 import SwiftUI
 import GoogleSignIn
 
-struct HomeView: View {
+struct FirstComeView: View {
     @EnvironmentObject var viewModel: AuthenticationViewModel
     @Binding var profile: Profile
     var body: some View {
         VStack {
-            HStack{
-                Spacer()
-                Button(action: viewModel.signOut){
-                    Text("Sign out")
-                        .padding()
-                }
-            }
             Text("Welcome! You're new.")
                 .font(.system(size: 25, weight: .bold, design: .monospaced))
             Divider()
@@ -27,16 +20,32 @@ struct HomeView: View {
                 HStack{
                     Text("Username").bold()
                     Divider()
+                    TextField("Username", text: $profile.name)
+                }
+                HStack{
+                    Text("E-mail").bold()
+                    Divider()
+                    TextField("E-mail", text: $profile.email)
+                }
+                HStack{
+                    Text("Your Goal").bold()
+                    Divider()
+                    TextField("Your Goal", text: $profile.goal)
                 }
             }
-            Spacer()
+            Button(action: viewModel.signOut){
+                Text("확인")
+                    .padding(.horizontal)
+            }
+            .buttonStyle(.borderedProminent)
+            .padding()
         }
     }
 }
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        HomeView(profile: .constant(Profile()))
+        FirstComeView(profile: .constant(Profile()))
             .environmentObject(AuthenticationViewModel())
     }
 }

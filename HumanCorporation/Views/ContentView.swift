@@ -13,7 +13,7 @@ struct ContentView: View {
     var body: some View {
         switch viewModel.state {
           case .signedIn:
-            HomeView(profile: $profile)
+            FirstComeView(profile: $profile)
           case .signedOut: LoginView()
         }
     }

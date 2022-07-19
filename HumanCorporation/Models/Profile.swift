@@ -12,5 +12,5 @@ struct Profile: Codable, Hashable, Identifiable {
     var id = "eriel123"
     var name = "박두루미"
     var email = "durumi123@humancorp.com"
-    var goal = "부자가 되는게 꿈이에요."
+    var goal = "목표를 적어주세요. ex)20XX년 CPA 합격"
 }
