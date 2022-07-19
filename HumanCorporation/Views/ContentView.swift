@@ -9,11 +9,10 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject var viewModel: AuthenticationViewModel
-    @State var profile = Profile()
     var body: some View {
         switch viewModel.state {
           case .signedIn:
-            FirstComeView(profile: $profile)
+            FirstComeView()
           case .signedOut: LoginView()
         }
     }
@@ -21,7 +20,7 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView(profile: Profile())
+        ContentView()
             .environmentObject(AuthenticationViewModel())
     }
 }

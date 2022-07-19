@@ -10,7 +10,8 @@ import GoogleSignIn
 
 struct FirstComeView: View {
     @EnvironmentObject var viewModel: AuthenticationViewModel
-    @Binding var profile: Profile
+    @EnvironmentObject var db: ModelData
+    @State private var profile: Profile = Profile()
     var body: some View {
         VStack {
             Text("Welcome! You're new.")
@@ -33,7 +34,10 @@ struct FirstComeView: View {
                     TextField("Your Goal", text: $profile.goal)
                 }
             }
-            Button(action: viewModel.signOut){
+            Button(action:
+                    {profile.id = GIDSignIn.sharedInstance.currentUser!.userID!;
+                db.userAdd(user: profile)}){
+                //Button action은 함수가 parameter를 안받기에 클로져로 감싸주었다.
                 Text("확인")
                     .padding(.horizontal)
             }
@@ -45,7 +49,8 @@ struct FirstComeView: View {
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        FirstComeView(profile: .constant(Profile()))
+        FirstComeView()
             .environmentObject(AuthenticationViewModel())
+            .environmentObject(ModelData())
     }
 }

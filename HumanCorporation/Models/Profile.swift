@@ -6,9 +6,8 @@
 //
 
 import Foundation
-import GoogleSignIn
 
-struct Profile: Codable, Hashable, Identifiable {
+struct Profile: Codable, Hashable {
     var id = "eriel123"
     var name = "박두루미"
     var email = "durumi123@humancorp.com"

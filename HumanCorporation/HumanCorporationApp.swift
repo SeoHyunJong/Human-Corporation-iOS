@@ -11,7 +11,7 @@ import Firebase
 @main
 struct HumanCorporationApp: App {
     @StateObject var viewModel = AuthenticationViewModel()
-    //흠... 유저가 로그인한 정보가 @StateObject의 부가적인 효과로 인해 일종의 싱글턴이 된거로군?!
+    @StateObject var db = ModelData()
     
     init() {
         FirebaseApp.configure()
@@ -21,6 +21,7 @@ struct HumanCorporationApp: App {
         WindowGroup {
             ContentView()
                 .environmentObject(viewModel)
+                .environmentObject(db)
         }
     }
 }
