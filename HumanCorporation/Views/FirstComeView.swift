@@ -13,12 +13,12 @@ struct FirstComeView: View {
     @State private var profile: Profile = Profile()
     var body: some View {
         VStack {
-            Text("Welcome! You're new.")
-                .font(.system(size: 25, weight: .bold, design: .monospaced))
-            Divider()
+            Label("Welcome!", systemImage: "eyes")
+                .font(.system(size: 30, weight: .bold))
+                .offset(x: -80)
             List {
                 HStack{
-                    Text("Username").bold()
+                    Text("Name").bold()
                     Divider()
                     TextField("Username", text: $profile.name)
                 }

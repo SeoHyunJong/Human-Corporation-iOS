@@ -10,6 +10,8 @@ import SwiftUI
 struct HomeView: View {
     @EnvironmentObject var viewModel: ViewModel
     @State private var selection: Tab = .Chart
+    @State private var image = UIImage(named: "Mamong")!
+    @State private var showSheet = false
     
     enum Tab {
         case Chart
@@ -24,9 +26,21 @@ struct HomeView: View {
                 Button {
                     viewModel.signOut()
                 } label: {
-                    Label("Sign out", systemImage: "rectangle.portrait.and.arrow.right")
+                    Label("Settings", systemImage: "gearshape")
+                        .labelStyle(.iconOnly)
                 }.padding()
             }
+            HStack {
+                ProfileImage(image: $image)
+                VStack {
+                    Text("Seo Hyun Jong")
+                        .font(.title)
+                    Divider()
+                    Text("My Goal")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
+            }.padding(.horizontal)
             TabView(selection: $selection){
                 ChartView()
                     .tabItem{

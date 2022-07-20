@@ -16,7 +16,7 @@ struct LoginView: View {
                 .font(.system(size: 25, weight: .bold, design: .monospaced))
             Text("Sign with social login.")
                 .font(.system(size: 15, design: .monospaced))
-                .foregroundColor(.gray)
+                .foregroundColor(.secondary)
                 .padding()
             Spacer()
             GoogleSignInButton()
