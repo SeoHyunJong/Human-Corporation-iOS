@@ -4,14 +4,14 @@
 //
 //  Created by 서현종 on 2022/07/19.
 //
-
+//HomeView -> Chart, Evaluation, Analysis, Discuss, Settings
 import SwiftUI
 // 시세   실적추가    종목분석    종목토론실
 struct HomeView: View {
     @EnvironmentObject var viewModel: ViewModel
     @State private var selection: Tab = .Chart
     @State private var image = UIImage(named: "Mamong")!
-    @State private var showSheet = false
+    @State private var showProfile = false
     
     enum Tab {
         case Chart
@@ -24,7 +24,7 @@ struct HomeView: View {
             HStack{
                 Spacer()
                 Button {
-                    viewModel.signOut()
+                    showProfile.toggle()
                 } label: {
                     Label("Settings", systemImage: "gearshape")
                         .labelStyle(.iconOnly)
@@ -33,14 +33,20 @@ struct HomeView: View {
             HStack {
                 ProfileImage(image: $image)
                 VStack {
-                    Text("Seo Hyun Jong")
+                    Text(viewModel.userProfile.name)
                         .font(.title)
                     Divider()
-                    Text("My Goal")
+                    Text(viewModel.userProfile.goal)
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                 }
-            }.padding(.horizontal)
+            }
+            .padding(.horizontal)
+            .onAppear(){
+                if viewModel.state == .signedIn { //프리뷰 오류 때문에 추가...
+                    viewModel.readUserFromDB()
+                }
+            }
             TabView(selection: $selection){
                 ChartView()
                     .tabItem{
@@ -66,6 +72,10 @@ struct HomeView: View {
             .padding(.bottom)
         }
         .ignoresSafeArea()
+        .sheet(isPresented: $showProfile){
+            Setting()
+                .environmentObject(viewModel)
+        }
     }
 }
 

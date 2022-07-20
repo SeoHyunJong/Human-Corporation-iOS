@@ -13,7 +13,7 @@ struct FirstComeView: View {
     @State private var profile: Profile = Profile()
     var body: some View {
         VStack {
-            Label("Welcome!", systemImage: "eyes")
+            Label("Welcome!", systemImage: "face.smiling")
                 .font(.system(size: 30, weight: .bold))
                 .offset(x: -80)
             List {

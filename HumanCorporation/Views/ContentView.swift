@@ -4,7 +4,7 @@
 //
 //  Created by 서현종 on 2022/07/16.
 //
-
+//ContentView -> FirstComeView, HomeView, LoginView
 import SwiftUI
 
 struct ContentView: View {

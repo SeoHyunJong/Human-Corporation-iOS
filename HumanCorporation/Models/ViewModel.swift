@@ -14,6 +14,7 @@ import FirebaseDatabase
 class ViewModel: ObservableObject {
     lazy var ref = Database.database().reference()
     @Published var isNewUser = false
+    @Published var userProfile: Profile = Profile()
     // 1
     enum SignInState {
         case signedIn
@@ -94,6 +95,20 @@ class ViewModel: ObservableObject {
             if username == "error" {
                 self.isNewUser = true
             }
+        }) { error in
+          print(error.localizedDescription)
+        }
+    }
+    
+    func readUserFromDB(){
+        let uid = GIDSignIn.sharedInstance.currentUser!.userID!
+        ref.child("user").child(uid).observe(.value, with: { snapshot in
+            // Get user value
+            let value = snapshot.value as? NSDictionary
+            self.userProfile.name = value?["name"] as? String ?? "로드 실패"
+            self.userProfile.goal = value?["goal"] as? String ?? "로드 실패"
+            self.userProfile.email = value?["email"] as? String ?? "로드 실패"
+            self.userProfile.id = uid
         }) { error in
           print(error.localizedDescription)
         }
