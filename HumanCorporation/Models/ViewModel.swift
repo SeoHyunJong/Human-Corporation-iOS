@@ -10,18 +10,18 @@ import Firebase
 import FirebaseAuth
 import GoogleSignIn
 import FirebaseDatabase
+import FirebaseStorage
 
 class ViewModel: ObservableObject {
     lazy var ref = Database.database().reference()
+    lazy var storageRef = Storage.storage().reference()
+    
     @Published var isNewUser = false
     @Published var userProfile: Profile = Profile()
-    // 1
     enum SignInState {
         case signedIn
         case signedOut
     }
-
-    // 2
     @Published var state: SignInState = .signedOut
     
     func signIn() {
@@ -86,6 +86,25 @@ class ViewModel: ObservableObject {
         self.ref.child("user").child("\(user.id)").setValue(values)
     }
     
+    func uploadImg(image: UIImage) {
+        let uid = GIDSignIn.sharedInstance.currentUser!.userID!
+        var data = Data()
+        data = image.jpegData(compressionQuality: 0.8)!
+        let imageRef = storageRef.child("images/\(uid)/profile.jpg")
+        
+        imageRef.putData(data, metadata: nil) { (metadata, error) in
+//            guard let metadata = metadata else {
+//                return
+//            }
+            imageRef.downloadURL { (url, error) in
+                guard let downloadURL = url else {
+                    return
+                }
+                self.ref.child("user").child(uid).setValue(["imageURL": downloadURL.absoluteString])
+            }
+        }
+    }
+    
     private func userCheck(){
         let uid = GIDSignIn.sharedInstance.currentUser!.userID!
         ref.child("user").child(uid).observeSingleEvent(of: .value, with: { snapshot in
@@ -108,6 +127,7 @@ class ViewModel: ObservableObject {
             self.userProfile.name = value?["name"] as? String ?? "로드 실패"
             self.userProfile.goal = value?["goal"] as? String ?? "로드 실패"
             self.userProfile.email = value?["email"] as? String ?? "로드 실패"
+            self.userProfile.imageURL = value?["imageURL"] as? String ?? ""
             self.userProfile.id = uid
         }) { error in
           print(error.localizedDescription)
