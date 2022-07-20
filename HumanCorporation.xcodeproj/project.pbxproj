@@ -125,7 +125,6 @@
 				B442B7DF2886D9060064C0B1 /* EvaluationView.swift */,
 				B442B7E12886D92A0064C0B1 /* AnalysisView.swift */,
 				B442B7E32886D9540064C0B1 /* DiscussionView.swift */,
-				B442B7E82887F0600064C0B1 /* Setting.swift */,
 				B442B7E72887E21F0064C0B1 /* Profile */,
 				B4D87F342882E2A300A2CCAB /* Login */,
 			);
@@ -144,6 +143,7 @@
 		B442B7E72887E21F0064C0B1 /* Profile */ = {
 			isa = PBXGroup;
 			children = (
+				B442B7E82887F0600064C0B1 /* Setting.swift */,
 				B442B7DB2886D5960064C0B1 /* ProfileImage.swift */,
 				B442B7E52887DABE0064C0B1 /* ImagePicker.swift */,
 			);

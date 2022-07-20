@@ -11,7 +11,7 @@ import SwiftUI
 struct ImagePicker: UIViewControllerRepresentable {
     @Environment(\.presentationMode) private var presentationMode
     var sourceType: UIImagePickerController.SourceType = .photoLibrary
-    @Binding var selectedImage: UIImage
+    @EnvironmentObject var viewModel: ViewModel
 
     func makeUIViewController(context: UIViewControllerRepresentableContext<ImagePicker>) -> UIImagePickerController {
 
@@ -42,11 +42,10 @@ struct ImagePicker: UIViewControllerRepresentable {
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
             
             if let possibleImage = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
-                parent.selectedImage = possibleImage
+                parent.viewModel.uploadImg(image: possibleImage)
             } else if let possibleImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
-                parent.selectedImage = possibleImage
+                parent.viewModel.uploadImg(image: possibleImage)
             }
-            
             parent.presentationMode.wrappedValue.dismiss()
         }
 

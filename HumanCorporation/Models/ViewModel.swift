@@ -11,6 +11,7 @@ import FirebaseAuth
 import GoogleSignIn
 import FirebaseDatabase
 import FirebaseStorage
+import SwiftUI
 
 class ViewModel: ObservableObject {
     lazy var ref = Database.database().reference()
@@ -18,6 +19,8 @@ class ViewModel: ObservableObject {
     
     @Published var isNewUser = false
     @Published var userProfile: Profile = Profile()
+    @Published var profileImage = UIImage(named: "Mamong") //프리뷰를 위해 임시 설정
+    
     enum SignInState {
         case signedIn
         case signedOut
@@ -84,6 +87,7 @@ class ViewModel: ObservableObject {
     func userAdd(user: Profile) {
         let values: [String: Any] = ["name":"\(user.name)", "email":"\(user.email)", "goal":"\(user.goal)"]
         self.ref.child("user").child("\(user.id)").setValue(values)
+        uploadImg(image: UIImage(named: "Mamong")!) //default image setting
     }
     
     func uploadImg(image: UIImage) {
@@ -96,12 +100,24 @@ class ViewModel: ObservableObject {
 //            guard let metadata = metadata else {
 //                return
 //            }
-            imageRef.downloadURL { (url, error) in
-                guard let downloadURL = url else {
-                    return
-                }
-                self.ref.child("user").child(uid).setValue(["imageURL": downloadURL.absoluteString])
-            }
+//            imageRef.downloadURL { (url, error) in
+//                guard let downloadURL = url else {
+//                    return
+//                }
+//            }
+            self.profileImage = image
+        }
+    }
+    func downloadImage(){
+        let uid = GIDSignIn.sharedInstance.currentUser!.userID!
+        let imageRef = storageRef.child("images/\(uid)/profile.jpg")
+        // Download in memory with a maximum allowed size of 1MB (1 * 1024 * 1024 bytes)
+        imageRef.getData(maxSize: 1 * 1024 * 1024) { data, error in
+          if let _ = error {
+              print("cannot load profile image")
+          } else {
+              self.profileImage = UIImage(data: data!)!
+          }
         }
     }
     
@@ -127,7 +143,6 @@ class ViewModel: ObservableObject {
             self.userProfile.name = value?["name"] as? String ?? "로드 실패"
             self.userProfile.goal = value?["goal"] as? String ?? "로드 실패"
             self.userProfile.email = value?["email"] as? String ?? "로드 실패"
-            self.userProfile.imageURL = value?["imageURL"] as? String ?? ""
             self.userProfile.id = uid
         }) { error in
           print(error.localizedDescription)

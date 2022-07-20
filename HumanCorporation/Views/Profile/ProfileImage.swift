@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ProfileImage: View {
-    @Binding var image: UIImage
+    var image: UIImage
     var body: some View {
         Image(uiImage: image)
             .resizable()
@@ -22,8 +22,8 @@ struct ProfileImage: View {
 }
 
 struct ProfileImage_Previews: PreviewProvider {
-    @State static private var image = (UIImage(named: "Mamong"))!
+    static private var image = (UIImage(named: "Mamong"))!
     static var previews: some View {
-        ProfileImage(image: $image)
+        ProfileImage(image: image)
     }
 }

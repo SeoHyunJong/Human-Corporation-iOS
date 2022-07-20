@@ -10,7 +10,6 @@ import SwiftUI
 struct HomeView: View {
     @EnvironmentObject var viewModel: ViewModel
     @State private var selection: Tab = .Chart
-    @State private var image = UIImage(named: "Mamong")!
     @State private var showProfile = false
     
     enum Tab {
@@ -31,7 +30,7 @@ struct HomeView: View {
                 }.padding()
             }
             HStack {
-                ProfileImage(image: $image)
+                ProfileImage(image: viewModel.profileImage!)
                 VStack {
                     Text(viewModel.userProfile.name)
                         .font(.title)
@@ -45,6 +44,7 @@ struct HomeView: View {
             .onAppear(){
                 if viewModel.state == .signedIn { //프리뷰 오류 때문에 추가...
                     viewModel.readUserFromDB()
+                    viewModel.downloadImage()
                 }
             }
             TabView(selection: $selection){
