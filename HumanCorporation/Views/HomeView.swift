@@ -10,7 +10,7 @@ import SwiftUI
 struct HomeView: View {
     @EnvironmentObject var viewModel: ViewModel
     @State private var selection: Tab = .Chart
-    @State private var showProfile = false
+    @State private var showSetting = false
     
     enum Tab {
         case Chart
@@ -19,62 +19,71 @@ struct HomeView: View {
         case Discussion
     }
     var body: some View {
-        VStack{
-            HStack{
-                Spacer()
-                Button {
-                    showProfile.toggle()
-                } label: {
-                    Label("Settings", systemImage: "gearshape")
-                        .labelStyle(.iconOnly)
-                }.padding()
-            }
-            HStack {
-                ProfileImage(image: viewModel.profileImage!)
-                VStack {
-                    Text(viewModel.userProfile.name)
-                        .font(.title)
-                    Divider()
-                    Text(viewModel.userProfile.goal)
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
+        GeometryReader { geo in
+            let width = min(geo.size.width, geo.size.height)
+            VStack{
+                ZStack {
+                    VStack {
+                        HStack{
+                            Spacer()
+                            Button {
+                                showSetting.toggle()
+                            } label: {
+                                Label("Settings", systemImage: "gearshape")
+                                    .labelStyle(.iconOnly)
+                            }
+                            .padding()
+                        }
+                        HStack {
+                            ProfileImage(image: viewModel.profileImage!)
+                                .frame(width: width*0.35, height: width*0.35)
+                            VStack {
+                                Text(viewModel.userProfile.name)
+                                    .font(.title)
+                                Divider()
+                                Text(viewModel.userProfile.goal)
+                                    .font(.subheadline)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+                        .padding(.horizontal)
+                        .onAppear(){
+                            if viewModel.state == .signedIn { //프리뷰 오류 때문에 추가...
+                                viewModel.readUserFromDB()
+                                viewModel.downloadImage()
+                            }
+                        }
+                    }
                 }
-            }
-            .padding(.horizontal)
-            .onAppear(){
-                if viewModel.state == .signedIn { //프리뷰 오류 때문에 추가...
-                    viewModel.readUserFromDB()
-                    viewModel.downloadImage()
+                TabView(selection: $selection){
+                    ChartView()
+                        .tabItem{
+                            Label("시세", systemImage: "chart.line.uptrend.xyaxis")
+                        }
+                        .tag(Tab.Chart)
+                    EvaluationView()
+                        .tabItem{
+                            Label("실적추가", systemImage: "note.text.badge.plus")
+                        }
+                        .tag(Tab.Evaluation)
+                    AnalysisView()
+                        .tabItem{
+                            Label("종목분석", systemImage: "scroll")
+                        }
+                        .tag(Tab.Analysis)
+                    DiscussionView()
+                        .tabItem{
+                            Label("종목토론", systemImage: "quote.bubble.fill")
+                        }
+                        .tag(Tab.Discussion)
                 }
+                .padding(.bottom)
             }
-            TabView(selection: $selection){
-                ChartView()
-                    .tabItem{
-                        Label("시세", systemImage: "chart.line.uptrend.xyaxis")
-                    }
-                    .tag(Tab.Chart)
-                EvaluationView()
-                    .tabItem{
-                        Label("실적추가", systemImage: "note.text.badge.plus")
-                    }
-                    .tag(Tab.Evaluation)
-                AnalysisView()
-                    .tabItem{
-                        Label("종목분석", systemImage: "scroll")
-                    }
-                    .tag(Tab.Analysis)
-                DiscussionView()
-                    .tabItem{
-                        Label("종목토론", systemImage: "quote.bubble.fill")
-                    }
-                    .tag(Tab.Discussion)
+            .sheet(isPresented: $showSetting){
+                Setting()
+                    .environmentObject(viewModel)
             }
-            .padding(.bottom)
-        }
-        .ignoresSafeArea()
-        .sheet(isPresented: $showProfile){
-            Setting()
-                .environmentObject(viewModel)
+            .frame(width: geo.size.width, height: geo.size.height)
         }
     }
 }

@@ -12,7 +12,7 @@ struct ProfileImage: View {
     var body: some View {
         Image(uiImage: image)
             .resizable()
-            .frame(width: 130, height: 130)
+            .scaledToFit()
             .clipShape(Circle())
             .overlay {
                 Circle().stroke(.white, lineWidth: 4)
