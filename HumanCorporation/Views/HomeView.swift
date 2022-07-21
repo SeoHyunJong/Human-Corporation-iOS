@@ -22,36 +22,35 @@ struct HomeView: View {
         GeometryReader { geo in
             let width = min(geo.size.width, geo.size.height)
             VStack{
-                ZStack {
-                    VStack {
-                        HStack{
-                            Spacer()
-                            Button {
-                                showSetting.toggle()
-                            } label: {
-                                Label("Settings", systemImage: "gearshape")
-                                    .labelStyle(.iconOnly)
-                            }
-                            .padding()
-                        }
-                        HStack {
-                            ProfileImage(image: viewModel.profileImage!)
-                                .frame(width: width*0.35, height: width*0.35)
-                            VStack {
-                                Text(viewModel.userProfile.name)
-                                    .font(.title)
-                                Divider()
-                                Text(viewModel.userProfile.goal)
-                                    .font(.subheadline)
-                                    .foregroundColor(.secondary)
-                            }
+                VStack {
+                    HStack{
+                        Spacer()
+                        Button {
+                            showSetting.toggle()
+                        } label: {
+                            Label("Settings", systemImage: "gearshape")
+                                .labelStyle(.iconOnly)
+                                .font(.system(size: width*0.06))
                         }
                         .padding(.horizontal)
-                        .onAppear(){
-                            if viewModel.state == .signedIn { //프리뷰 오류 때문에 추가...
-                                viewModel.readUserFromDB()
-                                viewModel.downloadImage()
-                            }
+                    }
+                    HStack {
+                        ProfileImage(image: viewModel.profileImage!)
+                            .frame(width: width*0.35, height: width*0.35)
+                        VStack {
+                            Text(viewModel.userProfile.name)
+                                .font(.system(size: width*0.08))
+                            Divider()
+                            Text(viewModel.userProfile.goal)
+                                .font(.system(size: width*0.04))
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    .padding()
+                    .onAppear(){
+                        if viewModel.state == .signedIn { //프리뷰 오류 때문에 추가...
+                            viewModel.readUserFromDB()
+                            viewModel.downloadImage()
                         }
                     }
                 }
@@ -84,6 +83,7 @@ struct HomeView: View {
                     .environmentObject(viewModel)
             }
             .frame(width: geo.size.width, height: geo.size.height)
+            .background(Color(hue: 0.53, saturation: 0.258, brightness: 1.0))
         }
     }
 }
