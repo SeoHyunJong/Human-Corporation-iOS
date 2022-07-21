@@ -25,6 +25,8 @@
 		B442B7EC288810420064C0B1 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = B442B7EB288810420064C0B1 /* FirebaseStorage */; };
 		B442B7EE288810420064C0B1 /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = B442B7ED288810420064C0B1 /* FirebaseStorageCombine-Community */; };
 		B442B7F0288812C90064C0B1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B442B7EF288812C90064C0B1 /* GoogleService-Info.plist */; };
+		B442B7F528896B320064C0B1 /* Charts in Frameworks */ = {isa = PBXBuildFile; productRef = B442B7F428896B320064C0B1 /* Charts */; };
+		B442B7F72889702F0064C0B1 /* Bar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B442B7F62889702F0064C0B1 /* Bar.swift */; };
 		B4D87F2E2882B1D300A2CCAB /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = B4D87F2D2882B1D300A2CCAB /* GoogleSignIn */; };
 		B4D87F302882B1D300A2CCAB /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B4D87F2F2882B1D300A2CCAB /* GoogleSignInSwift */; };
 		B4D87F322882D86800A2CCAB /* GoogleSignInButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D87F312882D86800A2CCAB /* GoogleSignInButton.swift */; };
@@ -52,6 +54,7 @@
 		B442B7E52887DABE0064C0B1 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		B442B7E82887F0600064C0B1 /* Setting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Setting.swift; sourceTree = "<group>"; };
 		B442B7EF288812C90064C0B1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		B442B7F62889702F0064C0B1 /* Bar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bar.swift; sourceTree = "<group>"; };
 		B4D87F312882D86800A2CCAB /* GoogleSignInButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleSignInButton.swift; sourceTree = "<group>"; };
 		B4D87F352882E8B700A2CCAB /* FirstComeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstComeView.swift; sourceTree = "<group>"; };
 		B4D87F3D288573E500A2CCAB /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
@@ -67,6 +70,7 @@
 				B4D87F39288567C500A2CCAB /* FirebaseDatabase in Frameworks */,
 				B442B7EE288810420064C0B1 /* FirebaseStorageCombine-Community in Frameworks */,
 				B42EA63328829B38009C5901 /* FirebaseAnalytics in Frameworks */,
+				B442B7F528896B320064C0B1 /* Charts in Frameworks */,
 				B42EA63A2882AC44009C5901 /* FirebaseAuth in Frameworks */,
 				B442B7EC288810420064C0B1 /* FirebaseStorage in Frameworks */,
 				B4D87F2E2882B1D300A2CCAB /* GoogleSignIn in Frameworks */,
@@ -121,10 +125,10 @@
 				B42EA620288292B1009C5901 /* ContentView.swift */,
 				B4D87F352882E8B700A2CCAB /* FirstComeView.swift */,
 				B4D87F4328868A7D00A2CCAB /* HomeView.swift */,
-				B442B7DD2886D85A0064C0B1 /* ChartView.swift */,
 				B442B7DF2886D9060064C0B1 /* EvaluationView.swift */,
 				B442B7E12886D92A0064C0B1 /* AnalysisView.swift */,
 				B442B7E32886D9540064C0B1 /* DiscussionView.swift */,
+				B442B7F8288978810064C0B1 /* Chart Tab */,
 				B442B7E72887E21F0064C0B1 /* Profile */,
 				B4D87F342882E2A300A2CCAB /* Login */,
 			);
@@ -148,6 +152,15 @@
 				B442B7E52887DABE0064C0B1 /* ImagePicker.swift */,
 			);
 			path = Profile;
+			sourceTree = "<group>";
+		};
+		B442B7F8288978810064C0B1 /* Chart Tab */ = {
+			isa = PBXGroup;
+			children = (
+				B442B7F62889702F0064C0B1 /* Bar.swift */,
+				B442B7DD2886D85A0064C0B1 /* ChartView.swift */,
+			);
+			path = "Chart Tab";
 			sourceTree = "<group>";
 		};
 		B4D87F342882E2A300A2CCAB /* Login */ = {
@@ -184,6 +197,7 @@
 				B4D87F3A288567C500A2CCAB /* FirebaseDatabaseSwift */,
 				B442B7EB288810420064C0B1 /* FirebaseStorage */,
 				B442B7ED288810420064C0B1 /* FirebaseStorageCombine-Community */,
+				B442B7F428896B320064C0B1 /* Charts */,
 			);
 			productName = HumanCorporation;
 			productReference = B42EA61B288292B1009C5901 /* HumanCorporation.app */;
@@ -219,6 +233,7 @@
 				B4D87F2C2882B1D200A2CCAB /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 				B4D87F37288567C500A2CCAB /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				B442B7EA288810420064C0B1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				B442B7F328896B310064C0B1 /* XCRemoteSwiftPackageReference "Charts" */,
 			);
 			productRefGroup = B42EA61C288292B1009C5901 /* Products */;
 			projectDirPath = "";
@@ -256,6 +271,7 @@
 				B442B7E22886D92A0064C0B1 /* AnalysisView.swift in Sources */,
 				B442B7DE2886D85A0064C0B1 /* ChartView.swift in Sources */,
 				B4D87F322882D86800A2CCAB /* GoogleSignInButton.swift in Sources */,
+				B442B7F72889702F0064C0B1 /* Bar.swift in Sources */,
 				B442B7DC2886D5960064C0B1 /* ProfileImage.swift in Sources */,
 				B4D87F3E288573E500A2CCAB /* Profile.swift in Sources */,
 				B442B7E42886D9540064C0B1 /* DiscussionView.swift in Sources */,
@@ -490,6 +506,14 @@
 				kind = branch;
 			};
 		};
+		B442B7F328896B310064C0B1 /* XCRemoteSwiftPackageReference "Charts" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/danielgindi/Charts.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.0.0;
+			};
+		};
 		B4D87F2C2882B1D200A2CCAB /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
@@ -528,6 +552,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B42EA6382882AC44009C5901 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = "FirebaseStorageCombine-Community";
+		};
+		B442B7F428896B320064C0B1 /* Charts */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B442B7F328896B310064C0B1 /* XCRemoteSwiftPackageReference "Charts" */;
+			productName = Charts;
 		};
 		B4D87F2D2882B1D300A2CCAB /* GoogleSignIn */ = {
 			isa = XCSwiftPackageProductDependency;
