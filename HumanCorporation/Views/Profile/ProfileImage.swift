@@ -10,14 +10,17 @@ import SwiftUI
 struct ProfileImage: View {
     var image: UIImage
     var body: some View {
-        Image(uiImage: image)
-            .resizable()
-            .scaledToFit()
-            .clipShape(Circle())
-            .overlay {
-                Circle().stroke(.white, lineWidth: 4)
-            }
+        GeometryReader { geo in
+            let width = min(geo.size.width, geo.size.height)
+            Image(uiImage: image)
+                .resizable()
+                .frame(width: width, height: width)
+                .clipShape(Circle())
+                .overlay {
+                    Circle().stroke(.white, lineWidth: 4)
+                }
             .shadow(radius: 7)
+        }
     }
 }
 

@@ -5,40 +5,52 @@
 //  Created by 서현종 on 2022/07/20.
 // Setting -> ImagePicker
 import SwiftUI
+import AlertToast
+
 struct Setting: View {
     @EnvironmentObject var viewModel: ViewModel
     @State private var showSheet = false
+    @State private var showAlert = false
     var body: some View {
         NavigationView{
             Form{
                 Section("Edit Profile") {
                     Label("Edit Profile Image", systemImage: "person.fill.viewfinder")
-                            .onTapGesture {
-                                showSheet = true
+                        .onTapGesture {
+                            showSheet = true
                         }
+                }
+                Section {
                     VStack(alignment: .leading){
-                        Label("Edit Your Name", systemImage: "rectangle.and.pencil.and.ellipsis")
+                        Label("Edit Profile", systemImage: "rectangle.and.pencil.and.ellipsis")
+                            .onTapGesture {
+                                viewModel.editProfile()
+                                showAlert.toggle()
+                            }
                         HStack {
+                            Text("Name")
+                                .bold()
+                            Divider()
                             TextField("Name", text: $viewModel.userProfile.name)
                             Spacer()
-                            Divider()
-                            Button("Edit") {
-                                viewModel.editName(user: viewModel.userProfile)
-                            }
                         }
-                    }
-                    VStack(alignment: .leading){
-                        Label("Edit Your Goal", systemImage: "pawprint.fill")
                         HStack {
-                            TextField("Name", text: $viewModel.userProfile.goal)
-                            Spacer()
+                            Text("Goal")
+                                .bold()
                             Divider()
-                            Button("Edit") {
-                                viewModel.editGoal(user: viewModel.userProfile)
-                            }
+                            TextField("goal", text: $viewModel.userProfile.goal)
+                            Spacer()
+                        }
+                        HStack {
+                            Text("E-mail")
+                                .bold()
+                            Divider()
+                            TextField("email", text: $viewModel.userProfile.email)
+                            Spacer()
                         }
                     }
                 }
+                
                 Label("Sign out", systemImage: "rectangle.portrait.and.arrow.right")
                     .onTapGesture {
                         viewModel.signOut()
@@ -48,6 +60,9 @@ struct Setting: View {
             .sheet(isPresented: $showSheet) {
                 ImagePicker(sourceType: .photoLibrary)
                     .environmentObject(viewModel)
+            }
+            .toast(isPresenting: $showAlert) {
+                AlertToast(displayMode: .alert, type: .complete(.green), title:"프로필이 수정되었습니다.")
             }
         }
     }

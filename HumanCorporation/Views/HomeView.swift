@@ -30,23 +30,24 @@ struct HomeView: View {
                         } label: {
                             Label("Settings", systemImage: "gearshape")
                                 .labelStyle(.iconOnly)
-                                .font(.system(size: width*0.06))
+                                .font(.system(size: width*0.04))
                         }
                         .padding(.horizontal)
                     }
                     HStack {
                         ProfileImage(image: viewModel.profileImage!)
-                            .frame(width: width*0.35, height: width*0.35)
-                        VStack {
+                            .frame(width: width*0.3, height: width*0.3)
+                        VStack(alignment: .leading) {
                             Text(viewModel.userProfile.name)
-                                .font(.system(size: width*0.08))
-                            Divider()
+                                .font(.system(size: width*0.06))
+                                .padding()
                             Text(viewModel.userProfile.goal)
                                 .font(.system(size: width*0.04))
                                 .foregroundColor(.secondary)
                         }
+                        Spacer()
                     }
-                    .padding()
+                    .padding(.horizontal)
                     .onAppear(){
                         if viewModel.state == .signedIn { //프리뷰 오류 때문에 추가...
                             viewModel.readUserFromDB()
