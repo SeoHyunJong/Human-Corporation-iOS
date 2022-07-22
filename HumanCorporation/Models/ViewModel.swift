@@ -90,6 +90,14 @@ class ViewModel: ObservableObject {
         uploadImg(image: UIImage(named: "Mamong")!) //default image setting
     }
     
+    func editName(user: Profile) {
+        self.ref.child("user").child("\(user.id)").setValue(["name":"\(user.name)"])
+    }
+    
+    func editGoal(user: Profile) {
+        self.ref.child("user").child("\(user.id)").setValue(["goal":"\(user.goal)"])
+    }
+    
     func uploadImg(image: UIImage) {
         let uid = GIDSignIn.sharedInstance.currentUser!.userID!
         var data = Data()

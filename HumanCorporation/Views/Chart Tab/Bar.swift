@@ -4,7 +4,6 @@
 //
 //  Created by 서현종 on 2022/07/21.
 //
-
 import Charts
 import SwiftUI
 
@@ -15,6 +14,7 @@ struct Bar: UIViewRepresentable {
     
     func makeUIView(context: Context) -> CandleStickChartView {
         let chart = CandleStickChartView()
+        chart.maxVisibleCount = 200
         chart.data = addData()
         return chart
     }

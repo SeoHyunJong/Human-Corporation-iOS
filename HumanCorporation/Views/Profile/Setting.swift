@@ -16,6 +16,28 @@ struct Setting: View {
                             .onTapGesture {
                                 showSheet = true
                         }
+                    VStack(alignment: .leading){
+                        Label("Edit Your Name", systemImage: "rectangle.and.pencil.and.ellipsis")
+                        HStack {
+                            TextField("Name", text: $viewModel.userProfile.name)
+                            Spacer()
+                            Divider()
+                            Button("Edit") {
+                                viewModel.editName(user: viewModel.userProfile)
+                            }
+                        }
+                    }
+                    VStack(alignment: .leading){
+                        Label("Edit Your Goal", systemImage: "pawprint.fill")
+                        HStack {
+                            TextField("Name", text: $viewModel.userProfile.goal)
+                            Spacer()
+                            Divider()
+                            Button("Edit") {
+                                viewModel.editGoal(user: viewModel.userProfile)
+                            }
+                        }
+                    }
                 }
                 Label("Sign out", systemImage: "rectangle.portrait.and.arrow.right")
                     .onTapGesture {

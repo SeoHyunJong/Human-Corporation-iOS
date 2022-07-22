@@ -15,7 +15,6 @@ struct FirstComeView: View {
         VStack {
             Label("Welcome!", systemImage: "face.smiling")
                 .font(.system(size: 30, weight: .bold))
-                .offset(x: -80)
             List {
                 HStack{
                     Text("Name").bold()
