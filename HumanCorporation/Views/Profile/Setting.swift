@@ -22,11 +22,12 @@ struct Setting: View {
                 }
                 Section {
                     VStack(alignment: .leading){
-                        Label("Edit Profile", systemImage: "rectangle.and.pencil.and.ellipsis")
-                            .onTapGesture {
-                                viewModel.editProfile()
-                                showAlert.toggle()
-                            }
+                        Button {
+                            viewModel.editProfile()
+                            showAlert.toggle()
+                        } label: {
+                            Label("Edit Profile", systemImage: "rectangle.and.pencil.and.ellipsis")
+                        }
                         HStack {
                             Text("Name")
                                 .bold()

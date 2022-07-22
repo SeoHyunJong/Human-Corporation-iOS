@@ -27,12 +27,11 @@ struct LoginView: View {
                     .padding()
                     .onTapGesture {
                         viewModel.signIn()
-                }
+                    }
                 Spacer()
             }
             .frame(width: geo.size.width, height: geo.size.height)
             //geometry reader를 쓰고나면 꼭 컨테이너 크기를 리폼해줘야 한다.
-            .background(Color(hue: 0.53, saturation: 0.258, brightness: 1.0))
         }
     }
 }

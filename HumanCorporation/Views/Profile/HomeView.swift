@@ -84,7 +84,6 @@ struct HomeView: View {
                     .environmentObject(viewModel)
             }
             .frame(width: geo.size.width, height: geo.size.height)
-            .background(Color(hue: 0.53, saturation: 0.258, brightness: 1.0))
         }
     }
 }

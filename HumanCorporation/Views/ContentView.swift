@@ -11,13 +11,13 @@ struct ContentView: View {
     @EnvironmentObject var viewModel: ViewModel
     var body: some View {
         switch viewModel.state {
-          case .signedIn:
+        case .signedIn:
             if viewModel.isNewUser {
                 FirstComeView()
             } else {
                 HomeView()
             }
-          case .signedOut: LoginView()
+        case .signedOut: LoginView()
         }
     }
 }

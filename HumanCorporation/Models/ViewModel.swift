@@ -28,27 +28,27 @@ class ViewModel: ObservableObject {
     @Published var state: SignInState = .signedOut
     
     func signIn() {
-      // 1. 이전에 로그인한 이력이 있으면 그 이력을 토대로 로그인한다.
-      if GIDSignIn.sharedInstance.hasPreviousSignIn() {
-        GIDSignIn.sharedInstance.restorePreviousSignIn { [unowned self] user, error in
-            authenticateUser(for: user, with: error)
+        // 1. 이전에 로그인한 이력이 있으면 그 이력을 토대로 로그인한다.
+        if GIDSignIn.sharedInstance.hasPreviousSignIn() {
+            GIDSignIn.sharedInstance.restorePreviousSignIn { [unowned self] user, error in
+                authenticateUser(for: user, with: error)
+            }
+        } else {
+            // 2. GoogleService-info에 들어있는 clientID를 fetch 한다. 유저 정보 X 이 앱의 정보를 의미
+            guard let clientID = FirebaseApp.app()?.options.clientID else { return }
+            
+            // 3. 이 clientID를 가지고 configuration object를 만든다.
+            let configuration = GIDConfiguration(clientID: clientID)
+            
+            // 4. SwiftUI를 사용하기 때문에 UIViewController가 없다... 이걸 통해 생성한다.
+            guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else { return }
+            guard let rootViewController = windowScene.windows.first?.rootViewController else { return }
+            
+            // 5. 이제 로그인을 시작한다. 구글 로그인 뷰를 띄운다.
+            GIDSignIn.sharedInstance.signIn(with: configuration, presenting: rootViewController) { [unowned self] user, error in
+                authenticateUser(for: user, with: error)
+            }
         }
-      } else {
-        // 2. GoogleService-info에 들어있는 clientID를 fetch 한다. 유저 정보 X 이 앱의 정보를 의미
-        guard let clientID = FirebaseApp.app()?.options.clientID else { return }
-        
-        // 3. 이 clientID를 가지고 configuration object를 만든다.
-        let configuration = GIDConfiguration(clientID: clientID)
-        
-        // 4. SwiftUI를 사용하기 때문에 UIViewController가 없다... 이걸 통해 생성한다.
-        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else { return }
-        guard let rootViewController = windowScene.windows.first?.rootViewController else { return }
-        
-        // 5. 이제 로그인을 시작한다. 구글 로그인 뷰를 띄운다.
-        GIDSignIn.sharedInstance.signIn(with: configuration, presenting: rootViewController) { [unowned self] user, error in
-          authenticateUser(for: user, with: error)
-        }
-      }
     }
     
     private func authenticateUser(for user: GIDGoogleUser?, with error: Error?) {
@@ -57,31 +57,31 @@ class ViewModel: ObservableObject {
             print(error.localizedDescription)
             return
         }
-          
+        
         // 2. 유저로부터 idToken과 accessToken 받아오기
         guard let authentication = user?.authentication, let idToken = authentication.idToken else { return }
         let credential = GoogleAuthProvider.credential(withIDToken: idToken, accessToken: authentication.accessToken)
         
         // 3. credential을 넘겨 실질적인 로그인을 진행
         Auth.auth().signIn(with: credential) { [unowned self] (_, error) in
-          if let error = error {
-            print(error.localizedDescription)
-          } else {
-              self.state = .signedIn
-              userCheck()
-          }
+            if let error = error {
+                print(error.localizedDescription)
+            } else {
+                self.state = .signedIn
+                userCheck()
+            }
         }
     }
     func signOut() {
-      // 1
-      GIDSignIn.sharedInstance.signOut()
-      do {
-        // 2
-        try Auth.auth().signOut()
-        state = .signedOut
-      } catch {
-        print(error.localizedDescription)
-      }
+        // 1
+        GIDSignIn.sharedInstance.signOut()
+        do {
+            // 2
+            try Auth.auth().signOut()
+            state = .signedOut
+        } catch {
+            print(error.localizedDescription)
+        }
     }
     
     func userAdd(user: Profile) {
@@ -101,14 +101,14 @@ class ViewModel: ObservableObject {
         let imageRef = storageRef.child("images/\(uid)/profile.jpg")
         
         imageRef.putData(data, metadata: nil) { (metadata, error) in
-//            guard let metadata = metadata else {
-//                return
-//            }
-//            imageRef.downloadURL { (url, error) in
-//                guard let downloadURL = url else {
-//                    return
-//                }
-//            }
+            //            guard let metadata = metadata else {
+            //                return
+            //            }
+            //            imageRef.downloadURL { (url, error) in
+            //                guard let downloadURL = url else {
+            //                    return
+            //                }
+            //            }
             self.profileImage = image
         }
     }
@@ -117,11 +117,11 @@ class ViewModel: ObservableObject {
         let imageRef = storageRef.child("images/\(uid)/profile.jpg")
         // Download in memory with a maximum allowed size of 1MB (1 * 1024 * 1024 bytes)
         imageRef.getData(maxSize: 1 * 1024 * 1024) { data, error in
-          if let _ = error {
-              print("cannot load profile image")
-          } else {
-              self.profileImage = UIImage(data: data!)!
-          }
+            if let _ = error {
+                print("cannot load profile image")
+            } else {
+                self.profileImage = UIImage(data: data!)!
+            }
         }
     }
     
@@ -135,7 +135,7 @@ class ViewModel: ObservableObject {
                 self.isNewUser = true
             }
         }) { error in
-          print(error.localizedDescription)
+            print(error.localizedDescription)
         }
     }
     
@@ -149,7 +149,7 @@ class ViewModel: ObservableObject {
             self.userProfile.email = value?["email"] as? String ?? "로드 실패"
             self.userProfile.id = uid
         }) { error in
-          print(error.localizedDescription)
+            print(error.localizedDescription)
         }
     }
 }
