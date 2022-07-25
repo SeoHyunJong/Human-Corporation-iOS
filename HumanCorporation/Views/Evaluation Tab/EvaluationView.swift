@@ -30,6 +30,7 @@ struct EvaluationView: View {
     @State private var showToast = false
     @State private var showError = false
     @EnvironmentObject var viewModel: ViewModel
+    @State private var diaryList:[Diary] = []
     
     var body: some View {
         NavigationView{
@@ -47,7 +48,7 @@ struct EvaluationView: View {
                                 Button{
                                     if endTime.timeIntervalSince(startTime) > 0 {
                                         let diary = Diary(story: story, startTime: startTime, endTime: endTime, eval: .productive)
-                                        viewModel.diaryAdd(diary: diary, strDate: strDate)
+                                        diaryList.append(diary)
                                         pickStart = endTime
                                         showToast = true
                                         story = "일과를 작성해주세요."
@@ -59,6 +60,8 @@ struct EvaluationView: View {
                                 }
                                 Button{
                                     if endTime.timeIntervalSince(startTime) > 0 {
+                                        let diary = Diary(story: story, startTime: startTime, endTime: endTime, eval: .unproductive)
+                                        diaryList.append(diary)
                                         pickStart = endTime
                                         showToast = true
                                         story = "일과를 작성해주세요."
@@ -70,6 +73,8 @@ struct EvaluationView: View {
                                 }
                                 Button{
                                     if endTime.timeIntervalSince(startTime) > 0 {
+                                        let diary = Diary(story: story, startTime: startTime, endTime: endTime, eval: .neutral)
+                                        diaryList.append(diary)
                                         pickStart = endTime
                                         showToast = true
                                         story = "일과를 작성해주세요."

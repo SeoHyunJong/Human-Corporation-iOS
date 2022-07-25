@@ -90,11 +90,13 @@ class ViewModel: ObservableObject {
         uploadImg(image: UIImage(named: "Mamong")!) //default image setting
     }
     
-    func diaryAdd(diary: Diary, strDate: String) {
+    func diaryAdd(diaryList: [Diary]) {
         let dateformatter = DateFormatter()
         dateformatter.dateFormat = "yyyy-MM-dd HH:mm"
-        let values: [String: Any] = ["story":diary.story, "startTime":dateformatter.string(from: diary.startTime), "endTime":dateformatter.string(from: diary.endTime), "eval":diary.eval.rawValue]
-        self.ref.child("diary").child(userProfile.id).childByAutoId().setValue(values)
+        for diary in diaryList {
+            let values: [String: Any] = ["story":diary.story, "startTime":dateformatter.string(from: diary.startTime), "endTime":dateformatter.string(from: diary.endTime), "eval":diary.eval.rawValue]
+            self.ref.child("diary").child(userProfile.id).childByAutoId().setValue(values)
+        }
     }
     
     func editProfile() {
