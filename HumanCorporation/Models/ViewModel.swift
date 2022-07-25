@@ -90,6 +90,11 @@ class ViewModel: ObservableObject {
         uploadImg(image: UIImage(named: "Mamong")!) //default image setting
     }
     
+    func diaryAdd(diary: Diary, strDate: String) {
+        let values: [String: Any] = ["story":diary.story, "startTime":diary.startTime, "endTime":diary.endTime, "eval":diary.eval.rawValue]
+        self.ref.child("user").child(userProfile.id).child(strDate).childByAutoId().setValue(values)
+    }
+    
     func editProfile() {
         self.ref.child("user").child(userProfile.id).updateChildValues(["name":userProfile.name,"goal":userProfile.goal,"email":userProfile.email])
     }

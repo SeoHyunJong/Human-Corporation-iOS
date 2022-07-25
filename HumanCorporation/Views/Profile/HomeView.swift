@@ -44,6 +44,7 @@ struct HomeView: View {
                             Text(viewModel.userProfile.goal)
                                 .font(.system(size: width*0.04))
                                 .foregroundColor(.secondary)
+                                .padding(.horizontal)
                         }
                         Spacer()
                     }

@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import UIKit
 
 struct Profile: Codable, Hashable {
     var id = "eriel123"
