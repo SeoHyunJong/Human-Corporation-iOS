@@ -20,6 +20,7 @@ class ViewModel: ObservableObject {
     @Published var isNewUser = false
     @Published var userProfile: Profile = Profile()
     @Published var profileImage = UIImage(named: "Mamong") //프리뷰를 위해 임시 설정
+    @Published var priceList: [Price] = []
     
     enum SignInState {
         case signedIn
@@ -87,7 +88,7 @@ class ViewModel: ObservableObject {
     func userAdd(user: Profile) {
         let values: [String: Any] = ["name":"\(user.name)", "email":"\(user.email)", "goal":"\(user.goal)"]
         self.ref.child("user").child("\(user.id)").setValue(values)
-        uploadImg(image: UIImage(named: "Mamong")!) //default image setting
+//        uploadImg(image: UIImage(named: "Mamong")!)
     }
     
     func diaryAdd(diaryList: [Diary]) {
@@ -96,6 +97,29 @@ class ViewModel: ObservableObject {
         for diary in diaryList {
             let values: [String: Any] = ["story":diary.story, "startTime":dateformatter.string(from: diary.startTime), "endTime":dateformatter.string(from: diary.endTime), "eval":diary.eval.rawValue]
             self.ref.child("diary").child(userProfile.id).childByAutoId().setValue(values)
+        }
+    }
+    
+    func priceAdd(price: Price) {
+        let values: [String: Double?] = ["open": price.open, "close": price.close, "shadowH": price.shadowH, "shadowL": price.shadowL]
+        self.ref.child("price").child(userProfile.id).childByAutoId().setValue(values)
+    }
+    
+    func priceRead(){
+        ref.child("price").child(userProfile.id).observe(.value, with: { snapshot in
+            // Get user value
+            for child in snapshot.children.allObjects as! [DataSnapshot] {
+                let value = child.value as? NSDictionary
+                let open = value?["open"] as? Double
+                let close = value?["close"] as? Double
+                let shadowH = value?["shadowH"] as? Double
+                let shadowL = value?["shadowL"] as? Double
+                
+                let price = Price(open: open, close: close, shadowH: shadowH, shadowL: shadowL)
+                self.priceList.append(price)
+            }
+        }) { error in
+            print(error.localizedDescription)
         }
     }
     
@@ -125,11 +149,13 @@ class ViewModel: ObservableObject {
         let uid = GIDSignIn.sharedInstance.currentUser!.userID!
         let imageRef = storageRef.child("images/\(uid)/profile.jpg")
         // Download in memory with a maximum allowed size of 1MB (1 * 1024 * 1024 bytes)
-        imageRef.getData(maxSize: 1 * 1024 * 1024) { data, error in
+        imageRef.getData(maxSize: 3 * 1024 * 1024) { data, error in
             if let _ = error {
                 print("cannot load profile image")
             } else {
-                self.profileImage = UIImage(data: data!)!
+                if data != nil {
+                    self.profileImage = UIImage(data: data!)
+                }
             }
         }
     }

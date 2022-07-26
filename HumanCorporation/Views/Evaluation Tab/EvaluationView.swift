@@ -27,8 +27,11 @@ struct EvaluationView: View {
     @State private var endTime = Date()
     @State private var pickStart = Date()
     @State private var story = "일과를 작성해주세요."
+    
     @State private var showToast = false
     @State private var showError = false
+    @State private var showSuccess = false
+    
     @EnvironmentObject var viewModel: ViewModel
     @State private var diaryList:[Diary] = []
     
@@ -50,7 +53,7 @@ struct EvaluationView: View {
                                         let diary = Diary(story: story, startTime: startTime, endTime: endTime, eval: .productive)
                                         diaryList.append(diary)
                                         pickStart = endTime
-                                        showToast = true
+                                        showToast.toggle()
                                         story = "일과를 작성해주세요."
                                     } else {
                                         showError = true
@@ -63,7 +66,7 @@ struct EvaluationView: View {
                                         let diary = Diary(story: story, startTime: startTime, endTime: endTime, eval: .unproductive)
                                         diaryList.append(diary)
                                         pickStart = endTime
-                                        showToast = true
+                                        showToast.toggle()
                                         story = "일과를 작성해주세요."
                                     } else {
                                         showError = true
@@ -76,7 +79,7 @@ struct EvaluationView: View {
                                         let diary = Diary(story: story, startTime: startTime, endTime: endTime, eval: .neutral)
                                         diaryList.append(diary)
                                         pickStart = endTime
-                                        showToast = true
+                                        showToast.toggle()
                                         story = "일과를 작성해주세요."
                                     } else {
                                         showError = true
@@ -91,7 +94,8 @@ struct EvaluationView: View {
                 }
                 HStack() {
                     Button{
-                        
+                        viewModel.diaryAdd(diaryList: diaryList)
+                        showSuccess.toggle()
                     } label: {
                         Text("실적 최종 제출")
                             .foregroundColor(Color.white)
@@ -135,6 +139,9 @@ struct EvaluationView: View {
         }
         .toast(isPresenting: $showError) {
             AlertToast(displayMode: .alert, type: .error(.red), title: "유효하지 않는 시간!")
+        }
+        .toast(isPresenting: $showSuccess) {
+            AlertToast(displayMode: .alert, type: .complete(.green), title: "실적 제출 성공!")
         }
     }
     func updateSelectedDate(){
