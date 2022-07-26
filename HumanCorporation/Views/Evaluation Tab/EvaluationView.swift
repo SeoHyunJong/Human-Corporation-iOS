@@ -21,7 +21,6 @@ import AlertToast
 import Charts
 
 struct EvaluationView: View {
-    let dateFormatter = DateFormatter()
     @State private var showCalendar = false
     @State private var date = Date()
     @State private var strDate = "2022.07.22.Fri"
@@ -115,16 +114,15 @@ struct EvaluationView: View {
             }
         }
         .onAppear(){
-            dateFormatter.locale = NSLocale.current
-            dateFormatter.dateFormat = "YYYY.MM.dd.E"
             updateSelectedDate()
             if viewModel.priceList.isEmpty == false {
+                viewModel.findRecentDay()
                 previousClose = viewModel.priceList.last!.close
                 currentPrice = previousClose
             }
         }
         .sheet(isPresented: $showCalendar, onDismiss: updateSelectedDate){
-            DatePicker("날짜를 고르세요.", selection: $date, in: ...Date(), displayedComponents: [.date])
+            DatePicker("날짜를 고르세요.", selection: $date, in: viewModel.recentDay...Date(), displayedComponents: [.date])
                 .datePickerStyle(.graphical)
         }
         .toast(isPresenting: $showToast) {
@@ -138,6 +136,8 @@ struct EvaluationView: View {
         }
     }
     func updateSelectedDate(){
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "YYYY.MM.dd.E"
         strDate = dateFormatter.string(from: date)
         startTime = Calendar.current.startOfDay(for: date)
         endTime = Calendar.current.startOfDay(for: date)

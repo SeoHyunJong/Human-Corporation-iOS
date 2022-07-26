@@ -23,6 +23,7 @@ class ViewModel: ObservableObject {
     @Published var userProfile: Profile = Profile()
     @Published var profileImage = UIImage(named: "Mamong") //프리뷰를 위해 임시 설정
     @Published var priceList: [CandleChartDataEntry] = []
+    @Published var recentDay = Date(timeIntervalSince1970: 0)
     
     enum SignInState {
         case signedIn
@@ -167,6 +168,23 @@ class ViewModel: ObservableObject {
         for diary in diaryList {
             let values: [String: Any] = ["story":diary.story, "startTime":dateformatter.string(from: diary.startTime), "endTime":dateformatter.string(from: diary.endTime), "eval":diary.eval.rawValue]
             self.ref.child("diary").child(userProfile.id).childByAutoId().setValue(values)
+        }
+    }
+    
+    func findRecentDay() {
+        let dateformatter = DateFormatter()
+        dateformatter.dateFormat = "yyyy-MM-dd HH:mm"
+        let uid = GIDSignIn.sharedInstance.currentUser!.userID!
+        ref.child("diary").child(uid).observeSingleEvent(of: .value, with: { snapshot in
+            let child = snapshot.children.allObjects.last as! DataSnapshot
+            let value = child.value as? NSDictionary
+            let endTime = value?["endTime"] as? String
+            let lastDay = dateformatter.date(from: endTime!)
+            let rawRecentDay = Calendar.current.date(byAdding: .day, value: 1, to: lastDay!)!
+            
+            self.recentDay = Calendar.current.startOfDay(for: rawRecentDay)
+        }){ error in
+            print(error.localizedDescription)
         }
     }
     
