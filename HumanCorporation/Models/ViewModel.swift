@@ -70,6 +70,7 @@ class ViewModel: ObservableObject {
             } else {
                 self.state = .signedIn
                 userCheck()
+                priceRead()
             }
         }
     }
@@ -105,7 +106,7 @@ class ViewModel: ObservableObject {
         self.ref.child("price").child(userProfile.id).childByAutoId().setValue(values)
     }
     
-    func priceRead(){
+    private func priceRead(){
         ref.child("price").child(userProfile.id).observe(.value, with: { snapshot in
             // Get user value
             for child in snapshot.children.allObjects as! [DataSnapshot] {

@@ -28,6 +28,8 @@ struct Setting: View {
                         } label: {
                             Label("Edit Profile", systemImage: "rectangle.and.pencil.and.ellipsis")
                         }
+                        .buttonStyle(BorderlessButtonStyle())
+                        
                         HStack {
                             Text("Name")
                                 .bold()
