@@ -84,6 +84,11 @@ class ViewModel: ObservableObject {
             // 2
             try Auth.auth().signOut()
             state = .signedOut
+            // 전 사용자의 정보를 보이지 않기 위해 뷰 모델 초기화
+            userProfile = Profile()
+            profileImage = UIImage(named: "Mamong")
+            priceList.removeAll()
+            recentDay = Date(timeIntervalSince1970: 0)
         } catch {
             print(error.localizedDescription)
         }
@@ -97,11 +102,11 @@ class ViewModel: ObservableObject {
     }
     
     private func userCheck(){
-        let uid = GIDSignIn.sharedInstance.currentUser!.userID!
+        guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
         ref.child("user").child(uid).observeSingleEvent(of: .value, with: { snapshot in
             // Get user value
-            let value = snapshot.value as? NSDictionary
-            let username = value?["name"] as? String ?? "error"
+            guard let value = snapshot.value as? NSDictionary else {self.isNewUser = true; return}
+            let username = value["name"] as? String ?? "error"
             if username == "error" {
                 self.isNewUser = true
             }
@@ -111,13 +116,13 @@ class ViewModel: ObservableObject {
     }
     
     func readUserFromDB(){
-        let uid = GIDSignIn.sharedInstance.currentUser!.userID!
+        guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
         ref.child("user").child(uid).observe(.value, with: { snapshot in
             // Get user value
-            let value = snapshot.value as? NSDictionary
-            self.userProfile.name = value?["name"] as? String ?? "로드 실패"
-            self.userProfile.goal = value?["goal"] as? String ?? "로드 실패"
-            self.userProfile.email = value?["email"] as? String ?? "로드 실패"
+            guard let value = snapshot.value as? NSDictionary else {return}
+            self.userProfile.name = value["name"] as? String ?? "로드 실패"
+            self.userProfile.goal = value["goal"] as? String ?? "로드 실패"
+            self.userProfile.email = value["email"] as? String ?? "로드 실패"
             self.userProfile.id = uid
         }) { error in
             print(error.localizedDescription)
@@ -129,7 +134,7 @@ class ViewModel: ObservableObject {
     }
     
     func uploadImg(image: UIImage) {
-        let uid = GIDSignIn.sharedInstance.currentUser!.userID!
+        guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
         var data = Data()
         data = image.jpegData(compressionQuality: 0.8)!
         let imageRef = storageRef.child("images/\(uid)/profile.jpg")
@@ -147,7 +152,7 @@ class ViewModel: ObservableObject {
         }
     }
     func downloadImage(){
-        let uid = GIDSignIn.sharedInstance.currentUser!.userID!
+        guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
         let imageRef = storageRef.child("images/\(uid)/profile.jpg")
         // Download in memory with a maximum allowed size of 1MB (1 * 1024 * 1024 bytes)
         imageRef.getData(maxSize: 3 * 1024 * 1024) { data, error in
@@ -174,11 +179,12 @@ class ViewModel: ObservableObject {
     func findRecentDay() {
         let dateformatter = DateFormatter()
         dateformatter.dateFormat = "yyyy-MM-dd HH:mm"
-        let uid = GIDSignIn.sharedInstance.currentUser!.userID!
+        guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return} //오류가 생겨 guard let 구문으로 처리
+        // why 오류? onAppear에서 호출되는 이 함수가 signOut 처리보다 더 늦게 비동기적으로 실행되어 생기는 문제
         ref.child("diary").child(uid).observeSingleEvent(of: .value, with: { snapshot in
-            let child = snapshot.children.allObjects.last as! DataSnapshot
-            let value = child.value as? NSDictionary
-            let endTime = value?["endTime"] as? String
+            guard let child = snapshot.children.allObjects.last as? DataSnapshot else {return}
+            guard let value = child.value as? NSDictionary else {return}
+            let endTime = value["endTime"] as? String
             let lastDay = dateformatter.date(from: endTime!)
             let rawRecentDay = Calendar.current.date(byAdding: .day, value: 1, to: lastDay!)!
             
@@ -195,16 +201,16 @@ class ViewModel: ObservableObject {
     }
     
     func priceRead(){
-        let uid = GIDSignIn.sharedInstance.currentUser!.userID!
+        guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
         ref.child("price").child(uid).observe(.value, with: { snapshot in
             // Get user value
             var idx: Double = 0
             for child in snapshot.children.allObjects as! [DataSnapshot] {
-                let value = child.value as? NSDictionary
-                let open = value?["open"] as? Double
-                let close = value?["close"] as? Double
-                let shadowH = value?["shadowH"] as? Double
-                let shadowL = value?["shadowL"] as? Double
+                guard let value = child.value as? NSDictionary else {return}
+                let open = value["open"] as? Double
+                let close = value["close"] as? Double
+                let shadowH = value["shadowH"] as? Double
+                let shadowL = value["shadowL"] as? Double
                 let price = CandleChartDataEntry(x: idx, shadowH: shadowH!, shadowL: shadowL!, open: open!, close: close!)
                 self.priceList.append(price)
                 idx += 1

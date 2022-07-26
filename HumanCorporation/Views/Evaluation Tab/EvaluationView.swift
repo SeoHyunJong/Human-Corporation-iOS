@@ -80,6 +80,10 @@ struct EvaluationView: View {
                             viewModel.diaryAdd(diaryList: diaryList)
                             let price = CandleChartDataEntry(x: 0, shadowH: priceList.max()!, shadowL: priceList.min()!, open: priceList.first!, close: priceList.last!)
                             viewModel.priceAdd(price: price)
+                            viewModel.findRecentDay()
+                            date = date.addingTimeInterval(86400)
+                            updateSelectedDate()
+                            
                             showSuccess.toggle()
                         } else {
                             showError.toggle()
