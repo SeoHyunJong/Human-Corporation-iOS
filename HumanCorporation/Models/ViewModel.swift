@@ -12,15 +12,17 @@ import GoogleSignIn
 import FirebaseDatabase
 import FirebaseStorage
 import SwiftUI
+import Charts
 
 class ViewModel: ObservableObject {
+    // MARK: Property
     lazy var ref = Database.database().reference()
     lazy var storageRef = Storage.storage().reference()
     
     @Published var isNewUser = false
     @Published var userProfile: Profile = Profile()
     @Published var profileImage = UIImage(named: "Mamong") //프리뷰를 위해 임시 설정
-    @Published var priceList: [Price] = []
+    @Published var priceList: [CandleChartDataEntry] = []
     
     enum SignInState {
         case signedIn
@@ -28,6 +30,7 @@ class ViewModel: ObservableObject {
     }
     @Published var state: SignInState = .signedOut
     
+    // MARK: Sign in, sign out
     func signIn() {
         // 1. 이전에 로그인한 이력이 있으면 그 이력을 토대로 로그인한다.
         if GIDSignIn.sharedInstance.hasPreviousSignIn() {
@@ -85,40 +88,36 @@ class ViewModel: ObservableObject {
         }
     }
     
+    // MARK: User profile
     func userAdd(user: Profile) {
         let values: [String: Any] = ["name":"\(user.name)", "email":"\(user.email)", "goal":"\(user.goal)"]
         self.ref.child("user").child("\(user.id)").setValue(values)
-//        uploadImg(image: UIImage(named: "Mamong")!)
+        //        uploadImg(image: UIImage(named: "Mamong")!)
     }
     
-    func diaryAdd(diaryList: [Diary]) {
-        let dateformatter = DateFormatter()
-        dateformatter.dateFormat = "yyyy-MM-dd HH:mm"
-        for diary in diaryList {
-            let values: [String: Any] = ["story":diary.story, "startTime":dateformatter.string(from: diary.startTime), "endTime":dateformatter.string(from: diary.endTime), "eval":diary.eval.rawValue]
-            self.ref.child("diary").child(userProfile.id).childByAutoId().setValue(values)
+    private func userCheck(){
+        let uid = GIDSignIn.sharedInstance.currentUser!.userID!
+        ref.child("user").child(uid).observeSingleEvent(of: .value, with: { snapshot in
+            // Get user value
+            let value = snapshot.value as? NSDictionary
+            let username = value?["name"] as? String ?? "error"
+            if username == "error" {
+                self.isNewUser = true
+            }
+        }) { error in
+            print(error.localizedDescription)
         }
     }
     
-    func priceAdd(price: Price) {
-        let values: [String: Double?] = ["open": price.open, "close": price.close, "shadowH": price.shadowH, "shadowL": price.shadowL]
-        self.ref.child("price").child(userProfile.id).childByAutoId().setValue(values)
-    }
-    
-    func priceRead(){
+    func readUserFromDB(){
         let uid = GIDSignIn.sharedInstance.currentUser!.userID!
-        ref.child("price").child(uid).observe(.value, with: { snapshot in
+        ref.child("user").child(uid).observe(.value, with: { snapshot in
             // Get user value
-            for child in snapshot.children.allObjects as! [DataSnapshot] {
-                let value = child.value as? NSDictionary
-                let open = value?["open"] as? Double
-                let close = value?["close"] as? Double
-                let shadowH = value?["shadowH"] as? Double
-                let shadowL = value?["shadowL"] as? Double
-                
-                let price = Price(open: open, close: close, shadowH: shadowH, shadowL: shadowL)
-                self.priceList.append(price)
-            }
+            let value = snapshot.value as? NSDictionary
+            self.userProfile.name = value?["name"] as? String ?? "로드 실패"
+            self.userProfile.goal = value?["goal"] as? String ?? "로드 실패"
+            self.userProfile.email = value?["email"] as? String ?? "로드 실패"
+            self.userProfile.id = uid
         }) { error in
             print(error.localizedDescription)
         }
@@ -161,31 +160,40 @@ class ViewModel: ObservableObject {
         }
     }
     
-    private func userCheck(){
+    // MARK: Diary
+    func diaryAdd(diaryList: [Diary]) {
+        let dateformatter = DateFormatter()
+        dateformatter.dateFormat = "yyyy-MM-dd HH:mm"
+        for diary in diaryList {
+            let values: [String: Any] = ["story":diary.story, "startTime":dateformatter.string(from: diary.startTime), "endTime":dateformatter.string(from: diary.endTime), "eval":diary.eval.rawValue]
+            self.ref.child("diary").child(userProfile.id).childByAutoId().setValue(values)
+        }
+    }
+    
+    // MARK: Price
+    func priceAdd(price: CandleChartDataEntry) {
+        let values: [String: Double?] = ["open": price.open, "close": price.close, "shadowH": price.high, "shadowL": price.low]
+        self.ref.child("price").child(userProfile.id).childByAutoId().setValue(values)
+    }
+    
+    func priceRead(){
         let uid = GIDSignIn.sharedInstance.currentUser!.userID!
-        ref.child("user").child(uid).observeSingleEvent(of: .value, with: { snapshot in
+        ref.child("price").child(uid).observe(.value, with: { snapshot in
             // Get user value
-            let value = snapshot.value as? NSDictionary
-            let username = value?["name"] as? String ?? "error"
-            if username == "error" {
-                self.isNewUser = true
+            var idx: Double = 0
+            for child in snapshot.children.allObjects as! [DataSnapshot] {
+                let value = child.value as? NSDictionary
+                let open = value?["open"] as? Double
+                let close = value?["close"] as? Double
+                let shadowH = value?["shadowH"] as? Double
+                let shadowL = value?["shadowL"] as? Double
+                let price = CandleChartDataEntry(x: idx, shadowH: shadowH!, shadowL: shadowL!, open: open!, close: close!)
+                self.priceList.append(price)
+                idx += 1
             }
         }) { error in
             print(error.localizedDescription)
         }
     }
     
-    func readUserFromDB(){
-        let uid = GIDSignIn.sharedInstance.currentUser!.userID!
-        ref.child("user").child(uid).observe(.value, with: { snapshot in
-            // Get user value
-            let value = snapshot.value as? NSDictionary
-            self.userProfile.name = value?["name"] as? String ?? "로드 실패"
-            self.userProfile.goal = value?["goal"] as? String ?? "로드 실패"
-            self.userProfile.email = value?["email"] as? String ?? "로드 실패"
-            self.userProfile.id = uid
-        }) { error in
-            print(error.localizedDescription)
-        }
-    }
 }

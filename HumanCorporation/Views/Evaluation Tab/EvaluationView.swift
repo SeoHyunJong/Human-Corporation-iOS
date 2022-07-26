@@ -18,6 +18,7 @@
 //1 min == 0.04%
 import SwiftUI
 import AlertToast
+import Charts
 
 struct EvaluationView: View {
     let dateFormatter = DateFormatter()
@@ -76,10 +77,14 @@ struct EvaluationView: View {
                 }
                 HStack() {
                     Button{
-                        viewModel.diaryAdd(diaryList: diaryList)
-                        let price = Price(open: priceList[0], close: priceList.last, shadowH: priceList.max(), shadowL: priceList.min())
-                        viewModel.priceAdd(price: price)
-                        showSuccess.toggle()
+                        if priceList.count > 0 {
+                            viewModel.diaryAdd(diaryList: diaryList)
+                            let price = CandleChartDataEntry(x: 0, shadowH: priceList.max()!, shadowL: priceList.min()!, open: priceList.first!, close: priceList.last!)
+                            viewModel.priceAdd(price: price)
+                            showSuccess.toggle()
+                        } else {
+                            showError.toggle()
+                        }
                     } label: {
                         Text("실적 최종 제출")
                             .foregroundColor(Color.white)
@@ -114,7 +119,7 @@ struct EvaluationView: View {
             dateFormatter.dateFormat = "YYYY.MM.dd.E"
             updateSelectedDate()
             if viewModel.priceList.isEmpty == false {
-                previousClose = viewModel.priceList.last!.close!
+                previousClose = viewModel.priceList.last!.close
                 currentPrice = previousClose
             }
         }
@@ -126,7 +131,7 @@ struct EvaluationView: View {
             AlertToast(displayMode: .banner(.slide), type: .regular, title:"실적 추가 성공!")
         }
         .toast(isPresenting: $showError) {
-            AlertToast(displayMode: .alert, type: .error(.red), title: "유효하지 않는 시간!")
+            AlertToast(displayMode: .alert, type: .error(.red), title: "잘못된 입력")
         }
         .toast(isPresenting: $showSuccess) {
             AlertToast(displayMode: .alert, type: .complete(.green), title: "실적 제출 성공!")

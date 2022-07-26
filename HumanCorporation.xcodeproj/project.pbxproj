@@ -29,7 +29,6 @@
 		B442B7F72889702F0064C0B1 /* Bar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B442B7F62889702F0064C0B1 /* Bar.swift */; };
 		B46EF2DE288A89A500F38878 /* AlertToast in Frameworks */ = {isa = PBXBuildFile; productRef = B46EF2DD288A89A500F38878 /* AlertToast */; };
 		B46EF2E0288E9C3E00F38878 /* Diary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46EF2DF288E9C3E00F38878 /* Diary.swift */; };
-		B46EF2E3288FBFFE00F38878 /* Price.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46EF2E2288FBFFE00F38878 /* Price.swift */; };
 		B4D87F2E2882B1D300A2CCAB /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = B4D87F2D2882B1D300A2CCAB /* GoogleSignIn */; };
 		B4D87F302882B1D300A2CCAB /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B4D87F2F2882B1D300A2CCAB /* GoogleSignInSwift */; };
 		B4D87F322882D86800A2CCAB /* GoogleSignInButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D87F312882D86800A2CCAB /* GoogleSignInButton.swift */; };
@@ -59,7 +58,6 @@
 		B442B7EF288812C90064C0B1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		B442B7F62889702F0064C0B1 /* Bar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bar.swift; sourceTree = "<group>"; };
 		B46EF2DF288E9C3E00F38878 /* Diary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Diary.swift; sourceTree = "<group>"; };
-		B46EF2E2288FBFFE00F38878 /* Price.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Price.swift; sourceTree = "<group>"; };
 		B4D87F312882D86800A2CCAB /* GoogleSignInButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleSignInButton.swift; sourceTree = "<group>"; };
 		B4D87F352882E8B700A2CCAB /* FirstComeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstComeView.swift; sourceTree = "<group>"; };
 		B4D87F3D288573E500A2CCAB /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
@@ -146,7 +144,6 @@
 				B4D87F3D288573E500A2CCAB /* Profile.swift */,
 				B42EA6352882AB3B009C5901 /* ViewModel.swift */,
 				B46EF2DF288E9C3E00F38878 /* Diary.swift */,
-				B46EF2E2288FBFFE00F38878 /* Price.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -285,7 +282,6 @@
 				B42EA62E28829669009C5901 /* LoginView.swift in Sources */,
 				B442B7E62887DABE0064C0B1 /* ImagePicker.swift in Sources */,
 				B442B7E02886D9060064C0B1 /* EvaluationView.swift in Sources */,
-				B46EF2E3288FBFFE00F38878 /* Price.swift in Sources */,
 				B442B7E92887F0600064C0B1 /* Setting.swift in Sources */,
 				B442B7E22886D92A0064C0B1 /* AnalysisView.swift in Sources */,
 				B442B7DE2886D85A0064C0B1 /* ChartView.swift in Sources */,
