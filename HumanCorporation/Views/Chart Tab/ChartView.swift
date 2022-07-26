@@ -9,6 +9,7 @@ import SwiftUI
 import Charts
 
 struct ChartView: View {
+    @EnvironmentObject var viewModel: ViewModel
     var body: some View {
         Bar(entries: [
             CandleChartDataEntry(x: 1, shadowH: 10, shadowL: 4, open: 6, close: 8),
@@ -21,5 +22,6 @@ struct ChartView: View {
 struct ChartView_Previews: PreviewProvider {
     static var previews: some View {
         ChartView()
+            .environmentObject(ViewModel())
     }
 }

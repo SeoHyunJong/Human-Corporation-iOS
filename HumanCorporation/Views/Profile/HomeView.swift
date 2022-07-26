@@ -52,6 +52,7 @@ struct HomeView: View {
                     .onAppear(){
                         if viewModel.state == .signedIn { //프리뷰 오류 때문에 추가...
                             viewModel.readUserFromDB()
+                            viewModel.priceRead()
                             viewModel.downloadImage()
                         }
                     }

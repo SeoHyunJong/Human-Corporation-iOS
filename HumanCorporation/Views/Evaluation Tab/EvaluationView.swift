@@ -91,7 +91,7 @@ struct EvaluationView: View {
                     Button{
                         
                     } label: {
-                        Text("실적 초기화")
+                        Text("다시 작성하기")
                             .foregroundColor(Color.white)
                             .padding(.vertical,10)
                             .padding(.horizontal,15)
