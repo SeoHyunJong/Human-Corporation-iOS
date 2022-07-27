@@ -16,6 +16,7 @@ struct Diary {
         case productive = "productive"
         case unproductive = "unproductive"
         case neutral = "neutral"
+        case cancel
     }
     var eval = Evaluation.neutral
 }
