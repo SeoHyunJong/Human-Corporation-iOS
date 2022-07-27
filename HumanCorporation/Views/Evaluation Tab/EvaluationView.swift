@@ -5,14 +5,11 @@
 //  Created by 서현종 on 2022/07/19.
 //
 /*
- 오늘 날짜      날짜 선택   하루 초기화
- 시작 시간
- 종료 시간
- 소요 시간
- 간단한 일기장    +, -, N
- 바 그래프 표시
- 남은 시간 표시
- 하루 일과 완성하기
+ 실적을 제출하거나 다시 작성 버튼을 누르면 다이어리 리스트, 가격 리스트가 초기화 되어야 한다.
+ 다른 날짜를 선택할 때에도 다이어리, 가격 리스트가 초기화 되어야 한다.
+ **참고: Swift의 Array는 구조체로 구현되어 있어 값타입 -> 복사할때 서로 영향 X
+ 그러나 요소에 값 타입이 아닌 참조 타입이 들어간 경우 복사할 때 영향이 있다고 한다.
+ 이미 오늘 날짜까지 일정을 추가한 경우 (viewModel >= Date()) "추가할 실적이 없네요..." 라는 뷰가 떠야 한다.
  */
 //24hr == 86400
 //1 min == 0.04%
@@ -27,11 +24,16 @@ struct EvaluationView: View {
     @State private var startTime = Date()
     @State private var endTime = Date()
     @State private var pickStart = Date()
+    
     @State private var story = "일과를 작성해주세요."
+    @State private var eval = Diary.Evaluation.cancel
     
     @State private var showToast = false
     @State private var showError = false
+    @State private var errorMsg = ""
     @State private var showSuccess = false
+    @State private var showDiary = false
+    @State private var showAlert = false
     
     @EnvironmentObject var viewModel: ViewModel
     @State private var diaryList:[Diary] = []
@@ -46,28 +48,20 @@ struct EvaluationView: View {
                     Section("그날의 자정부터 순서대로 기록해주세요.") {
                         DatePicker("시작 시간", selection: $startTime, in: pickStart...pickStart)
                         DatePicker("종료 시간", selection: $endTime, in: pickStart...Date())
-                        Label(String(format: "%.0f", endTime.timeIntervalSince(startTime) / 60)+" min", systemImage: "clock")
-                    }
-                    Section("이때 무슨 일을 하셨나요? 생산적인 일이었나요?") {
-                        HStack{
-                            TextEditor(text: $story)
-                            VStack(alignment: .leading, spacing: 20){
-                                Button{
-                                    addDiary(eval: .productive)
-                                } label: {
-                                    Label("생산적", systemImage: "plus.circle")
-                                }.buttonStyle(BorderlessButtonStyle())
-                                Button{
-                                    addDiary(eval: .unproductive)
-                                } label: {
-                                    Label("비생산/여가", systemImage: "minus.circle")
-                                }.buttonStyle(BorderlessButtonStyle())
-                                Button{
-                                    addDiary(eval: .neutral)
-                                } label: {
-                                    Label("생리현상", systemImage: "moon.zzz")
-                                }.buttonStyle(BorderlessButtonStyle())
-                            }
+                        HStack {
+                            Label(String(format: "%.0f", endTime.timeIntervalSince(startTime) / 60)+" min", systemImage: "clock")
+                            Spacer()
+                            Button {
+                                if endTime.timeIntervalSince(startTime) > 0 {
+                                    eval = .cancel
+                                    showDiary.toggle()
+                                }  else {
+                                    errorMsg = "시간 설정 오류"
+                                    showError.toggle()
+                                }
+                            } label: {
+                                Label("실적 추가", systemImage: "plus.circle.fill")
+                            }.buttonStyle(BorderlessButtonStyle())
                         }
                     }
                     Section("현재 가격") {
@@ -77,15 +71,9 @@ struct EvaluationView: View {
                 HStack() {
                     Button{
                         if priceList.count > 0 {
-                            viewModel.diaryAdd(diaryList: diaryList)
-                            let price = CandleChartDataEntry(x: 0, shadowH: priceList.max()!, shadowL: priceList.min()!, open: priceList.first!, close: priceList.last!)
-                            viewModel.priceAdd(price: price)
-                            viewModel.findRecentDay()
-                            date = date.addingTimeInterval(86400)
-                            updateSelectedDate()
-                            
-                            showSuccess.toggle()
+                            showAlert.toggle()
                         } else {
+                            errorMsg = "추가된 실적이 없음"
                             showError.toggle()
                         }
                     } label: {
@@ -125,54 +113,79 @@ struct EvaluationView: View {
                 currentPrice = previousClose
             }
         }
+        .alert("정말 제출하실건가요? 한 번 제출되면 그 날의 일과는 수정이 불가능합니다!", isPresented: $showAlert) {
+            Button("제출") {
+                //값 타입으로 전달하여 리스트가 초기화 될 때 비동기 처리에서 문제가 안생기게 하여야...
+                let valDiaryList = diaryList
+                viewModel.diaryAdd(diaryList: valDiaryList)
+                
+                let valPriceList = priceList
+                let price = CandleChartDataEntry(x: 0, shadowH: valPriceList.max()!, shadowL: valPriceList.min()!, open: valPriceList.first!, close: valPriceList.last!)
+                viewModel.priceAdd(price: price)
+                
+                viewModel.findRecentDay()
+                date = date.addingTimeInterval(86400) //자동으로 다음날 일과 추가할 수 있게
+                updateSelectedDate()
+                showSuccess.toggle()
+            }
+            Button("취소", role: .cancel) {
+            }
+        }
         .sheet(isPresented: $showCalendar, onDismiss: updateSelectedDate){
             DatePicker("날짜를 고르세요.", selection: $date, in: viewModel.recentDay...Date(), displayedComponents: [.date])
                 .datePickerStyle(.graphical)
+        }
+        .sheet(isPresented: $showDiary, onDismiss: addDiary) {
+            DiaryFieldView(story: $story, eval: $eval, showDiary: $showDiary)
         }
         .toast(isPresenting: $showToast) {
             AlertToast(displayMode: .banner(.slide), type: .regular, title:"실적 추가 성공!")
         }
         .toast(isPresenting: $showError) {
-            AlertToast(displayMode: .alert, type: .error(.red), title: "잘못된 입력")
+            AlertToast(displayMode: .alert, type: .error(.red), title: errorMsg)
         }
         .toast(isPresenting: $showSuccess) {
             AlertToast(displayMode: .alert, type: .complete(.green), title: "실적 제출 성공!")
         }
     }
+    /*
+     날짜 선택시 네비게이션 타이틀 바를 업데이트하고,
+     해당 날짜의 자정부터 시간을 선택할 수 있게 시간 세팅
+     또한 다이어리, 가격 리스트 초기화
+     */
     func updateSelectedDate(){
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "YYYY.MM.dd.E"
         strDate = dateFormatter.string(from: date)
+        
         startTime = Calendar.current.startOfDay(for: date)
         endTime = Calendar.current.startOfDay(for: date)
         pickStart = Calendar.current.startOfDay(for: date)
+        
+        diaryList.removeAll()
+        priceList.removeAll()
     }
-    func addDiary(eval: Diary.Evaluation) {
-        if endTime.timeIntervalSince(startTime) > 0 {
-            let diary = Diary(story: story, startTime: startTime, endTime: endTime, eval: eval)
-            diaryList.append(diary)
-            
-            let time = endTime.timeIntervalSince(startTime) / 60
-            let variance = previousClose * (time * 0.04) * 0.01
-            
-            switch eval {
-            case .productive:
-                currentPrice += variance
-                self.priceList.append(currentPrice)
-            case .unproductive:
-                currentPrice -= variance
-                self.priceList.append(currentPrice)
-            case .neutral:
-                self.priceList.append(currentPrice)
-            }
-            
-            pickStart = endTime
-            startTime = endTime
-            showToast.toggle()
-            story = "일과를 작성해주세요."
-        } else {
-            showError.toggle()
+    func addDiary() {
+        let time = endTime.timeIntervalSince(startTime) / 60
+        let variance = previousClose * (time * 0.04) * 0.01
+        
+        switch eval {
+        case .productive:
+            currentPrice += variance
+        case .unproductive:
+            currentPrice -= variance
+        case .neutral: break
+        case .cancel:
+            return
         }
+        
+        let diary = Diary(story: story, startTime: startTime, endTime: endTime, eval: eval)
+        self.priceList.append(currentPrice)
+        self.diaryList.append(diary)
+        pickStart = endTime
+        startTime = endTime
+        showToast.toggle()
+        story = "일과를 작성해주세요."
     }
 }
 
