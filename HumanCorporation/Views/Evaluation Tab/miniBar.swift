@@ -1,24 +1,14 @@
-//
-//  Bar.swift
-//  HumanCorporation
-//
-//  Created by 서현종 on 2022/07/21.
-//
 import Charts
 import SwiftUI
 
-struct Bar: UIViewRepresentable {
+struct miniBar: UIViewRepresentable {
     typealias UIViewType = CandleStickChartView
     //data array
-    var entries: [CandleChartDataEntry]
+    var priceList: [Double]
     
     func makeUIView(context: Context) -> CandleStickChartView {
         let chart = CandleStickChartView()
-        chart.maxVisibleCount = 200
-        chart.setScaleEnabled(true)
-        chart.pinchZoomEnabled = true
         chart.data = addData()
-        chart.animate(xAxisDuration: 1)
         return chart
     }
     
@@ -28,7 +18,8 @@ struct Bar: UIViewRepresentable {
     
     func addData() -> CandleChartData {
         let data = CandleChartData()
-        let dataset = CandleChartDataSet(entries: entries)
+        let entry = CandleChartDataEntry(x: 0, shadowH: priceList.max() ?? 1000, shadowL: priceList.min() ?? 1000, open: priceList.first ?? 1000, close: priceList.last ?? 1000)
+        let dataset = CandleChartDataSet(entries: [entry])
         //customize candle chart
         dataset.decreasingColor = .blue
         dataset.decreasingFilled = true
@@ -43,3 +34,4 @@ struct Bar: UIViewRepresentable {
         return data
     }
 }
+

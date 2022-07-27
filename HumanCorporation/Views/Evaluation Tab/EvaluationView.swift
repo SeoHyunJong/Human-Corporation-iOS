@@ -29,8 +29,6 @@ struct EvaluationView: View {
     @State private var eval = Diary.Evaluation.cancel
     
     @State private var showToast = false
-    @State private var showError = false
-    @State private var errorMsg = ""
     @State private var showSuccess = false
     @State private var showDiary = false
     @State private var showAlert = false
@@ -52,48 +50,52 @@ struct EvaluationView: View {
                             Label(String(format: "%.0f", endTime.timeIntervalSince(startTime) / 60)+" min", systemImage: "clock")
                             Spacer()
                             Button {
-                                if endTime.timeIntervalSince(startTime) > 0 {
                                     eval = .cancel
                                     showDiary.toggle()
-                                }  else {
-                                    errorMsg = "시간 설정 오류"
-                                    showError.toggle()
-                                }
                             } label: {
                                 Label("실적 추가", systemImage: "plus.circle.fill")
-                            }.buttonStyle(BorderlessButtonStyle())
+                            }
+                            .buttonStyle(BorderlessButtonStyle())
+                            .disabled(endTime.timeIntervalSince(startTime) > 0 ? false:true)
                         }
                     }
                     Section("현재 가격") {
                         Label(String(format: "%.0f", currentPrice), systemImage: "dollarsign.circle.fill")
                     }
+                    miniBar(priceList: priceList)
+                        .frame(width: 300, height: 300, alignment: .center)
                 }
                 HStack() {
                     Button{
-                        if priceList.count > 0 {
                             showAlert.toggle()
-                        } else {
-                            errorMsg = "추가된 실적이 없음"
-                            showError.toggle()
-                        }
                     } label: {
-                        Text("실적 최종 제출")
+                        Text("최종발행")
                             .foregroundColor(Color.white)
                             .padding(.vertical,10)
                             .padding(.horizontal,15)
-                            .background(Color.blue)
+                            .background(priceList.count > 0 ? Color.blue:Color.gray)
                             .cornerRadius(45)
-                    }
+                    }.disabled(priceList.count > 0 ? false:true)
                     Button{
                         
                     } label: {
-                        Text("다시 작성하기")
+                        Text("임시저장")
                             .foregroundColor(Color.white)
                             .padding(.vertical,10)
                             .padding(.horizontal,15)
-                            .background(Color.red)
+                            .background(priceList.count > 0 ? Color.green:Color.gray)
                             .cornerRadius(45)
-                    }
+                    }.disabled(priceList.count > 0 ? false:true)
+                    Button{
+                            undoAction()
+                    } label: {
+                        Text("되돌리기")
+                            .foregroundColor(Color.white)
+                            .padding(.vertical,10)
+                            .padding(.horizontal,15)
+                            .background(priceList.count > 0 ? Color.red:Color.gray)
+                            .cornerRadius(45)
+                    }.disabled(priceList.count > 0 ? false:true)
                 }
                 Spacer()
             }
@@ -143,9 +145,6 @@ struct EvaluationView: View {
         .toast(isPresenting: $showToast) {
             AlertToast(displayMode: .banner(.slide), type: .regular, title:"실적 추가 성공!")
         }
-        .toast(isPresenting: $showError) {
-            AlertToast(displayMode: .alert, type: .error(.red), title: errorMsg)
-        }
         .toast(isPresenting: $showSuccess) {
             AlertToast(displayMode: .alert, type: .complete(.green), title: "실적 제출 성공!")
         }
@@ -167,6 +166,14 @@ struct EvaluationView: View {
         diaryList.removeAll()
         priceList.removeAll()
     }
+    func undoAction() {
+        diaryList.removeLast()
+        priceList.removeLast()
+        endTime = diaryList.last!.endTime
+        pickStart = endTime
+        startTime = endTime
+        story = ""
+    }
     func addDiary() {
         let time = endTime.timeIntervalSince(startTime) / 60
         let variance = previousClose * (time * 0.04) * 0.01
@@ -178,6 +185,7 @@ struct EvaluationView: View {
             currentPrice -= variance
         case .neutral: break
         case .cancel:
+            story = ""
             return
         }
         
@@ -187,7 +195,7 @@ struct EvaluationView: View {
         pickStart = endTime
         startTime = endTime
         showToast.toggle()
-        story = "일과를 작성해주세요."
+        story = ""
     }
 }
 

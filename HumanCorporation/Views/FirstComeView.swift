@@ -19,17 +19,17 @@ struct FirstComeView: View {
                 HStack{
                     Text("Name").bold()
                     Divider()
-                    TextField("Username", text: $profile.name)
+                    TextField("박마몽", text: $profile.name)
                 }
                 HStack{
                     Text("E-mail").bold()
                     Divider()
-                    TextField("E-mail", text: $profile.email)
+                    TextField("mamong@humancorp.com", text: $profile.email)
                 }
                 HStack{
                     Text("Your Goal").bold()
                     Divider()
-                    TextField("Your Goal", text: $profile.goal)
+                    TextField("21세기 내 지구 정복", text: $profile.goal)
                 }
             }
             Button{
