@@ -25,6 +25,9 @@ class ViewModel: ObservableObject {
     @Published var priceList: [CandleChartDataEntry] = []
     @Published var recentDay = Date(timeIntervalSince1970: 0)
     
+    @Published var tempDiaryList: [Diary] = []
+    @Published var tempPriceList: [Double] = []
+    
     enum SignInState {
         case signedIn
         case signedOut
@@ -175,7 +178,36 @@ class ViewModel: ObservableObject {
             self.ref.child("diary").child(userProfile.id).childByAutoId().setValue(values)
         }
     }
-    
+    func addTempDiaryList(diaryList: [Diary]) {
+        let dateformatter = DateFormatter()
+        dateformatter.dateFormat = "yyyy-MM-dd HH:mm"
+        for diary in diaryList {
+            let values: [String: Any] = ["story":diary.story, "startTime":dateformatter.string(from: diary.startTime), "endTime":dateformatter.string(from: diary.endTime), "eval":diary.eval.rawValue]
+            self.ref.child("temp").child(userProfile.id).child("diary").childByAutoId().setValue(values)
+        }
+    }
+    func readTempDiaryList() {
+        guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
+        let dateformatter = DateFormatter()
+        dateformatter.dateFormat = "yyyy-MM-dd HH:mm"
+        ref.child("temp").child(uid).child("diary").observeSingleEvent(of: .value, with: { snapshot in
+            for child in snapshot.children.allObjects as! [DataSnapshot] {
+                guard let value = child.value as? NSDictionary else {return}
+                let story = value["story"] as? String
+                let startTime = value["startTime"] as? String
+                let endTime = value["endTime"] as? String
+                let eval = value["eval"] as? String
+                let diary = Diary(story: story!, startTime: dateformatter.date(from: startTime!)!, endTime: dateformatter.date(from: endTime!)!, eval: Diary.Evaluation(rawValue: eval!)!)
+                self.tempDiaryList.append(diary)
+            }
+        }) { error in
+            print(error.localizedDescription)
+        }
+    }
+    func removeTemp() {
+        guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
+        ref.child("temp").child(uid).removeValue()
+    }
     func findRecentDay() {
         let dateformatter = DateFormatter()
         dateformatter.dateFormat = "yyyy-MM-dd HH:mm"
@@ -198,6 +230,20 @@ class ViewModel: ObservableObject {
     func priceAdd(price: CandleChartDataEntry) {
         let values: [String: Double?] = ["open": price.open, "close": price.close, "shadowH": price.high, "shadowL": price.low]
         self.ref.child("price").child(userProfile.id).childByAutoId().setValue(values)
+    }
+    
+    func addTempPriceList(priceList: [Double]) {
+        self.ref.child("temp").child(userProfile.id).child("price").setValue(priceList)
+    }
+    
+    func readTempPriceList() {
+        guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
+        ref.child("temp").child(uid).child("price").observeSingleEvent(of: .value, with: { snapshot in
+            for child in snapshot.children.allObjects as! [DataSnapshot] {
+                guard let value = child.value as? NSNumber else {return}
+                self.tempPriceList.append(Double(truncating: value))
+            }
+        })
     }
     
     func priceRead(){

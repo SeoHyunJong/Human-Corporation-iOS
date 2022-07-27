@@ -10,6 +10,9 @@
  **참고: Swift의 Array는 구조체로 구현되어 있어 값타입 -> 복사할때 서로 영향 X
  그러나 요소에 값 타입이 아닌 참조 타입이 들어간 경우 복사할 때 영향이 있다고 한다.
  이미 오늘 날짜까지 일정을 추가한 경우 (viewModel >= Date()) "추가할 실적이 없네요..." 라는 뷰가 떠야 한다.
+ 
+ 임시저장: 임시 다이어리, 가격 리스트를 db에 따로 저장했다가 onAppear 에서 불러오는 게 가능.
+ 유저가 최종 발행할때 이 임시 데이터들은 삭제됨.
  */
 //24hr == 86400
 //1 min == 0.04%
@@ -32,12 +35,14 @@ struct EvaluationView: View {
     @State private var showSuccess = false
     @State private var showDiary = false
     @State private var showAlert = false
+    @State private var showPortAlert = false
+    @State private var showTempAlert = false
     
     @EnvironmentObject var viewModel: ViewModel
     @State private var diaryList:[Diary] = []
+    @State private var priceList:[Double] = []
     @State private var previousClose: Double = 1000
     @State private var currentPrice: Double = 1000
-    @State private var priceList:[Double] = []
     
     var body: some View {
         NavigationView{
@@ -50,8 +55,8 @@ struct EvaluationView: View {
                             Label(String(format: "%.0f", endTime.timeIntervalSince(startTime) / 60)+" min", systemImage: "clock")
                             Spacer()
                             Button {
-                                    eval = .cancel
-                                    showDiary.toggle()
+                                eval = .cancel
+                                showDiary.toggle()
                             } label: {
                                 Label("실적 추가", systemImage: "plus.circle.fill")
                             }
@@ -67,9 +72,9 @@ struct EvaluationView: View {
                 }
                 HStack() {
                     Button{
-                            showAlert.toggle()
+                        showAlert.toggle()
                     } label: {
-                        Text("최종발행")
+                        Text("COMP")
                             .foregroundColor(Color.white)
                             .padding(.vertical,10)
                             .padding(.horizontal,15)
@@ -77,9 +82,9 @@ struct EvaluationView: View {
                             .cornerRadius(45)
                     }.disabled(priceList.count > 0 ? false:true)
                     Button{
-                        
+                        showTempAlert.toggle()
                     } label: {
-                        Text("임시저장")
+                        Text("TEMP")
                             .foregroundColor(Color.white)
                             .padding(.vertical,10)
                             .padding(.horizontal,15)
@@ -87,9 +92,19 @@ struct EvaluationView: View {
                             .cornerRadius(45)
                     }.disabled(priceList.count > 0 ? false:true)
                     Button{
-                            undoAction()
+                        showPortAlert.toggle()
                     } label: {
-                        Text("되돌리기")
+                        Text("PORT")
+                            .foregroundColor(Color.white)
+                            .padding(.vertical,10)
+                            .padding(.horizontal,15)
+                            .background(priceList.count > 0 ? Color.yellow:Color.gray)
+                            .cornerRadius(45)
+                    }.disabled(viewModel.tempPriceList.count > 0 && viewModel.tempDiaryList.count > 0 ? false:true)
+                    Button{
+                        undoAction()
+                    } label: {
+                        Text("UNDO")
                             .foregroundColor(Color.white)
                             .padding(.vertical,10)
                             .padding(.horizontal,15)
@@ -108,12 +123,9 @@ struct EvaluationView: View {
             }
         }
         .onAppear(){
+            viewModel.readTempDiaryList()
+            viewModel.readTempPriceList()
             updateSelectedDate()
-            if viewModel.priceList.isEmpty == false {
-                viewModel.findRecentDay() //유저가 캘린더에서 과거의 일자를 선택 못하도록 제한
-                previousClose = viewModel.priceList.last!.close
-                currentPrice = previousClose
-            }
         }
         .alert("정말 제출하실건가요? 한 번 제출되면 그 날의 일과는 수정이 불가능합니다!", isPresented: $showAlert) {
             Button("제출") {
@@ -131,6 +143,32 @@ struct EvaluationView: View {
                     updateSelectedDate()
                 }
                 showSuccess.toggle()
+            }
+            Button("취소", role: .cancel) {
+            }
+        }
+        .alert("이 데이터들을 임시 저장할까요?", isPresented: $showTempAlert) {
+            Button("확인") {
+                viewModel.addTempDiaryList(diaryList: diaryList)
+                viewModel.addTempPriceList(priceList: priceList)
+            }
+            Button("취소", role: .cancel) {
+            }
+        }
+        .alert("임시 저장된 데이터를 불러올까요?", isPresented: $showPortAlert) {
+            Button("확인") {
+                diaryList = viewModel.tempDiaryList
+                priceList = viewModel.tempPriceList
+                
+                currentPrice = priceList.last!
+                endTime = diaryList.last!.endTime
+                pickStart = endTime
+                startTime = endTime
+                
+                date = endTime
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "YYYY.MM.dd.E"
+                strDate = dateFormatter.string(from: date)
             }
             Button("취소", role: .cancel) {
             }
@@ -155,6 +193,12 @@ struct EvaluationView: View {
      또한 다이어리, 가격 리스트 초기화
      */
     func updateSelectedDate(){
+        if viewModel.priceList.isEmpty == false {
+            viewModel.findRecentDay() //유저가 캘린더에서 과거의 일자를 선택 못하도록 제한
+            previousClose = viewModel.priceList.last!.close
+            currentPrice = previousClose
+        }
+        
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "YYYY.MM.dd.E"
         strDate = dateFormatter.string(from: date)
