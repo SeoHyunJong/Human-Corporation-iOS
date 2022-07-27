@@ -108,7 +108,7 @@ struct EvaluationView: View {
         .onAppear(){
             updateSelectedDate()
             if viewModel.priceList.isEmpty == false {
-                viewModel.findRecentDay()
+                viewModel.findRecentDay() //유저가 캘린더에서 과거의 일자를 선택 못하도록 제한
                 previousClose = viewModel.priceList.last!.close
                 currentPrice = previousClose
             }
@@ -125,7 +125,9 @@ struct EvaluationView: View {
                 
                 viewModel.findRecentDay()
                 date = date.addingTimeInterval(86400) //자동으로 다음날 일과 추가할 수 있게
-                updateSelectedDate()
+                if date < Date() { //오늘 일과까지 다 추가했다면 뷰 업데이트를 진행하지 않음.
+                    updateSelectedDate()
+                }
                 showSuccess.toggle()
             }
             Button("취소", role: .cancel) {

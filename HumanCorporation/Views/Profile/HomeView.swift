@@ -63,11 +63,17 @@ struct HomeView: View {
                             Label("시세", systemImage: "chart.line.uptrend.xyaxis")
                         }
                         .tag(Tab.Chart)
-                    EvaluationView()
-                        .tabItem{
-                            Label("실적추가", systemImage: "note.text.badge.plus")
+                    Group {
+                        if viewModel.recentDay >= Date() {
+                            NoMoreAddDiary()
+                        } else {
+                            EvaluationView()
                         }
-                        .tag(Tab.Evaluation)
+                    }
+                    .tabItem{
+                        Label("실적추가", systemImage: "note.text.badge.plus")
+                    }
+                    .tag(Tab.Evaluation)
                     AnalysisView()
                         .tabItem{
                             Label("종목분석", systemImage: "scroll")

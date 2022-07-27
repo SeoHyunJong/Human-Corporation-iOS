@@ -32,7 +32,7 @@ struct Bar: UIViewRepresentable {
         dataset.increasingColor = .red
         dataset.increasingFilled = true
         dataset.neutralColor = .green
-        dataset.shadowColor = .darkGray
+        dataset.shadowColor = .systemYellow
         dataset.shadowWidth = 1.5
         dataset.axisDependency = .left
         //
