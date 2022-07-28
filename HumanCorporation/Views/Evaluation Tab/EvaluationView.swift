@@ -28,7 +28,7 @@ struct EvaluationView: View {
     @State private var endTime = Date()
     @State private var pickStart = Date()
     
-    @State private var story = "일과를 작성해주세요."
+    @State private var story = ""
     @State private var eval = Diary.Evaluation.cancel
     
     @State private var showToast = false
@@ -48,7 +48,7 @@ struct EvaluationView: View {
         NavigationView{
             VStack(alignment: .center) {
                 Form{
-                    Section("그날의 자정부터 순서대로 기록해주세요.") {
+                    Section("시간별로 일기를 작성하여 실적을 완성하세요!") {
                         DatePicker("시작 시간", selection: $startTime, in: pickStart...pickStart)
                         DatePicker("종료 시간", selection: $endTime, in: pickStart...Date())
                         HStack {
@@ -58,7 +58,7 @@ struct EvaluationView: View {
                                 eval = .cancel
                                 showDiary.toggle()
                             } label: {
-                                Label("실적 추가", systemImage: "plus.circle.fill")
+                                Label("미니 일기 작성", systemImage: "plus.circle.fill")
                             }
                             .buttonStyle(BorderlessButtonStyle())
                             .disabled(endTime.timeIntervalSince(startTime) > 0 ? false:true)
@@ -74,7 +74,8 @@ struct EvaluationView: View {
                     Button{
                         showAlert.toggle()
                     } label: {
-                        Text("COMP")
+                        Text("완성하기")
+                            .font(.system(size: 15))
                             .foregroundColor(Color.white)
                             .padding(.vertical,10)
                             .padding(.horizontal,15)
@@ -84,7 +85,8 @@ struct EvaluationView: View {
                     Button{
                         showTempAlert.toggle()
                     } label: {
-                        Text("TEMP")
+                        Text("임시저장")
+                            .font(.system(size: 15))
                             .foregroundColor(Color.white)
                             .padding(.vertical,10)
                             .padding(.horizontal,15)
@@ -94,17 +96,19 @@ struct EvaluationView: View {
                     Button{
                         showPortAlert.toggle()
                     } label: {
-                        Text("PORT")
+                        Text("불러오기")
+                            .font(.system(size: 15))
                             .foregroundColor(Color.white)
                             .padding(.vertical,10)
                             .padding(.horizontal,15)
-                            .background(priceList.count > 0 ? Color.yellow:Color.gray)
+                            .background(viewModel.tempPriceList.count > 0 && viewModel.tempDiaryList.count > 0 ? Color.yellow:Color.gray)
                             .cornerRadius(45)
                     }.disabled(viewModel.tempPriceList.count > 0 && viewModel.tempDiaryList.count > 0 ? false:true)
                     Button{
                         undoAction()
                     } label: {
-                        Text("UNDO")
+                        Text("되돌리기")
+                            .font(.system(size: 15))
                             .foregroundColor(Color.white)
                             .padding(.vertical,10)
                             .padding(.horizontal,15)
@@ -127,7 +131,7 @@ struct EvaluationView: View {
             viewModel.readTempPriceList()
             updateSelectedDate()
         }
-        .alert("정말 제출하실건가요? 한 번 제출되면 그 날의 일과는 수정이 불가능합니다!", isPresented: $showAlert) {
+        .alert("정말 모든 시간의 일기를 작성하셨나요? 제출하면 더 이상 수정은 불가합니다!", isPresented: $showAlert) {
             Button("제출") {
                 //값 타입으로 전달하여 리스트가 초기화 될 때 비동기 처리에서 문제가 안생기게 하여야...
                 let valDiaryList = diaryList
@@ -142,20 +146,30 @@ struct EvaluationView: View {
                 if date < Date() { //오늘 일과까지 다 추가했다면 뷰 업데이트를 진행하지 않음.
                     updateSelectedDate()
                 }
+                
+                viewModel.tempDiaryList.removeAll()
+                viewModel.tempPriceList.removeAll()
+                viewModel.removeTemp()
+                
                 showSuccess.toggle()
             }
             Button("취소", role: .cancel) {
             }
         }
-        .alert("이 데이터들을 임시 저장할까요?", isPresented: $showTempAlert) {
+        .alert("작성한 일기들을 임시 저장할까요?", isPresented: $showTempAlert) {
             Button("확인") {
+                viewModel.removeTemp()
+                
                 viewModel.addTempDiaryList(diaryList: diaryList)
                 viewModel.addTempPriceList(priceList: priceList)
+                
+                viewModel.tempPriceList = priceList
+                viewModel.tempDiaryList = diaryList
             }
             Button("취소", role: .cancel) {
             }
         }
-        .alert("임시 저장된 데이터를 불러올까요?", isPresented: $showPortAlert) {
+        .alert("임시 저장된 일기들을 불러올까요?", isPresented: $showPortAlert) {
             Button("확인") {
                 diaryList = viewModel.tempDiaryList
                 priceList = viewModel.tempPriceList
@@ -181,7 +195,7 @@ struct EvaluationView: View {
             DiaryFieldView(story: $story, eval: $eval, showDiary: $showDiary)
         }
         .toast(isPresenting: $showToast) {
-            AlertToast(displayMode: .banner(.slide), type: .regular, title:"실적 추가 성공!")
+            AlertToast(displayMode: .banner(.slide), type: .regular, title:"작성 완료! 다른 시간의 일기들도 작성해주세요.")
         }
         .toast(isPresenting: $showSuccess) {
             AlertToast(displayMode: .alert, type: .complete(.green), title: "실적 제출 성공!")
@@ -213,9 +227,12 @@ struct EvaluationView: View {
     func undoAction() {
         diaryList.removeLast()
         priceList.removeLast()
-        endTime = diaryList.last!.endTime
+        
+        endTime = diaryList.last?.endTime ?? Calendar.current.startOfDay(for: date)
         pickStart = endTime
         startTime = endTime
+        
+        currentPrice = priceList.last ?? previousClose
         story = ""
     }
     func addDiary() {

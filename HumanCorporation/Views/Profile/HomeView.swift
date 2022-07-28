@@ -74,9 +74,9 @@ struct HomeView: View {
                         Label("실적추가", systemImage: "note.text.badge.plus")
                     }
                     .tag(Tab.Evaluation)
-                    AnalysisView()
+                    RecordView()
                         .tabItem{
-                            Label("종목분석", systemImage: "scroll")
+                            Label("공시자료", systemImage: "scroll")
                         }
                         .tag(Tab.Analysis)
                     DiscussionView()

@@ -41,7 +41,7 @@ struct DiaryFieldView: View {
                     }
                 }
             }
-            .navigationTitle("실적표")
+            .navigationTitle("Mini Diary")
             .toolbar{
                 Button("취소") {
                     showDiary.toggle()

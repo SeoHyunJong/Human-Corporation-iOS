@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-struct AnalysisView: View {
+struct RecordView: View {
     var body: some View {
-        Text("This is AnalysisView")
+        Text("This is RecordView")
     }
 }
 
-struct AnalysisView_Previews: PreviewProvider {
+struct RecordView_Previews: PreviewProvider {
     static var previews: some View {
-        AnalysisView()
+        RecordView()
     }
 }
