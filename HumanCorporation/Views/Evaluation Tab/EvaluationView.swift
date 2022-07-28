@@ -30,6 +30,7 @@ struct EvaluationView: View {
     
     @State private var story = ""
     @State private var eval = Diary.Evaluation.cancel
+    @State private var concentration: Double = 2
     
     @State private var showToast = false
     @State private var showSuccess = false
@@ -164,7 +165,7 @@ struct EvaluationView: View {
                 .datePickerStyle(.graphical)
         }
         .sheet(isPresented: $showDiary, onDismiss: addDiary) {
-            DiaryFieldView(story: $story, eval: $eval, showDiary: $showDiary)
+            DiaryFieldView(story: $story, eval: $eval, showDiary: $showDiary, concentration: $concentration)
         }
         .toast(isPresenting: $showToast) {
             AlertToast(displayMode: .banner(.slide), type: .regular, title:"작성 완료! 다른 시간의 일기들도 작성해주세요.")
@@ -211,13 +212,15 @@ struct EvaluationView: View {
     }
     func addDiary() {
         let time = endTime.timeIntervalSince(startTime) / 60
-        let variance = previousClose * (time * 0.04) * 0.01
+        let variance = previousClose * (time * 0.01) * 0.01
         
         switch eval {
         case .productive:
-            currentPrice += variance
+            //집중도에 비례해서 가격이 올라감
+            currentPrice += variance * concentration
         case .unproductive:
-            currentPrice -= variance
+            //얄짤없이 4배 곱해서 깎음...
+            currentPrice -= variance * 4
         case .neutral: break
         case .cancel:
             story = ""
