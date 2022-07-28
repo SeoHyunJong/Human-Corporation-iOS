@@ -187,21 +187,23 @@ class ViewModel: ObservableObject {
         }
     }
     func readTempDiaryList() {
-        guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
-        let dateformatter = DateFormatter()
-        dateformatter.dateFormat = "yyyy-MM-dd HH:mm"
-        ref.child("temp").child(uid).child("diary").observeSingleEvent(of: .value, with: { snapshot in
-            for child in snapshot.children.allObjects as! [DataSnapshot] {
-                guard let value = child.value as? NSDictionary else {return}
-                let story = value["story"] as? String
-                let startTime = value["startTime"] as? String
-                let endTime = value["endTime"] as? String
-                let eval = value["eval"] as? String
-                let diary = Diary(story: story!, startTime: dateformatter.date(from: startTime!)!, endTime: dateformatter.date(from: endTime!)!, eval: Diary.Evaluation(rawValue: eval!)!)
-                self.tempDiaryList.append(diary)
+        DispatchQueue.global(qos: .default).sync {
+            guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
+            let dateformatter = DateFormatter()
+            dateformatter.dateFormat = "yyyy-MM-dd HH:mm"
+            ref.child("temp").child(uid).child("diary").observeSingleEvent(of: .value, with: { snapshot in
+                for child in snapshot.children.allObjects as! [DataSnapshot] {
+                    guard let value = child.value as? NSDictionary else {return}
+                    let story = value["story"] as? String
+                    let startTime = value["startTime"] as? String
+                    let endTime = value["endTime"] as? String
+                    let eval = value["eval"] as? String
+                    let diary = Diary(story: story!, startTime: dateformatter.date(from: startTime!)!, endTime: dateformatter.date(from: endTime!)!, eval: Diary.Evaluation(rawValue: eval!)!)
+                    self.tempDiaryList.append(diary)
+                }
+            }) { error in
+                print(error.localizedDescription)
             }
-        }) { error in
-            print(error.localizedDescription)
         }
     }
     func removeTemp() {
@@ -236,14 +238,17 @@ class ViewModel: ObservableObject {
         self.ref.child("temp").child(userProfile.id).child("price").setValue(priceList)
     }
     
-    func readTempPriceList() {
-        guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
-        ref.child("temp").child(uid).child("price").observeSingleEvent(of: .value, with: { snapshot in
-            for child in snapshot.children.allObjects as! [DataSnapshot] {
-                guard let value = child.value as? NSNumber else {return}
-                self.tempPriceList.append(Double(truncating: value))
-            }
-        })
+    func readTempPriceList() { //DB 작업이 끝난 이후에 이 함수가 명시적으로 종료되게 해야 한다.
+        //observeSingleEvent이니 괜찮겠지...?
+        DispatchQueue.global(qos: .default).sync {
+            guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
+            ref.child("temp").child(uid).child("price").observeSingleEvent(of: .value, with: { snapshot in
+                for child in snapshot.children.allObjects as! [DataSnapshot] {
+                    guard let value = child.value as? NSNumber else {return}
+                    self.tempPriceList.append(Double(truncating: value))
+                }
+            })
+        }
     }
     
     func priceRead(){
@@ -261,6 +266,7 @@ class ViewModel: ObservableObject {
                 self.priceList.append(price)
                 idx += 1
             }
+            self.priceList.sort(by: {$0.x < $1.x})
         }) { error in
             print(error.localizedDescription)
         }

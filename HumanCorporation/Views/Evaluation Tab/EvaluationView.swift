@@ -37,6 +37,7 @@ struct EvaluationView: View {
     @State private var showAlert = false
     @State private var showPortAlert = false
     @State private var showTempAlert = false
+    @State private var autoSave = true
     
     @EnvironmentObject var viewModel: ViewModel
     @State private var diaryList:[Diary] = []
@@ -83,28 +84,6 @@ struct EvaluationView: View {
                             .cornerRadius(45)
                     }.disabled(priceList.count > 0 ? false:true)
                     Button{
-                        showTempAlert.toggle()
-                    } label: {
-                        Text("임시저장")
-                            .font(.system(size: 15))
-                            .foregroundColor(Color.white)
-                            .padding(.vertical,10)
-                            .padding(.horizontal,15)
-                            .background(priceList.count > 0 ? Color.green:Color.gray)
-                            .cornerRadius(45)
-                    }.disabled(priceList.count > 0 ? false:true)
-                    Button{
-                        showPortAlert.toggle()
-                    } label: {
-                        Text("불러오기")
-                            .font(.system(size: 15))
-                            .foregroundColor(Color.white)
-                            .padding(.vertical,10)
-                            .padding(.horizontal,15)
-                            .background(viewModel.tempPriceList.count > 0 && viewModel.tempDiaryList.count > 0 ? Color.yellow:Color.gray)
-                            .cornerRadius(45)
-                    }.disabled(viewModel.tempPriceList.count > 0 && viewModel.tempDiaryList.count > 0 ? false:true)
-                    Button{
                         undoAction()
                     } label: {
                         Text("되돌리기")
@@ -127,9 +106,38 @@ struct EvaluationView: View {
             }
         }
         .onAppear(){
-            viewModel.readTempDiaryList()
+            //자동으로 임시저장된 데이터를 불러온다.
             viewModel.readTempPriceList()
-            updateSelectedDate()
+            viewModel.readTempDiaryList()
+            //dispatch queue를 통해 위 함수가 끝까지 파이어베이스를 포함해서 끝까지 실행하게 했는데..
+            //잘 동작될지 모르겠다.
+            if viewModel.tempDiaryList.count > 0 && viewModel.tempPriceList.count > 0 {
+                diaryList = viewModel.tempDiaryList
+                priceList = viewModel.tempPriceList
+                
+                currentPrice = priceList.last!
+                endTime = diaryList.last!.endTime
+                pickStart = endTime
+                startTime = endTime
+                
+                date = endTime
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "YYYY.MM.dd.E"
+                strDate = dateFormatter.string(from: date)
+            } else {
+                updateSelectedDate()
+            }
+        }
+        .onDisappear(){
+            //이 뷰가 사라질때 자동으로 임시 저장
+            if priceList.count > 0 {
+                viewModel.tempPriceList = priceList
+                viewModel.tempDiaryList = diaryList
+                
+                viewModel.removeTemp()
+                viewModel.addTempDiaryList(diaryList: diaryList)
+                viewModel.addTempPriceList(priceList: priceList)
+            }
         }
         .alert("정말 모든 시간의 일기를 작성하셨나요? 제출하면 더 이상 수정은 불가합니다!", isPresented: $showAlert) {
             Button("제출") {
@@ -152,37 +160,6 @@ struct EvaluationView: View {
                 viewModel.removeTemp()
                 
                 showSuccess.toggle()
-            }
-            Button("취소", role: .cancel) {
-            }
-        }
-        .alert("작성한 일기들을 임시 저장할까요?", isPresented: $showTempAlert) {
-            Button("확인") {
-                viewModel.removeTemp()
-                
-                viewModel.addTempDiaryList(diaryList: diaryList)
-                viewModel.addTempPriceList(priceList: priceList)
-                
-                viewModel.tempPriceList = priceList
-                viewModel.tempDiaryList = diaryList
-            }
-            Button("취소", role: .cancel) {
-            }
-        }
-        .alert("임시 저장된 일기들을 불러올까요?", isPresented: $showPortAlert) {
-            Button("확인") {
-                diaryList = viewModel.tempDiaryList
-                priceList = viewModel.tempPriceList
-                
-                currentPrice = priceList.last!
-                endTime = diaryList.last!.endTime
-                pickStart = endTime
-                startTime = endTime
-                
-                date = endTime
-                let dateFormatter = DateFormatter()
-                dateFormatter.dateFormat = "YYYY.MM.dd.E"
-                strDate = dateFormatter.string(from: date)
             }
             Button("취소", role: .cancel) {
             }

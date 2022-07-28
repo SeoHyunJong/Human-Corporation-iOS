@@ -39,9 +39,7 @@ struct Bar: UIViewRepresentable {
     
     func addData() -> CandleChartData {
         let data = CandleChartData()
-        //Charts 라이브러리 버그 때문에 dataset 추가전 정렬이 필요하다.
-        let sortEntry = entries.sorted(by: {$0.x < $1.x})
-        let dataset = CandleChartDataSet(entries: sortEntry)
+        let dataset = CandleChartDataSet(entries: entries)
         //customize candle chart
         dataset.decreasingColor = .blue
         dataset.decreasingFilled = true
