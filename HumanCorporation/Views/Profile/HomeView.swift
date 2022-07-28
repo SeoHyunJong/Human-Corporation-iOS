@@ -51,9 +51,18 @@ struct HomeView: View {
                     .padding(.horizontal)
                     .onAppear(){
                         if viewModel.state == .signedIn { //프리뷰 오류 때문에 추가...
+                            //프로필 로드
                             viewModel.readUserFromDB()
-                            viewModel.priceRead()
                             viewModel.downloadImage()
+                            //차트 데이터 로드
+                            viewModel.priceRead()
+                            //임시 저장 데이터 로드
+                            viewModel.readTempPriceList(completion: { message in
+                                   print(message)
+                            })
+                            viewModel.readTempDiaryList(completion: { message in
+                                print(message)
+                         })
                         }
                     }
                 }

@@ -7,16 +7,27 @@
 
 import Foundation
 
-struct Diary {
+struct Diary: Equatable {
     var story: String
     var startTime: Date
     var endTime: Date
     
-    enum Evaluation: String {
+    enum Evaluation: String, Equatable {
         case productive = "productive"
         case unproductive = "unproductive"
         case neutral = "neutral"
         case cancel
+        
+        static func == (lhs: Self, rhs: Self) -> Bool {
+               switch (lhs, rhs) {
+               case (.productive, .productive),
+                    (.unproductive, .unproductive),
+                    (.neutral, .neutral):
+                   return true
+               default:
+                   return false
+               }
+           }
     }
     var eval = Evaluation.neutral
 }

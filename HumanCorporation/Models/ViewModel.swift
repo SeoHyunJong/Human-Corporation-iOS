@@ -92,6 +92,8 @@ class ViewModel: ObservableObject {
             profileImage = UIImage(named: "Mamong")
             priceList.removeAll()
             recentDay = Date(timeIntervalSince1970: 0)
+            tempDiaryList.removeAll()
+            tempPriceList.removeAll()
         } catch {
             print(error.localizedDescription)
         }
@@ -186,31 +188,30 @@ class ViewModel: ObservableObject {
             self.ref.child("temp").child(userProfile.id).child("diary").childByAutoId().setValue(values)
         }
     }
-    func readTempDiaryList() {
-        DispatchQueue.global(qos: .default).sync {
-            guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
-            let dateformatter = DateFormatter()
-            dateformatter.dateFormat = "yyyy-MM-dd HH:mm"
-            ref.child("temp").child(uid).child("diary").observeSingleEvent(of: .value, with: { snapshot in
-                for child in snapshot.children.allObjects as! [DataSnapshot] {
-                    guard let value = child.value as? NSDictionary else {return}
-                    let story = value["story"] as? String
-                    let startTime = value["startTime"] as? String
-                    let endTime = value["endTime"] as? String
-                    let eval = value["eval"] as? String
-                    let diary = Diary(story: story!, startTime: dateformatter.date(from: startTime!)!, endTime: dateformatter.date(from: endTime!)!, eval: Diary.Evaluation(rawValue: eval!)!)
-                    self.tempDiaryList.append(diary)
-                }
-            }) { error in
-                print(error.localizedDescription)
+    func readTempDiaryList(completion: @escaping (_ message: String) -> Void) {
+        guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
+        let dateformatter = DateFormatter()
+        dateformatter.dateFormat = "yyyy-MM-dd HH:mm"
+        ref.child("temp").child(uid).child("diary").observeSingleEvent(of: .value, with: { snapshot in
+            for child in snapshot.children.allObjects as! [DataSnapshot] {
+                guard let value = child.value as? NSDictionary else {return}
+                let story = value["story"] as? String
+                let startTime = value["startTime"] as? String
+                let endTime = value["endTime"] as? String
+                let eval = value["eval"] as? String
+                let diary = Diary(story: story!, startTime: dateformatter.date(from: startTime!)!, endTime: dateformatter.date(from: endTime!)!, eval: Diary.Evaluation(rawValue: eval!)!)
+                self.tempDiaryList.append(diary)
             }
+            completion("임시 저장된 일기들이 로드됨.")
+        }) { error in
+            print(error.localizedDescription)
         }
     }
     func removeTemp() {
         guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
         ref.child("temp").child(uid).removeValue()
     }
-    func findRecentDay() {
+    func findRecentDay(completion: @escaping (_ message: String) -> Void) {
         let dateformatter = DateFormatter()
         dateformatter.dateFormat = "yyyy-MM-dd HH:mm"
         guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return} //오류가 생겨 guard let 구문으로 처리
@@ -223,6 +224,7 @@ class ViewModel: ObservableObject {
             let rawRecentDay = Calendar.current.date(byAdding: .day, value: 1, to: lastDay!)!
             
             self.recentDay = Calendar.current.startOfDay(for: rawRecentDay)
+            completion("최신 날짜 찾기가 완료됨.")
         }){ error in
             print(error.localizedDescription)
         }
@@ -238,17 +240,15 @@ class ViewModel: ObservableObject {
         self.ref.child("temp").child(userProfile.id).child("price").setValue(priceList)
     }
     
-    func readTempPriceList() { //DB 작업이 끝난 이후에 이 함수가 명시적으로 종료되게 해야 한다.
-        //observeSingleEvent이니 괜찮겠지...?
-        DispatchQueue.global(qos: .default).sync {
-            guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
-            ref.child("temp").child(uid).child("price").observeSingleEvent(of: .value, with: { snapshot in
-                for child in snapshot.children.allObjects as! [DataSnapshot] {
-                    guard let value = child.value as? NSNumber else {return}
-                    self.tempPriceList.append(Double(truncating: value))
-                }
-            })
-        }
+    func readTempPriceList(completion: @escaping (_ message: String) -> Void) {
+        guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
+        ref.child("temp").child(uid).child("price").observeSingleEvent(of: .value, with: { snapshot in
+            for child in snapshot.children.allObjects as! [DataSnapshot] {
+                guard let value = child.value as? NSNumber else {return}
+                self.tempPriceList.append(Double(truncating: value))
+            }
+            completion("임시 저장된 가격 리스트가 로드됨.")
+        })
     }
     
     func priceRead(){

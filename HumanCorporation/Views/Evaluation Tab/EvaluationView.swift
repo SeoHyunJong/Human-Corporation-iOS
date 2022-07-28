@@ -35,9 +35,6 @@ struct EvaluationView: View {
     @State private var showSuccess = false
     @State private var showDiary = false
     @State private var showAlert = false
-    @State private var showPortAlert = false
-    @State private var showTempAlert = false
-    @State private var autoSave = true
     
     @EnvironmentObject var viewModel: ViewModel
     @State private var diaryList:[Diary] = []
@@ -80,7 +77,7 @@ struct EvaluationView: View {
                             .foregroundColor(Color.white)
                             .padding(.vertical,10)
                             .padding(.horizontal,15)
-                            .background(priceList.count > 0 ? Color.blue:Color.gray)
+                            .background(priceList.count > 0 ? Color.green:Color.gray)
                             .cornerRadius(45)
                     }.disabled(priceList.count > 0 ? false:true)
                     Button{
@@ -107,10 +104,6 @@ struct EvaluationView: View {
         }
         .onAppear(){
             //자동으로 임시저장된 데이터를 불러온다.
-            viewModel.readTempPriceList()
-            viewModel.readTempDiaryList()
-            //dispatch queue를 통해 위 함수가 끝까지 파이어베이스를 포함해서 끝까지 실행하게 했는데..
-            //잘 동작될지 모르겠다.
             if viewModel.tempDiaryList.count > 0 && viewModel.tempPriceList.count > 0 {
                 diaryList = viewModel.tempDiaryList
                 priceList = viewModel.tempPriceList
@@ -128,9 +121,9 @@ struct EvaluationView: View {
                 updateSelectedDate()
             }
         }
-        .onDisappear(){
-            //이 뷰가 사라질때 자동으로 임시 저장
-            if priceList.count > 0 {
+        .onChange(of: diaryList) { _ in //데이터 초기화하고 한꺼번에 넣는게 비효율적이지만,
+            //데이터 삭제로(되돌리기) onChange가 정상적으로 실행되어야 한다.
+            if diaryList != viewModel.tempDiaryList {
                 viewModel.tempPriceList = priceList
                 viewModel.tempDiaryList = diaryList
                 
@@ -149,7 +142,9 @@ struct EvaluationView: View {
                 let price = CandleChartDataEntry(x: 0, shadowH: valPriceList.max()!, shadowL: valPriceList.min()!, open: valPriceList.first!, close: valPriceList.last!)
                 viewModel.priceAdd(price: price)
                 
-                viewModel.findRecentDay()
+                viewModel.findRecentDay(completion: { message in
+                    print(message)
+                })
                 date = date.addingTimeInterval(86400) //자동으로 다음날 일과 추가할 수 있게
                 if date < Date() { //오늘 일과까지 다 추가했다면 뷰 업데이트를 진행하지 않음.
                     updateSelectedDate()
@@ -185,7 +180,9 @@ struct EvaluationView: View {
      */
     func updateSelectedDate(){
         if viewModel.priceList.isEmpty == false {
-            viewModel.findRecentDay() //유저가 캘린더에서 과거의 일자를 선택 못하도록 제한
+            viewModel.findRecentDay(completion: { message in
+                print(message)
+         }) //유저가 캘린더에서 과거의 일자를 선택 못하도록 제한
             previousClose = viewModel.priceList.last!.close
             currentPrice = previousClose
         }
