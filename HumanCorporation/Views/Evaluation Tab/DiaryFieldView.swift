@@ -14,10 +14,11 @@ struct DiaryFieldView: View {
     @Binding var concentration: Double
     @State var sliderColor: Color = .green
     @State var sliderText: String = "보통"
+    @State var sectionText: String = "무난한 집중력 상태였습니다."
     
     var body: some View {
         NavigationView {
-            Form {
+            List {
                 Section("이 시간에 무엇을 하셨나요? 생산적이었나요?") {
                     HStack{
                         TextEditor(text: $story)
@@ -43,11 +44,11 @@ struct DiaryFieldView: View {
                         }
                     }
                 }
-                Section("집중도는 생산적인 일에만 반영됩니다.") {
+                Section(sectionText) {
                     VStack {
                         Slider(value: $concentration, in: 1...4, step: 1)
                             .tint(sliderColor)
-                        Text("집중도: \(sliderText)")
+                        Text("집중도(생산성): \(sliderText)")
                     }
                 }
             }
@@ -61,15 +62,19 @@ struct DiaryFieldView: View {
         .onChange(of: concentration) {_ in
             switch concentration {
             case 1:
+                sectionText = "당신은 집중한 상태이기도 하고 아니기도 했습니다(...)"
                 sliderText = "슈뢰딩거"
                 break
             case 2:
+                sectionText = "무난한 집중력 상태였습니다."
                 sliderText = "보통"
                 sliderColor = .green
             case 3:
+                sectionText = "당신은 이때 명석했습니다."
                 sliderText = "명석"
                 sliderColor = .orange
             case 4:
+                sectionText = "당신은 사기적인 집중력을 가지고 있었습니다!"
                 sliderText = "도핑"
                 sliderColor = .red
             default:

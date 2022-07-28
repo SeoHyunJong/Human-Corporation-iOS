@@ -13,7 +13,7 @@ struct Setting: View {
     @State private var showAlert = false
     var body: some View {
         NavigationView{
-            Form{
+            List{
                 Section("Edit Profile") {
                     Label("Edit Profile Image", systemImage: "person.fill.viewfinder")
                         .onTapGesture {

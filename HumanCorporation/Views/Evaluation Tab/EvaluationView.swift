@@ -44,12 +44,12 @@ struct EvaluationView: View {
     @State private var currentPrice: Double = 1000
     
     var body: some View {
-        NavigationView{
+        NavigationView{ //NavigationView는 아이패드나 맥에서 다르게 보인다.
             VStack(alignment: .center) {
                 Form{
                     Section("시간별로 일기를 작성하여 실적을 완성하세요!") {
                         DatePicker("시작 시간", selection: $startTime, in: pickStart...pickStart)
-                        DatePicker("종료 시간", selection: $endTime, in: pickStart...Date())
+                        DatePicker("종료 시간", selection: $endTime, in: pickStart...Calendar.current.date(byAdding: .minute, value: 1439, to: Calendar.current.startOfDay(for: pickStart))!)
                         HStack {
                             Label(String(format: "%.0f", endTime.timeIntervalSince(startTime) / 60)+" min", systemImage: "clock")
                             Spacer()
