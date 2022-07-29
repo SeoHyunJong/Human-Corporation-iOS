@@ -14,26 +14,24 @@ struct RecordRow: View {
     @State var icon: String = "moon.zzz"
     
     var body: some View {
-        NavigationView {
-            List {
-                ForEach(items, id: \.self.startTime) { diary in
-                    Section {
-                        NavigationLink {
-                            NoMoreAddDiary()
-                        } label: {
-                            VStack(alignment: .leading){
-                                Label("\(dateFormatter.string(from: diary.startTime))  ~  \(dateFormatter.string(from: diary.endTime))", systemImage: switchIcon(eval: diary.eval))
-                                Divider()
-                                Text(diary.story)
-                                    .foregroundColor(.secondary)
-                            }
+        List {
+            ForEach(items, id: \.self.startTime) { diary in
+
+                    VStack(alignment: .leading){
+                        Label("\(dateFormatter.string(from: diary.startTime))  ~  \(dateFormatter.string(from: diary.endTime))", systemImage: switchIcon(eval: diary.eval))
+                            .padding(.vertical)
+                        Text(diary.story)
+                            .foregroundColor(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .padding(.vertical)
                     }
-                    }
-                }
             }
         }
+        .listStyle(.plain)
+        .navigationTitle(dateName)
+        .navigationBarTitleDisplayMode(.inline)
         .onAppear() {
-            dateFormatter.dateFormat = "HH:mm"
+            dateFormatter.dateFormat = "MM/dd HH:mm"
         }
     }
     func switchIcon(eval: Diary.Evaluation) -> String {

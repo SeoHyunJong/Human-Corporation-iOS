@@ -11,19 +11,25 @@ import SwiftUI
 
 struct RecordView: View {
     @EnvironmentObject var viewModel: ViewModel
-    let dateFormatter = DateFormatter()
+    @State private var dateFormatter = DateFormatter()
     
     var body: some View {
-        List {
-            ForEach(viewModel.diaryListByDate.keys.sorted().reversed(), id: \.self) { key in
-                RecordRow(dateName: dateFormatter.string(from: key), items: viewModel.diaryListByDate[key]!)
+        NavigationView {
+            List(viewModel.diaryListByDate.keys.sorted().reversed(), id: \.self) { key in
+                NavigationLink {
+                    RecordRow(dateName: dateFormatter.string(from: key), items: viewModel.diaryListByDate[key]!)
+                } label: {
+                     Text(dateFormatter.string(from: key))
+                }
             }
-            .onAppear() {
-                dateFormatter.dateFormat = "YYYY.MM.dd.E"
-                viewModel.readDiaryList(completion: { message in
-                    print(message)
-                })
-            }
+            .navigationTitle("Announcement")
+            .listStyle(.plain)
+        }
+        .onAppear() {
+            dateFormatter.dateFormat = "YYYY.MM.dd.E"
+            viewModel.readDiaryList(completion: { message in
+                print(message)
+            })
         }
     }
 }
