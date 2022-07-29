@@ -18,7 +18,7 @@ struct DiaryFieldView: View {
     
     var body: some View {
         NavigationView {
-            List {
+            Form {
                 Section("이 시간에 무엇을 하셨나요? 생산적이었나요?") {
                     HStack{
                         TextEditor(text: $story)

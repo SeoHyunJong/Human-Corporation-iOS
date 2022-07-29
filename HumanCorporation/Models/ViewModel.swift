@@ -28,11 +28,20 @@ class ViewModel: ObservableObject {
     @Published var tempDiaryList: [Diary] = []
     @Published var tempPriceList: [Double] = []
     
+    @Published var diaryListFromFirebase: [Diary] = []
+    
     enum SignInState {
         case signedIn
         case signedOut
     }
     @Published var state: SignInState = .signedOut
+    
+    var diaryListByDate: [Date: [Diary]] {
+        //시작 시간을 기준으로 날짜별로 diary를 그룹화.
+        Dictionary(
+            grouping: diaryListFromFirebase,
+            by: {Calendar.current.startOfDay(for: $0.startTime)})
+    }
     
     // MARK: Sign in, sign out
     func signIn() {
@@ -178,6 +187,26 @@ class ViewModel: ObservableObject {
         for diary in diaryList {
             let values: [String: Any] = ["story":diary.story, "startTime":dateformatter.string(from: diary.startTime), "endTime":dateformatter.string(from: diary.endTime), "eval":diary.eval.rawValue]
             self.ref.child("diary").child(userProfile.id).childByAutoId().setValue(values)
+        }
+    }
+    func readDiaryList(completion: @escaping (_ message: String) -> Void) {
+        guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
+        let dateformatter = DateFormatter()
+        dateformatter.dateFormat = "yyyy-MM-dd HH:mm"
+        //최대 100개까지만 읽는다.
+        ref.child("diary").child(uid).queryLimited(toFirst: 100).observeSingleEvent(of: .value, with: { snapshot in
+            for child in snapshot.children.allObjects as! [DataSnapshot] {
+                guard let value = child.value as? NSDictionary else {return}
+                let story = value["story"] as? String
+                let startTime = value["startTime"] as? String
+                let endTime = value["endTime"] as? String
+                let eval = value["eval"] as? String
+                let diary = Diary(story: story!, startTime: dateformatter.date(from: startTime!)!, endTime: dateformatter.date(from: endTime!)!, eval: Diary.Evaluation(rawValue: eval!)!)
+                self.diaryListFromFirebase.append(diary)
+            }
+            completion("일기들이 로드됨.")
+        }) { error in
+            print(error.localizedDescription)
         }
     }
     func addTempDiaryList(diaryList: [Diary]) {
