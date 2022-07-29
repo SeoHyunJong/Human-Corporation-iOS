@@ -29,19 +29,18 @@ class ViewModel: ObservableObject {
     @Published var tempPriceList: [Double] = []
     
     @Published var diaryListFromFirebase: [Diary] = []
-    
-    enum SignInState {
-        case signedIn
-        case signedOut
-    }
-    @Published var state: SignInState = .signedOut
-    
     var diaryListByDate: [Date: [Diary]] {
         //시작 시간을 기준으로 날짜별로 diary를 그룹화.
         Dictionary(
             grouping: diaryListFromFirebase,
             by: {Calendar.current.startOfDay(for: $0.startTime)})
     }
+    
+    enum SignInState {
+        case signedIn
+        case signedOut
+    }
+    @Published var state: SignInState = .signedOut
     
     // MARK: Sign in, sign out
     func signIn() {
@@ -103,6 +102,7 @@ class ViewModel: ObservableObject {
             recentDay = Date(timeIntervalSince1970: 0)
             tempDiaryList.removeAll()
             tempPriceList.removeAll()
+            diaryListFromFirebase.removeAll()
         } catch {
             print(error.localizedDescription)
         }

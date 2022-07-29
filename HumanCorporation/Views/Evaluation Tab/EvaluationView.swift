@@ -55,6 +55,7 @@ struct EvaluationView: View {
                             Spacer()
                             Button {
                                 eval = .cancel
+                                concentration = 2
                                 showDiary.toggle()
                             } label: {
                                 Label("미니 일기 작성", systemImage: "plus.circle.fill")
@@ -106,6 +107,14 @@ struct EvaluationView: View {
         .onAppear(){
             //자동으로 임시저장된 데이터를 불러온다.
             if viewModel.tempDiaryList.count > 0 && viewModel.tempPriceList.count > 0 {
+                
+                if viewModel.priceList.isEmpty == false {
+                    viewModel.findRecentDay(completion: { message in
+                        print(message)
+                 })
+                    previousClose = viewModel.priceList.last!.close
+                }
+                
                 diaryList = viewModel.tempDiaryList
                 priceList = viewModel.tempPriceList
                 
