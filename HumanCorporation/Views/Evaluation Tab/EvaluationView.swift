@@ -22,11 +22,16 @@ import Charts
 
 struct EvaluationView: View {
     @State private var showCalendar = false
+    
+    //최중요 프로퍼티들
     @State private var date = Date()
     @State private var strDate = "2022.07.22.Fri"
     @State private var startTime = Date()
     @State private var endTime = Date()
     @State private var pickStart = Date()
+    @State private var previousClose: Double = 1000
+    @State private var currentPrice: Double = 1000
+    //------------
     
     @State private var story = ""
     @State private var eval = Diary.Evaluation.cancel
@@ -38,10 +43,6 @@ struct EvaluationView: View {
     @State private var showAlert = false
     
     @EnvironmentObject var viewModel: ViewModel
-    @State private var diaryList:[Diary] = []
-    @State private var priceList:[Double] = []
-    @State private var previousClose: Double = 1000
-    @State private var currentPrice: Double = 1000
     
     var body: some View {
         NavigationView{ //NavigationView는 아이패드나 맥에서 다르게 보인다.
@@ -67,7 +68,7 @@ struct EvaluationView: View {
                     Section("현재 가격") {
                         Label(String(format: "%.0f", currentPrice), systemImage: "dollarsign.circle.fill")
                     }
-                    miniBar(priceList: priceList)
+                    miniBar(priceList: viewModel.tempPriceList)
                         .frame(width: 300, height: 300, alignment: .center)
                 }
                 HStack() {
@@ -79,9 +80,9 @@ struct EvaluationView: View {
                             .foregroundColor(Color.white)
                             .padding(.vertical,10)
                             .padding(.horizontal,15)
-                            .background(priceList.count > 0 ? Color.green:Color.gray)
+                            .background(viewModel.tempPriceList.count > 0 ? Color.green:Color.gray)
                             .cornerRadius(45)
-                    }.disabled(priceList.count > 0 ? false:true)
+                    }.disabled(viewModel.tempPriceList.count > 0 ? false:true)
                     Button{
                         undoAction()
                     } label: {
@@ -90,9 +91,9 @@ struct EvaluationView: View {
                             .foregroundColor(Color.white)
                             .padding(.vertical,10)
                             .padding(.horizontal,15)
-                            .background(priceList.count > 0 ? Color.red:Color.gray)
+                            .background(viewModel.tempPriceList.count > 0 ? Color.red:Color.gray)
                             .cornerRadius(45)
-                    }.disabled(priceList.count > 0 ? false:true)
+                    }.disabled(viewModel.tempPriceList.count > 0 ? false:true)
                 }
                 Spacer()
             }
@@ -107,22 +108,21 @@ struct EvaluationView: View {
         .onAppear(){
             //자동으로 임시저장된 데이터를 불러온다.
             if viewModel.tempDiaryList.count > 0 && viewModel.tempPriceList.count > 0 {
-                
+                //1. 캘린더 날짜 선택기간 제한
                 if viewModel.priceList.isEmpty == false {
                     viewModel.findRecentDay(completion: { message in
                         print(message)
                  })
+                    //2. 전날 종가 불러오기
                     previousClose = viewModel.priceList.last!.close
                 }
-                
-                diaryList = viewModel.tempDiaryList
-                priceList = viewModel.tempPriceList
-                
-                currentPrice = priceList.last!
-                endTime = diaryList.last!.endTime
+                //3. 임시저장된 데이터에서 현재가 불러오기
+                currentPrice = viewModel.tempPriceList.last!
+                //4. 시간 3형제 설정하기
+                endTime = viewModel.tempDiaryList.last!.endTime
                 pickStart = endTime
                 startTime = endTime
-                
+                //5. 뷰 타이틀 변경하기
                 date = endTime
                 let dateFormatter = DateFormatter()
                 dateFormatter.dateFormat = "YYYY.MM.dd.E"
@@ -131,39 +131,28 @@ struct EvaluationView: View {
                 updateSelectedDate()
             }
         }
-        .onChange(of: diaryList) { _ in //데이터 초기화하고 한꺼번에 넣는게 비효율적이지만,
-            //데이터 삭제로(되돌리기) onChange가 정상적으로 실행되어야 한다.
-            if diaryList != viewModel.tempDiaryList {
-                viewModel.tempPriceList = priceList
-                viewModel.tempDiaryList = diaryList
-                
-                viewModel.removeTemp()
-                viewModel.addTempDiaryList(diaryList: diaryList)
-                viewModel.addTempPriceList(priceList: priceList)
-            }
-        }
         .alert("정말 모든 시간의 일기를 작성하셨나요? 제출하면 더 이상 수정은 불가합니다!", isPresented: $showAlert) {
             Button("제출") {
                 //값 타입으로 전달하여 리스트가 초기화 될 때 비동기 처리에서 문제가 안생기게 하여야...
-                let valDiaryList = diaryList
-                viewModel.diaryAdd(diaryList: valDiaryList)
-                
-                let valPriceList = priceList
-                let price = CandleChartDataEntry(x: 0, shadowH: valPriceList.max()!, shadowL: valPriceList.min()!, open: valPriceList.first!, close: valPriceList.last!)
-                viewModel.priceAdd(price: price)
-                
+                //0. Firebase에 데이터 업로드
+                let valDiaryList = viewModel.tempDiaryList
+                viewModel.diaryAdd(diaryList: valDiaryList, completion: { message in
+                    print(message)
+                })
+                let valPriceList = viewModel.tempPriceList
+                let idx: Double = Double(viewModel.priceList.count)
+                let price = CandleChartDataEntry(x: idx, shadowH: valPriceList.max()!, shadowL: valPriceList.min()!, open: valPriceList.first!, close: valPriceList.last!)
+                viewModel.priceAdd(price: price, completion: { message in
+                    print(message)
+                })
                 viewModel.findRecentDay(completion: { message in
                     print(message)
                 })
-                date = date.addingTimeInterval(86400) //자동으로 다음날 일과 추가할 수 있게
-                if date < Date() { //오늘 일과까지 다 추가했다면 뷰 업데이트를 진행하지 않음.
+                //자동으로 다음날 일과 추가할 수 있게
+                date = date.addingTimeInterval(86400)
+                if Calendar.current.startOfDay(for: date) < Date() { //오늘 일과까지 다 추가했다면 뷰 업데이트를 진행하지 않음.
                     updateSelectedDate()
                 }
-                
-                viewModel.tempDiaryList.removeAll()
-                viewModel.tempPriceList.removeAll()
-                viewModel.removeTemp()
-                
                 showSuccess.toggle()
             }
             Button("취소", role: .cancel) {
@@ -189,34 +178,42 @@ struct EvaluationView: View {
      또한 다이어리, 가격 리스트 초기화
      */
     func updateSelectedDate(){
+        //0. 임시 저장된 데이터 삭제하기 (날짜를 새로 선택했으므로)
+        viewModel.removeTemp()
+        viewModel.tempDiaryList.removeAll()
+        viewModel.tempPriceList.removeAll()
+        //1. 캘린더 날짜 선택기간 제한
         if viewModel.priceList.isEmpty == false {
             viewModel.findRecentDay(completion: { message in
                 print(message)
-         }) //유저가 캘린더에서 과거의 일자를 선택 못하도록 제한
+         })
+            //2. 전날 종가 불러오기
             previousClose = viewModel.priceList.last!.close
+            //3. 임시저장된 데이터가 없으니 종가에서 현재가 그대로 설정
             currentPrice = previousClose
         }
-        
+        //4. 시간 3형제 설정하기
+        endTime = Calendar.current.startOfDay(for: date)
+        pickStart = endTime
+        startTime = endTime
+        //5. 뷰 타이틀 변경하기
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "YYYY.MM.dd.E"
         strDate = dateFormatter.string(from: date)
-        
-        startTime = Calendar.current.startOfDay(for: date)
-        endTime = Calendar.current.startOfDay(for: date)
-        pickStart = Calendar.current.startOfDay(for: date)
-        
-        diaryList.removeAll()
-        priceList.removeAll()
     }
     func undoAction() {
-        diaryList.removeLast()
-        priceList.removeLast()
-        
-        endTime = diaryList.last?.endTime ?? Calendar.current.startOfDay(for: date)
+        //1. 마지막 요소 pop
+        viewModel.tempDiaryList.removeLast()
+        viewModel.tempPriceList.removeLast()
+        //db에서도 pop
+        viewModel.popTempDiary()
+        viewModel.popTempPrice()
+        //2. 시간 3형제 설정
+        endTime = viewModel.tempDiaryList.last?.endTime ?? Calendar.current.startOfDay(for: date)
         pickStart = endTime
         startTime = endTime
-        
-        currentPrice = priceList.last ?? previousClose
+        //3. 현재가 수정
+        currentPrice = viewModel.tempPriceList.last ?? previousClose
         story = ""
     }
     func addDiary() {
@@ -237,8 +234,12 @@ struct EvaluationView: View {
         }
         
         let diary = Diary(story: story, startTime: startTime, endTime: endTime, eval: eval)
-        self.priceList.append(currentPrice)
-        self.diaryList.append(diary)
+        viewModel.tempPriceList.append(currentPrice)
+        viewModel.tempDiaryList.append(diary)
+        //db에 임시 저장
+        viewModel.addTempDiary()
+        viewModel.addTempPrice()
+        
         pickStart = endTime
         startTime = endTime
         showToast.toggle()

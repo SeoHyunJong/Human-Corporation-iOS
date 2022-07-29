@@ -55,7 +55,9 @@ struct HomeView: View {
                             viewModel.readUserFromDB()
                             viewModel.downloadImage()
                             //차트 데이터 로드
-                            viewModel.priceRead()
+                            viewModel.priceRead(completion: { message in
+                                print(message)
+                            })
                             //임시 저장 데이터 로드
                             viewModel.readTempPriceList(completion: { message in
                                    print(message)

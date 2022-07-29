@@ -181,13 +181,14 @@ class ViewModel: ObservableObject {
     }
     
     // MARK: Diary
-    func diaryAdd(diaryList: [Diary]) {
+    func diaryAdd(diaryList: [Diary], completion: @escaping (_ message: String) -> Void) {
         let dateformatter = DateFormatter()
         dateformatter.dateFormat = "yyyy-MM-dd HH:mm"
         for diary in diaryList {
             let values: [String: Any] = ["story":diary.story, "startTime":dateformatter.string(from: diary.startTime), "endTime":dateformatter.string(from: diary.endTime), "eval":diary.eval.rawValue]
             self.ref.child("diary").child(userProfile.id).childByAutoId().setValue(values)
         }
+        completion("실적이 파이어베이스에 업로드 됨.")
     }
     func readDiaryList(completion: @escaping (_ message: String) -> Void) {
         guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
@@ -209,14 +210,22 @@ class ViewModel: ObservableObject {
             print(error.localizedDescription)
         }
     }
-    func addTempDiaryList(diaryList: [Diary]) {
+    func addTempDiary() {
         let dateformatter = DateFormatter()
         dateformatter.dateFormat = "yyyy-MM-dd HH:mm"
-        for diary in diaryList {
-            let values: [String: Any] = ["story":diary.story, "startTime":dateformatter.string(from: diary.startTime), "endTime":dateformatter.string(from: diary.endTime), "eval":diary.eval.rawValue]
-            self.ref.child("temp").child(userProfile.id).child("diary").childByAutoId().setValue(values)
-        }
+        guard let diary = self.tempDiaryList.last else {return}//최근에 추가된 다이어리
+        let values: [String: Any] = ["story":diary.story, "startTime":dateformatter.string(from: diary.startTime), "endTime":dateformatter.string(from: diary.endTime), "eval":diary.eval.rawValue]
+        self.ref.child("temp").child(userProfile.id).child("diary").childByAutoId().setValue(values)
     }
+    
+    func popTempDiary() {
+        self.ref.child("temp").child(userProfile.id).child("diary").observeSingleEvent(of: .value, with: { snapshot in
+            guard let child = snapshot.children.allObjects.last as? DataSnapshot else {return}
+            let key = child.key
+            self.ref.child("temp").child(self.userProfile.id).child("diary").child(key).removeValue()
+        })
+    }
+    
     func readTempDiaryList(completion: @escaping (_ message: String) -> Void) {
         guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
         let dateformatter = DateFormatter()
@@ -260,13 +269,24 @@ class ViewModel: ObservableObject {
     }
     
     // MARK: Price
-    func priceAdd(price: CandleChartDataEntry) {
+    func priceAdd(price: CandleChartDataEntry, completion: @escaping (_ message: String) -> Void) {
+        self.priceList.append(price)
         let values: [String: Double?] = ["open": price.open, "close": price.close, "shadowH": price.high, "shadowL": price.low]
         self.ref.child("price").child(userProfile.id).childByAutoId().setValue(values)
+        completion("일봉이 파이어베이스에 업로드 됨.")
     }
     
-    func addTempPriceList(priceList: [Double]) {
-        self.ref.child("temp").child(userProfile.id).child("price").setValue(priceList)
+    func addTempPrice() {
+        guard let price = self.tempPriceList.last else {return}
+        self.ref.child("temp").child(userProfile.id).child("price").childByAutoId().setValue(price)
+    }
+    
+    func popTempPrice() {
+        self.ref.child("temp").child(userProfile.id).child("price").observeSingleEvent(of: .value, with: { snapshot in
+            guard let child = snapshot.children.allObjects.last as? DataSnapshot else {return}
+            let key = child.key
+            self.ref.child("temp").child(self.userProfile.id).child("price").child(key).removeValue()
+        })
     }
     
     func readTempPriceList(completion: @escaping (_ message: String) -> Void) {
@@ -280,11 +300,12 @@ class ViewModel: ObservableObject {
         })
     }
     
-    func priceRead(){
+    func priceRead(completion: @escaping (_ message: String) -> Void){
         guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
-        ref.child("price").child(uid).observe(.value, with: { snapshot in
+        ref.child("price").child(uid).observeSingleEvent(of: .value, with: { snapshot in
             // Get user value
             var idx: Double = 0
+            var tempList:[CandleChartDataEntry] = []
             for child in snapshot.children.allObjects as! [DataSnapshot] {
                 guard let value = child.value as? NSDictionary else {return}
                 let open = value["open"] as? Double
@@ -292,10 +313,12 @@ class ViewModel: ObservableObject {
                 let shadowH = value["shadowH"] as? Double
                 let shadowL = value["shadowL"] as? Double
                 let price = CandleChartDataEntry(x: idx, shadowH: shadowH!, shadowL: shadowL!, open: open!, close: close!)
-                self.priceList.append(price)
+                tempList.append(price)
                 idx += 1
             }
-            self.priceList.sort(by: {$0.x < $1.x})
+            tempList.sort(by: {$0.x < $1.x})
+            self.priceList = tempList
+            completion("가격 정보 로드")
         }) { error in
             print(error.localizedDescription)
         }
