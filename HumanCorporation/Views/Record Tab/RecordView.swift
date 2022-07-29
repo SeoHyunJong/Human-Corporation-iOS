@@ -10,13 +10,27 @@
 import SwiftUI
 
 struct RecordView: View {
+    @EnvironmentObject var viewModel: ViewModel
+    let dateFormatter = DateFormatter()
+    
     var body: some View {
-        Text("This is RecordView")
+        List {
+            ForEach(viewModel.diaryListByDate.keys.sorted().reversed(), id: \.self) { key in
+                RecordRow(dateName: dateFormatter.string(from: key), items: viewModel.diaryListByDate[key]!)
+            }
+            .onAppear() {
+                dateFormatter.dateFormat = "YYYY.MM.dd.E"
+                viewModel.readDiaryList(completion: { message in
+                    print(message)
+                })
+            }
+        }
     }
 }
 
 struct RecordView_Previews: PreviewProvider {
     static var previews: some View {
         RecordView()
+            .environmentObject(ViewModel())
     }
 }
