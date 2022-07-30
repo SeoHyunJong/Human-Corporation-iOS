@@ -87,12 +87,12 @@ struct HomeView: View {
                     .tag(Tab.Evaluation)
                     RecordView()
                         .tabItem{
-                            Label("공시자료", systemImage: "scroll")
+                            Label("전자공시", systemImage: "scroll")
                         }
                         .tag(Tab.Analysis)
-                    DiscussionView()
+                    SocialView()
                         .tabItem{
-                            Label("종목토론", systemImage: "quote.bubble.fill")
+                            Label("종목비교", systemImage: "quote.bubble.fill")
                         }
                         .tag(Tab.Discussion)
                 }

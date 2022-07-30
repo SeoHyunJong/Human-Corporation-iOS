@@ -22,7 +22,7 @@ struct RecordView: View {
                      Text(dateFormatter.string(from: key))
                 }
             }
-            .navigationTitle("Announcement")
+            .navigationTitle("History")
             .listStyle(.plain)
         }
         .onAppear() {
