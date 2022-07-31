@@ -225,8 +225,8 @@ struct EvaluationView: View {
             //집중도에 비례해서 가격이 올라감
             currentPrice += variance * concentration
         case .unproductive:
-            //얄짤없이 4배 곱해서 깎음...
-            currentPrice -= variance * 4
+            //3배 곱해서 깎음...
+            currentPrice -= variance * 3
         case .neutral: break
         case .cancel:
             story = ""

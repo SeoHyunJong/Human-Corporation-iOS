@@ -22,51 +22,16 @@ struct HomeView: View {
         GeometryReader { geo in
             let width = min(geo.size.width, geo.size.height)
             VStack{
-                VStack {
-                    HStack{
-                        Spacer()
-                        Button {
-                            showSetting.toggle()
-                        } label: {
-                            Label("Settings", systemImage: "gearshape")
-                                .labelStyle(.iconOnly)
-                                .font(.system(size: width*0.04))
-                        }
-                        .padding(.horizontal)
-                    }
-                    HStack {
-                        ProfileImage(image: viewModel.profileImage!)
-                            .frame(width: width*0.3, height: width*0.3)
-                        VStack(alignment: .leading) {
-                            Text(viewModel.userProfile.name)
-                                .font(.system(size: width*0.06))
-                                .padding()
-                            Text(viewModel.userProfile.goal)
-                                .font(.system(size: width*0.04))
-                                .foregroundColor(.secondary)
-                                .padding(.horizontal)
-                        }
-                        Spacer()
+                HStack{
+                    Spacer()
+                    Button {
+                        showSetting.toggle()
+                    } label: {
+                        Label("Settings", systemImage: "gearshape")
+                            .labelStyle(.iconOnly)
+                            .font(.system(size: width*0.04))
                     }
                     .padding(.horizontal)
-                    .onAppear(){
-                        if viewModel.state == .signedIn { //프리뷰 오류 때문에 추가...
-                            //프로필 로드
-                            viewModel.readUserFromDB()
-                            viewModel.downloadImage()
-                            //차트 데이터 로드
-                            viewModel.priceRead(completion: { message in
-                                print(message)
-                            })
-                            //임시 저장 데이터 로드
-                            viewModel.readTempPriceList(completion: { message in
-                                   print(message)
-                            })
-                            viewModel.readTempDiaryList(completion: { message in
-                                print(message)
-                         })
-                        }
-                    }
                 }
                 TabView(selection: $selection){
                     ChartView()
@@ -97,6 +62,24 @@ struct HomeView: View {
                         .tag(Tab.Discussion)
                 }
                 .padding(.bottom)
+            }
+            .onAppear(){
+                if viewModel.state == .signedIn { //프리뷰 오류 때문에 추가...
+                    //프로필 로드
+                    viewModel.readUserFromDB()
+                    viewModel.downloadImage()
+                    //차트 데이터 로드
+                    viewModel.priceRead(completion: { message in
+                        print(message)
+                    })
+                    //임시 저장 데이터 로드
+                    viewModel.readTempPriceList(completion: { message in
+                        print(message)
+                    })
+                    viewModel.readTempDiaryList(completion: { message in
+                        print(message)
+                    })
+                }
             }
             .sheet(isPresented: $showSetting){
                 Setting()
