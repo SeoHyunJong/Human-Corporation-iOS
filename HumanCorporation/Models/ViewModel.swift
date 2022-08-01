@@ -195,7 +195,7 @@ class ViewModel: ObservableObject {
         let dateformatter = DateFormatter()
         dateformatter.dateFormat = "yyyy-MM-dd HH:mm"
         //최대 100개까지만 읽는다.
-        ref.child("diary").child(uid).queryLimited(toFirst: 100).observeSingleEvent(of: .value, with: { snapshot in
+        ref.child("diary").child(uid).queryLimited(toFirst: 300).observeSingleEvent(of: .value, with: { snapshot in
             for child in snapshot.children.allObjects as! [DataSnapshot] {
                 guard let value = child.value as? NSDictionary else {return}
                 let story = value["story"] as? String
