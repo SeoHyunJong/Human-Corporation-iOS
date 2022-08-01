@@ -21,6 +21,7 @@ struct ProfileImage: View {
                 }
                 .shadow(radius: 7)
         }
+        .aspectRatio(contentMode: .fit)
     }
 }
 
