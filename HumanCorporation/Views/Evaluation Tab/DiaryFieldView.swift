@@ -59,6 +59,8 @@ struct DiaryFieldView: View {
                     }
                 }
                 MessageBox(message: "집중도는 그 시간동안 너의 퍼포먼스를 의미한다! 생산적인 일에만 집중도가 반영된다!", leftSpeaker: true)
+                MessageBox(message: "생리현상에는 어떤게 포함돼? 내가 샤워하거나 볼 일 보는 것도 비생산적이야?", leftSpeaker: false)
+                MessageBox(message: "지구인들의 수면, 위생, 식사 등 생존에 있어서 필요한 모든 행동들은 생리현상이다!", leftSpeaker: true)
             }
             .listStyle(.plain)
             .navigationTitle("Mini Diary")

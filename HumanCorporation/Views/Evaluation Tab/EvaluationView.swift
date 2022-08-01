@@ -71,9 +71,9 @@ struct EvaluationView: View {
                     }
                     miniBar(priceList: viewModel.tempPriceList)
                         .frame(width: 300, height: 300, alignment: .center)
-                    MessageBox(message: "완성하기를 눌러야 하루의 실적이 최종 완료되고 가격이 책정된다! 되돌리기는 최근에 썼던 일기를 삭제한다.", leftSpeaker: true)
+                    MessageBox(message: "잠깐! 완성하기를 누르기 전에 그 날 자정부터 오후 11:59분까지 꼼꼼하게 일기를 작성했는지 확인해라!", leftSpeaker: true)
                     MessageBox(message: "오늘 일기를 먼저 쓰고 제출해버렸어. 어제 일기도 쓰고 싶은데, 그게 안되네...", leftSpeaker: false)
-                    MessageBox(message: "날짜 선택은 최근 추가된 실적을 기준으로 범위가 제한된다! 이건 분식회계를 방지하기 위한 최소조치다!", leftSpeaker: true)
+                    MessageBox(message: "날짜 선택은 최근 추가된 실적을 기준으로 범위가 제한된다! 이건 분식회계를 방지하기 위한 최소조치지.", leftSpeaker: true)
                 }
                 .listStyle(.plain)
                 HStack() {
@@ -137,7 +137,7 @@ struct EvaluationView: View {
                 updateSelectedDate()
             }
         }
-        .alert("정말 모든 시간의 일기를 작성하셨나요? 제출하면 더 이상 수정은 불가합니다!", isPresented: $showAlert) {
+        .alert("잠깐! 이 날의 자정부터 오후 11:59분까지 꼼꼼하게 일기를 쓰셨나요? 제출하면 더 이상 수정은 불가합니다!", isPresented: $showAlert) {
             Button("제출") {
                 //값 타입으로 전달하여 리스트가 초기화 될 때 비동기 처리에서 문제가 안생기게 하여야...
                 //0. Firebase에 데이터 업로드
@@ -158,6 +158,11 @@ struct EvaluationView: View {
                 date = date.addingTimeInterval(86400)
                 if Calendar.current.startOfDay(for: date) < Date() { //오늘 일과까지 다 추가했다면 뷰 업데이트를 진행하지 않음.
                     updateSelectedDate()
+                } else {
+                    //임시 저장 삭제하기
+                    viewModel.removeTemp()
+                    viewModel.tempDiaryList.removeAll()
+                    viewModel.tempPriceList.removeAll()
                 }
                 showSuccess.toggle()
             }
