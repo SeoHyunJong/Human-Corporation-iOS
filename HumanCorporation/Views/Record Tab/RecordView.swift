@@ -15,16 +15,20 @@ struct RecordView: View {
     
     var body: some View {
         NavigationView {
-            List(viewModel.diaryListByDate.keys.sorted().reversed(), id: \.self) { key in
-                NavigationLink {
-                    RecordRow(dateName: dateFormatter.string(from: key), items: viewModel.diaryListByDate[key]!)
-                } label: {
-                     Text(dateFormatter.string(from: key))
+            VStack {
+                List(viewModel.diaryListByDate.keys.sorted().reversed(), id: \.self) { key in
+                    NavigationLink {
+                        RecordRow(dateName: dateFormatter.string(from: key), items: viewModel.diaryListByDate[key]!)
+                    } label: {
+                        Text(dateFormatter.string(from: key))
+                    }
                 }
+                .navigationTitle("History")
+                .listStyle(.plain)
+                MessageBox(message: "여기서 너가 썼던 일기들을 감상할 수 있다. 최대 300개까지 저장된다!", leftSpeaker: true)
             }
-            .navigationTitle("History")
-            .listStyle(.plain)
         }
+        .navigationViewStyle(.stack)
         .onAppear() {
             dateFormatter.dateFormat = "YYYY.MM.dd.E"
             if viewModel.diaryListByDate.isEmpty {

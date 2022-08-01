@@ -15,13 +15,20 @@ struct DiaryFieldView: View {
     @State var sliderColor: Color = .green
     @State var sliderText: String = "보통"
     @State var sectionText: String = "무난한 집중력 상태였습니다."
+    @FocusState private var storyFocused: Bool
     
     var body: some View {
         NavigationView {
-            Form {
+            List {
                 Section("이 시간에 무엇을 하셨나요? 생산적이었나요?") {
                     HStack{
-                        TextEditor(text: $story)
+                        ZStack {
+                            TextEditor(text: $story)
+                                .focused($storyFocused)
+                            Rectangle()
+                                .fill(.clear)
+                                .border(.blue, width: 1)
+                        }
                         VStack(alignment: .leading, spacing: 20){
                             Button{
                                 eval = .productive
@@ -51,13 +58,18 @@ struct DiaryFieldView: View {
                         Text("집중도(생산성): \(sliderText)")
                     }
                 }
+                MessageBox(message: "집중도는 그 시간동안 너의 퍼포먼스를 의미한다! 생산적인 일에만 집중도가 반영된다!", leftSpeaker: true)
             }
+            .listStyle(.plain)
             .navigationTitle("Mini Diary")
             .toolbar{
                 Button("취소") {
                     showDiary.toggle()
                 }
             }
+        }
+        .onTapGesture {
+            storyFocused = false
         }
         .onChange(of: concentration) {_ in
             switch concentration {

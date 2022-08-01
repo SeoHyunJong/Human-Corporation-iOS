@@ -9,11 +9,7 @@ import SwiftUI
 
 struct NoMoreAddDiary: View {
     var body: some View {
-        VStack(spacing: 25) {
-            Label("더 이상 추가할 일과가 없네요.", systemImage: "clock.badge.checkmark")
-            Text("최근 일과까지 다 추가하셨나 보군요?")
-            Text("대단해요!")
-        }
+        MessageBox(message: "최근 날짜까지 실적을 추가했나보군! 대단히 성실하다. 놀랍다!", leftSpeaker: true)
     }
 }
 
