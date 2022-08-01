@@ -11,6 +11,8 @@ struct Setting: View {
     @EnvironmentObject var viewModel: ViewModel
     @State private var showSheet = false
     @State private var showAlert = false
+    @State private var showError = false
+    
     var body: some View {
         NavigationView{
             List{
@@ -23,8 +25,12 @@ struct Setting: View {
                 Section {
                     VStack(alignment: .leading){
                         Button {
-                            viewModel.editProfile()
-                            showAlert.toggle()
+                            if isValidInput(viewModel.userProfile.name) {
+                                viewModel.editProfile()
+                                showAlert.toggle()
+                            } else {
+                                showError.toggle()
+                            }
                         } label: {
                             Label("Edit Profile", systemImage: "rectangle.and.pencil.and.ellipsis")
                         }
@@ -44,13 +50,6 @@ struct Setting: View {
                             TextField("goal", text: $viewModel.userProfile.goal)
                             Spacer()
                         }
-                        HStack {
-                            Text("E-mail")
-                                .bold()
-                            Divider()
-                            TextField("email", text: $viewModel.userProfile.email)
-                            Spacer()
-                        }
                     }
                 }
                 
@@ -67,7 +66,15 @@ struct Setting: View {
             .toast(isPresenting: $showAlert) {
                 AlertToast(displayMode: .alert, type: .complete(.green), title:"프로필이 수정되었습니다.")
             }
+            .toast(isPresenting: $showError) {
+                AlertToast(displayMode: .alert, type: .error(.red), title: "이름 혹은 이메일\n 형식이 잘못됨!")
+            }
         }
+    }
+    func isValidInput(_ Input:String) -> Bool {
+        let RegEx = "\\w{2,18}"
+        let Test = NSPredicate(format:"SELF MATCHES %@", RegEx)
+        return Test.evaluate(with: Input)
     }
 }
 

@@ -144,7 +144,7 @@ class ViewModel: ObservableObject {
     }
     
     func editProfile() {
-        self.ref.child("user").child(userProfile.id).updateChildValues(["name":userProfile.name,"goal":userProfile.goal,"email":userProfile.email])
+        self.ref.child("user").child(userProfile.id).updateChildValues(["name":userProfile.name,"goal":userProfile.goal])
     }
     
     func uploadImg(image: UIImage) {

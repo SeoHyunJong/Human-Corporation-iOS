@@ -14,8 +14,11 @@ struct ContentView: View {
         switch viewModel.state {
         case .signedIn:
             if viewModel.isNewUser {
-                NewCommerView()
-                FirstComeView()
+                if !infoNext {
+                    NewCommerView(infoNext: $infoNext)
+                } else {
+                    FirstComeView()
+                }
             } else {
                 HomeView()
             }

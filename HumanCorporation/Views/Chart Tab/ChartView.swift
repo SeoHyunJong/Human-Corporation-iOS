@@ -13,23 +13,29 @@ struct ChartView: View {
     var body: some View {
         GeometryReader { geo in
             let width = min(geo.size.width, geo.size.height)
-            VStack{
-                HStack {
-                    ProfileImage(image: viewModel.profileImage!)
-                        .frame(width: width*0.3, height: width*0.3)
-                    VStack(alignment: .leading) {
-                        Text(viewModel.userProfile.name)
-                            .font(.system(size: width*0.06))
+            ScrollView {
+                VStack {
+                    HStack {
+                        ProfileImage(image: viewModel.profileImage!)
+                            .frame(width: width*0.3, height: width*0.3)
                             .padding()
-                        Text(viewModel.userProfile.goal)
-                            .font(.system(size: width*0.04))
-                            .foregroundColor(.secondary)
-                            .padding(.horizontal)
+                        VStack(alignment: .leading) {
+                            Text(viewModel.userProfile.name)
+                                .font(.system(size: width*0.06))
+                                .padding()
+                            Text(viewModel.userProfile.goal)
+                                .font(.system(size: width*0.04))
+                                .foregroundColor(.secondary)
+                                .padding(.horizontal)
+                        }
+                        Spacer()
                     }
-                    Spacer()
+                    Bar(entries: viewModel.priceList)
+                        .scaledToFit()
+                    HStack{
+                        
+                    }
                 }
-                .padding(.horizontal)
-                Bar(entries: viewModel.priceList)
             }
         }
     }
