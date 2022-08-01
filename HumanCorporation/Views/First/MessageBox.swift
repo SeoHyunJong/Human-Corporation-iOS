@@ -27,7 +27,7 @@ struct MessageBox: View {
                 } else {
                     Spacer()
                 }
-                HStack(spacing: 0) {
+                HStack(spacing: -5) {
                     if leftSpeaker {
                         Triangle(color: Color.blue)
                             .frame(width: width*0.05, height: width*0.05)

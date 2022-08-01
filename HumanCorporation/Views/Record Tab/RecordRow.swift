@@ -11,7 +11,7 @@ struct RecordRow: View {
     var dateName: String
     var items: [Diary]
     let dateFormatter = DateFormatter()
-    @State var icon: String = "moon.zzz"
+    @State private var icon: String = "moon.zzz"
     
     var body: some View {
         List {

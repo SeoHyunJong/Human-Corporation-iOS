@@ -48,7 +48,7 @@ struct EvaluationView: View {
     var body: some View {
         NavigationView{ //NavigationView는 아이패드나 맥에서 다르게 보인다.
             VStack(alignment: .center) {
-                Form{
+                List{
                     Section("시간별로 일기를 작성하여 실적을 완성하세요!") {
                         DatePicker("시작 시간", selection: $startTime, in: pickStart...)
                         DatePicker("종료 시간", selection: $endTime, in: startTime...Calendar.current.date(byAdding: .minute, value: 1439, to: Calendar.current.startOfDay(for: pickStart))!)
@@ -72,6 +72,7 @@ struct EvaluationView: View {
                     miniBar(priceList: viewModel.tempPriceList)
                         .frame(width: 300, height: 300, alignment: .center)
                 }
+                .listStyle(.plain)
                 HStack() {
                     Button{
                         showAlert.toggle()

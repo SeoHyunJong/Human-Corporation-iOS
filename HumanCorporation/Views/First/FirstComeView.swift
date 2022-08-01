@@ -13,9 +13,8 @@ struct FirstComeView: View {
     @State private var profile: Profile = Profile()
     var body: some View {
         VStack {
-            Label("Welcome!", systemImage: "face.smiling")
-                .font(.system(size: 30, weight: .bold))
             List {
+                MessageBox(message: "지구인의 정보가 필요하다! 이상한 곳에 쓰이지 않는다. 내 약속하지. 후후후...", leftSpeaker: true)
                 HStack{
                     Text("Name").bold()
                     Divider()
@@ -32,6 +31,7 @@ struct FirstComeView: View {
                     TextField("21세기 내 지구 정복", text: $profile.goal)
                 }
             }
+            .listStyle(.plain)
             Button{
                 profile.id = GIDSignIn.sharedInstance.currentUser!.userID!;
                 viewModel.userAdd(user: profile)
@@ -39,10 +39,8 @@ struct FirstComeView: View {
                 //따라서 토글을 이용하여 띄울 것이다.
                 viewModel.isNewUser.toggle()
             } label: {
-                Text("확인")
-                    .padding(.horizontal)
+                Label("next", systemImage: "arrow.right.circle.fill")
             }
-            .buttonStyle(.borderedProminent)
             .padding()
         }
     }
