@@ -8,27 +8,41 @@
 import SwiftUI
 
 struct MessageBox: View {
+    var message: String
+    var leftSpeaker: Bool
+    
     var body: some View {
         GeometryReader { geo in
             let width = geo.size.width
             HStack{
-                Image("Mamong")
-                    .resizable()
-                    .frame(width: width*0.15, height: width*0.15)
-                    .clipShape(Circle())
-                    .overlay {
-                        Circle().stroke(.white, lineWidth: 2)
-                    }
-                    .shadow(radius: 3)
+                if leftSpeaker {
+                    Image("Mamong")
+                        .resizable()
+                        .frame(width: width*0.15, height: width*0.15)
+                        .clipShape(Circle())
+                        .overlay {
+                            Circle().stroke(.white, lineWidth: 2)
+                        }
+                        .shadow(radius: 3)
+                } else {
+                    Spacer()
+                }
                 HStack(spacing: 0) {
-                    Triangle()
-                        .frame(width: width*0.05, height: width*0.05)
-                    Text("반갑다, 인간! 난 마그마그마 행성에서 온 외계투자자 마몽이라고 한다!")
+                    if leftSpeaker {
+                        Triangle(color: Color.blue)
+                            .frame(width: width*0.05, height: width*0.05)
+                    }
+                    Text(message)
                         .font(.system(size: width*0.05))
                         .foregroundColor(.white)
                         .padding()
-                        .background(Color.blue)
-                    .cornerRadius(30)
+                        .background(leftSpeaker ? Color.blue : Color.green)
+                        .cornerRadius(30)
+                    if !leftSpeaker {
+                        Triangle(color: Color.green)
+                            .frame(width: width*0.05, height: width*0.05)
+                            .rotationEffect(.degrees(180))
+                    }
                 }
                 
             }
@@ -40,7 +54,7 @@ struct MessageBox: View {
 
 struct MessageBox_Previews: PreviewProvider {
     static var previews: some View {
-        MessageBox()
+        MessageBox(message: "외계투자자...??", leftSpeaker: false)
             .previewInterfaceOrientation(.portrait)
     }
 }

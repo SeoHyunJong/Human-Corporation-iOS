@@ -41,6 +41,7 @@ struct EvaluationView: View {
     @State private var showSuccess = false
     @State private var showDiary = false
     @State private var showAlert = false
+    @State private var showCalendarAlert = false
     
     @EnvironmentObject var viewModel: ViewModel
     
@@ -49,8 +50,8 @@ struct EvaluationView: View {
             VStack(alignment: .center) {
                 Form{
                     Section("시간별로 일기를 작성하여 실적을 완성하세요!") {
-                        DatePicker("시작 시간", selection: $startTime, in: pickStart...pickStart)
-                        DatePicker("종료 시간", selection: $endTime, in: pickStart...Calendar.current.date(byAdding: .minute, value: 1439, to: Calendar.current.startOfDay(for: pickStart))!)
+                        DatePicker("시작 시간", selection: $startTime, in: pickStart...)
+                        DatePicker("종료 시간", selection: $endTime, in: startTime...Calendar.current.date(byAdding: .minute, value: 1439, to: Calendar.current.startOfDay(for: pickStart))!)
                         HStack {
                             Label(String(format: "%.0f", endTime.timeIntervalSince(startTime) / 60)+" min", systemImage: "clock")
                             Spacer()
@@ -101,7 +102,7 @@ struct EvaluationView: View {
             .toolbar{
                 Label("select date", systemImage: "calendar")
                     .onTapGesture {
-                        showCalendar.toggle()
+                        showCalendarAlert.toggle()
                     }
             }
         }
@@ -156,6 +157,14 @@ struct EvaluationView: View {
                 showSuccess.toggle()
             }
             Button("취소", role: .cancel) {
+            }
+        }
+        .alert("날짜를 다시 선택하면 임시 저장된 데이터가 초기화됩니다. 계속하시겠습니까?", isPresented: $showCalendarAlert) {
+            Button("계속") {
+                showCalendar.toggle()
+            }
+            Button("취소", role: .cancel) {
+                
             }
         }
         .sheet(isPresented: $showCalendar, onDismiss: updateSelectedDate){

@@ -8,15 +8,16 @@
 import SwiftUI
 
 struct Triangle: View {
+    var color = Color.blue
     var body: some View {
         GeometryReader { geo in
             let width = min(geo.size.width, geo.size.height)
             Path { path in
-                path.move(to: CGPoint(x: width*0.05, y: width*0.5))
+                path.move(to: CGPoint(x: 0, y: width*0.5))
                 path.addLine(to: CGPoint(x: width, y: width*0.1))
                 path.addLine(to: CGPoint(x: width, y: width*0.9))
             }
-            .fill(Color.blue)
+            .fill(color)
         }.aspectRatio(1, contentMode: .fit)
     }
 }
