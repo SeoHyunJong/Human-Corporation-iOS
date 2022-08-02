@@ -12,17 +12,28 @@ struct FollowListView: View {
     var body: some View {
         NavigationView {
             List {
-                ForEach() { uid in
-                    
+                ForEach(viewModel.followList, id: \.self) { profile in
+                    HStack(spacing: 20) {
+                        ProfileImage(image: UIImage(named: "Mamong")!)
+                            .frame(width: 50, height: 50)
+                        Text(profile.name)
+                        Spacer()
+                    }
                 }
             }
-            .onAppear() {
-                viewModel.readFollowList(completion: { message in
-                    print(message)
-                })
+            .listStyle(.plain)
+            .navigationTitle("Featured")
+            .toolbar {
+                Button {
+                    viewModel.followList.removeAll()
+                    viewModel.readFollowList(completion: { message in
+                        print(message)
+                    })
+                } label: {
+                    Label("새로고침", systemImage: "goforward")
+                }
             }
         }
-        .navigationTitle("Featured")
     }
 }
 

@@ -47,6 +47,7 @@ class ViewModel: ObservableObject {
     @Published var profileOfSearch = Profile()
     @Published var imageOfSearchProfile = UIImage(named: "Mamong")
     @Published var idFollowList: [String] = []
+    @Published var followList: [Profile] = []
     
     enum KindOfProfile {
         case MyProfile
@@ -117,6 +118,7 @@ class ViewModel: ObservableObject {
             diaryListFromFirebase.removeAll()
             profileOfSearch = Profile()
             idFollowList.removeAll()
+            followList.removeAll()
         } catch {
             print(error.localizedDescription)
         }
@@ -139,7 +141,7 @@ class ViewModel: ObservableObject {
         }
     }
     
-    func readUserFromDB(uid: String, mode: KindOfProfile){
+    func readUserFromDB(uid: String, mode: KindOfProfile, completion: @escaping (_ message: String) -> Void){
         ref.child("user").child(uid).observe(.value, with: { snapshot in
             // Get user value
             guard let value = snapshot.value as? NSDictionary else {return}
@@ -149,8 +151,13 @@ class ViewModel: ObservableObject {
                 self.userProfile.email = value["email"] as? String ?? "로드 실패"
                 self.userProfile.id = uid
             } else if mode == .Others {
-                
+                let name = value["name"] as? String ?? "로드 실패"
+                let goal = value["goal"] as? String ?? "로드 실패"
+                let email = value["email"] as? String ?? "로드 실패"
+                let id = uid
+                self.followList.append(Profile(id: id, name: name, email: email, goal: goal))
             }
+            completion("유저의 정보를 읽어옴.")
         }) { error in
             print(error.localizedDescription)
         }
@@ -386,6 +393,9 @@ class ViewModel: ObservableObject {
             for child in snapshot.children.allObjects as! [DataSnapshot] {
                 guard let value = child.value as? NSString else {return}
                 self.idFollowList.append(value as String)
+                self.readUserFromDB(uid: value as String, mode: .Others, completion: { message in
+                    print(message)
+                })
             }
             completion("관심종목 id fetch 완료.")
         })

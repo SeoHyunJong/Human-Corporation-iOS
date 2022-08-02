@@ -67,8 +67,10 @@ struct HomeView: View {
             .onAppear(){
                 if viewModel.state == .signedIn { //프리뷰 오류 때문에 추가...
                     //프로필 로드
-                    viewModel.readUserFromDB()
                     guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
+                    viewModel.readUserFromDB(uid: uid, mode: .MyProfile, completion: { message in
+                        print(message)
+                    })
                     viewModel.downloadImage(uid: uid, mode: .MyProfile)
                     //차트 데이터 로드
                     viewModel.priceRead(completion: { message in

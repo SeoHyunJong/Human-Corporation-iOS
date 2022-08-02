@@ -6,17 +6,19 @@
 //
 
 import SwiftUI
+import AlertToast
 
 struct AddFriendView: View {
     @State private var searchEmail = ""
     @FocusState private var storyFocused: Bool
     @EnvironmentObject var viewModel: ViewModel
+    @State private var showError = false
     
     var body: some View {
         List {
             HStack{
                 ZStack{
-                    TextField("     이메일로 종목 추가", text: $searchEmail)
+                    TextField("     이메일로 친구 추가", text: $searchEmail)
                         .keyboardType(.emailAddress)
                         .focused($storyFocused)
                     Rectangle()
@@ -47,15 +49,23 @@ struct AddFriendView: View {
                     Text(viewModel.profileOfSearch.name)
                     Spacer()
                     Button("Follow") {
-                        viewModel.addFollow(uid: viewModel.profileOfSearch.id)
+                        if viewModel.profileOfSearch.id != viewModel.userProfile.id {
+                            viewModel.addFollow(uid: viewModel.profileOfSearch.id)
+                        } else {
+                            showError.toggle()
+                        }
                     }
                     .buttonStyle(BorderlessButtonStyle())
+                    .disabled(viewModel.idFollowList.contains(viewModel.profileOfSearch.id) ? true : false)
                 }
             }
         }
         .listStyle(.plain)
         .onTapGesture {
             storyFocused = false
+        }
+        .toast(isPresenting: $showError) {
+            AlertToast(displayMode: .alert, type: .error(.red), title: "자기 자신을 팔로우\n할 수 없습니다.")
         }
     }
 }

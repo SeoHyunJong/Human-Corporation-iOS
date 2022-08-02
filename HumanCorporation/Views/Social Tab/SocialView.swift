@@ -13,13 +13,12 @@
  <추가>
  이메일로 검색    검색 버튼
  친구프사  이름   Follow
- <팔로워>
- 친구프사  이름   Follow
  */
 import SwiftUI
 
 struct SocialView: View {
     @State private var selection: Tab = .FollowList
+    @EnvironmentObject var viewModel: ViewModel
     
     enum Tab {
         case FollowList
@@ -39,11 +38,18 @@ struct SocialView: View {
                 }
                 .tag(Tab.AddFriend)
         }
+        .onAppear() {
+            viewModel.followList.removeAll()
+            viewModel.readFollowList(completion: { message in
+                print(message)
+            })
+        }
     }
 }
 
 struct SocialView_Previews: PreviewProvider {
     static var previews: some View {
         SocialView()
+            .environmentObject(ViewModel())
     }
 }
