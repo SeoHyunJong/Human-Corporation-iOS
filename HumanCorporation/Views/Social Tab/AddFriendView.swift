@@ -53,7 +53,7 @@ struct AddFriendView: View {
                         showAlert.toggle()
                     }
                     .buttonStyle(BorderlessButtonStyle())
-                    .disabled(viewModel.idFollowList.contains(viewModel.profileOfSearch.id) ? true : false)
+                    .disabled(viewModel.followIDList.contains(viewModel.profileOfSearch.id) ? true : false)
                 }
             }
         }
@@ -66,8 +66,10 @@ struct AddFriendView: View {
                 let uid = viewModel.profileOfSearch.id
                 if uid != viewModel.userProfile.id {
                     viewModel.addFollow(uid: uid)
-                    viewModel.idFollowList.append(uid)
+                    //친구 리스트 갱신
+                    viewModel.followIDList.append(uid)
                     viewModel.downloadImage(uid: uid, mode: .Others)
+                    viewModel.getRecentPrice(uid: uid)
                     viewModel.readUserFromDB(uid: uid, mode: .Others, completion: { message in
                         print(message)
                     })

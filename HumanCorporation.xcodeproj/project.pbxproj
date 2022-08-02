@@ -33,6 +33,7 @@
 		B45E03F42896E380009C7601 /* Triangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45E03F32896E380009C7601 /* Triangle.swift */; };
 		B45E03F92899097E009C7601 /* FollowListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45E03F82899097E009C7601 /* FollowListView.swift */; };
 		B45E03FB28990990009C7601 /* AddFriendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45E03FA28990990009C7601 /* AddFriendView.swift */; };
+		B45E03FF28997AB8009C7601 /* FriendChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45E03FE28997AB8009C7601 /* FriendChartView.swift */; };
 		B46EF2DE288A89A500F38878 /* AlertToast in Frameworks */ = {isa = PBXBuildFile; productRef = B46EF2DD288A89A500F38878 /* AlertToast */; };
 		B46EF2E0288E9C3E00F38878 /* Diary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46EF2DF288E9C3E00F38878 /* Diary.swift */; };
 		B4D87F2E2882B1D300A2CCAB /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = B4D87F2D2882B1D300A2CCAB /* GoogleSignIn */; };
@@ -72,6 +73,7 @@
 		B45E03F32896E380009C7601 /* Triangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Triangle.swift; sourceTree = "<group>"; };
 		B45E03F82899097E009C7601 /* FollowListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowListView.swift; sourceTree = "<group>"; };
 		B45E03FA28990990009C7601 /* AddFriendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFriendView.swift; sourceTree = "<group>"; };
+		B45E03FE28997AB8009C7601 /* FriendChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendChartView.swift; sourceTree = "<group>"; };
 		B46EF2DF288E9C3E00F38878 /* Diary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Diary.swift; sourceTree = "<group>"; };
 		B4D87F312882D86800A2CCAB /* GoogleSignInButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleSignInButton.swift; sourceTree = "<group>"; };
 		B4D87F352882E8B700A2CCAB /* FirstComeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstComeView.swift; sourceTree = "<group>"; };
@@ -202,6 +204,7 @@
 			children = (
 				B442B7E32886D9540064C0B1 /* SocialView.swift */,
 				B45E03F82899097E009C7601 /* FollowListView.swift */,
+				B45E03FE28997AB8009C7601 /* FriendChartView.swift */,
 				B45E03FA28990990009C7601 /* AddFriendView.swift */,
 			);
 			path = "Social Tab";
@@ -335,6 +338,7 @@
 				B442B7E62887DABE0064C0B1 /* ImagePicker.swift in Sources */,
 				B442B7E02886D9060064C0B1 /* EvaluationView.swift in Sources */,
 				B442B7E92887F0600064C0B1 /* Setting.swift in Sources */,
+				B45E03FF28997AB8009C7601 /* FriendChartView.swift in Sources */,
 				B442B7E22886D92A0064C0B1 /* RecordView.swift in Sources */,
 				B442B7DE2886D85A0064C0B1 /* ChartView.swift in Sources */,
 				B4D87F322882D86800A2CCAB /* GoogleSignInButton.swift in Sources */,

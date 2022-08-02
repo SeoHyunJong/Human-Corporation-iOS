@@ -39,12 +39,11 @@ struct SocialView: View {
                 .tag(Tab.AddFriend)
         }
         .onAppear() {
-            viewModel.profileImgList.removeAll()
-            viewModel.idFollowList.removeAll()
-            viewModel.followList.removeAll()
-            viewModel.readFollowList(completion: { message in
-                print(message)
-            })
+            if viewModel.followProfileList.isEmpty {
+                viewModel.readFollowList(completion: { message in
+                    print(message)
+                })
+            }
         }
     }
 }

@@ -12,12 +12,14 @@ struct FollowListView: View {
     var body: some View {
         NavigationView {
             List {
-                ForEach(viewModel.followList, id: \.self) { profile in
+                ForEach(viewModel.followProfileList, id: \.self) { profile in
                     HStack(spacing: 20) {
                         ProfileImage(image: (viewModel.profileImgList[profile.id] ?? UIImage(named: "Mamong"))!)
                             .frame(width: 50, height: 50)
                         Text(profile.name)
                         Spacer()
+                        Label(String(format: "%.0f", viewModel.followCurrentPriceList[profile.id] ?? 1000), systemImage: "g.circle.fill")
+                            .foregroundColor(.orange)
                     }
                 }
             }
@@ -25,9 +27,8 @@ struct FollowListView: View {
             .navigationTitle("Featured")
             .toolbar {
                 Button {
-                    viewModel.profileImgList.removeAll()
-                    viewModel.idFollowList.removeAll()
-                    viewModel.followList.removeAll()
+                    viewModel.followIDList.removeAll()
+                    viewModel.followProfileList.removeAll()
                     viewModel.readFollowList(completion: { message in
                         print(message)
                     })
