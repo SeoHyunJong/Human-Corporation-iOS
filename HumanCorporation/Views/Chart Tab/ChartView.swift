@@ -14,7 +14,6 @@ struct ChartView: View {
         GeometryReader { geo in
             let width = min(geo.size.width, geo.size.height)
             List {
-                
                 HStack {
                     ProfileImage(image: viewModel.profileImage!)
                         .frame(width: width*0.3, height: width*0.3)

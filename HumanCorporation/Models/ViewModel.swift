@@ -181,6 +181,12 @@ class ViewModel: ObservableObject {
         ref.child("temp").child(uid).removeValue()
         ref.child("price").child(uid).removeValue()
         ref.child("diary").child(uid).removeValue()
+        
+        priceList.removeAll()
+        recentDay = Date(timeIntervalSince1970: 0)
+        tempDiaryList.removeAll()
+        tempPriceList.removeAll()
+        diaryListFromFirebase.removeAll()
     }
     // MARK: Diary
     func diaryAdd(diaryList: [Diary], completion: @escaping (_ message: String) -> Void) {
@@ -325,5 +331,9 @@ class ViewModel: ObservableObject {
             print(error.localizedDescription)
         }
     }
-    
+    // MARK: Social
+    func searchFriend(completion: @escaping (_ message: String) -> Void) {
+        
+        completion("친구 찾기가 완료됨.")
+    }
 }

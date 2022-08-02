@@ -31,6 +31,8 @@
 		B45E03EF2896DE5F009C7601 /* NewCommerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45E03EE2896DE5F009C7601 /* NewCommerView.swift */; };
 		B45E03F22896DF08009C7601 /* MessageBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45E03F12896DF08009C7601 /* MessageBox.swift */; };
 		B45E03F42896E380009C7601 /* Triangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45E03F32896E380009C7601 /* Triangle.swift */; };
+		B45E03F92899097E009C7601 /* FollowListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45E03F82899097E009C7601 /* FollowListView.swift */; };
+		B45E03FB28990990009C7601 /* AddFriendView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45E03FA28990990009C7601 /* AddFriendView.swift */; };
 		B46EF2DE288A89A500F38878 /* AlertToast in Frameworks */ = {isa = PBXBuildFile; productRef = B46EF2DD288A89A500F38878 /* AlertToast */; };
 		B46EF2E0288E9C3E00F38878 /* Diary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46EF2DF288E9C3E00F38878 /* Diary.swift */; };
 		B4D87F2E2882B1D300A2CCAB /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = B4D87F2D2882B1D300A2CCAB /* GoogleSignIn */; };
@@ -68,6 +70,8 @@
 		B45E03EE2896DE5F009C7601 /* NewCommerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewCommerView.swift; sourceTree = "<group>"; };
 		B45E03F12896DF08009C7601 /* MessageBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageBox.swift; sourceTree = "<group>"; };
 		B45E03F32896E380009C7601 /* Triangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Triangle.swift; sourceTree = "<group>"; };
+		B45E03F82899097E009C7601 /* FollowListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowListView.swift; sourceTree = "<group>"; };
+		B45E03FA28990990009C7601 /* AddFriendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFriendView.swift; sourceTree = "<group>"; };
 		B46EF2DF288E9C3E00F38878 /* Diary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Diary.swift; sourceTree = "<group>"; };
 		B4D87F312882D86800A2CCAB /* GoogleSignInButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleSignInButton.swift; sourceTree = "<group>"; };
 		B4D87F352882E8B700A2CCAB /* FirstComeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstComeView.swift; sourceTree = "<group>"; };
@@ -142,7 +146,7 @@
 			children = (
 				B42EA620288292B1009C5901 /* ContentView.swift */,
 				B4D87F4328868A7D00A2CCAB /* HomeView.swift */,
-				B442B7E32886D9540064C0B1 /* SocialView.swift */,
+				B45E03F72899095E009C7601 /* Social Tab */,
 				B45E03F02896DECB009C7601 /* First */,
 				B4EB64F32892EECB004DD814 /* Record Tab */,
 				B46EF2E1288EAD0B00F38878 /* Evaluation Tab */,
@@ -191,6 +195,16 @@
 				B45E03F32896E380009C7601 /* Triangle.swift */,
 			);
 			path = First;
+			sourceTree = "<group>";
+		};
+		B45E03F72899095E009C7601 /* Social Tab */ = {
+			isa = PBXGroup;
+			children = (
+				B442B7E32886D9540064C0B1 /* SocialView.swift */,
+				B45E03F82899097E009C7601 /* FollowListView.swift */,
+				B45E03FA28990990009C7601 /* AddFriendView.swift */,
+			);
+			path = "Social Tab";
 			sourceTree = "<group>";
 		};
 		B46EF2E1288EAD0B00F38878 /* Evaluation Tab */ = {
@@ -325,6 +339,7 @@
 				B442B7DE2886D85A0064C0B1 /* ChartView.swift in Sources */,
 				B4D87F322882D86800A2CCAB /* GoogleSignInButton.swift in Sources */,
 				B442B7F72889702F0064C0B1 /* Bar.swift in Sources */,
+				B45E03F92899097E009C7601 /* FollowListView.swift in Sources */,
 				B46EF2E0288E9C3E00F38878 /* Diary.swift in Sources */,
 				B442B7DC2886D5960064C0B1 /* ProfileImage.swift in Sources */,
 				B45E03EF2896DE5F009C7601 /* NewCommerView.swift in Sources */,
@@ -337,6 +352,7 @@
 				B42EA621288292B1009C5901 /* ContentView.swift in Sources */,
 				B42EA61F288292B1009C5901 /* HumanCorporationApp.swift in Sources */,
 				B4EB64F228914BFA004DD814 /* miniBar.swift in Sources */,
+				B45E03FB28990990009C7601 /* AddFriendView.swift in Sources */,
 				B4EB64EE28910F93004DD814 /* DiaryFieldView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
