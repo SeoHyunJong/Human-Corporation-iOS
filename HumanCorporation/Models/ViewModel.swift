@@ -43,6 +43,9 @@ class ViewModel: ObservableObject {
     }
     @Published var state: SignInState = .signedOut
     
+    //----for social----
+    @Published var profileOfSearch = Profile()
+    
     // MARK: Sign in, sign out
     func signIn() {
         // 1. 이전에 로그인한 이력이 있으면 그 이력을 토대로 로그인한다.
@@ -332,8 +335,15 @@ class ViewModel: ObservableObject {
         }
     }
     // MARK: Social
-    func searchFriend(completion: @escaping (_ message: String) -> Void) {
-        
-        completion("친구 찾기가 완료됨.")
+    func searchFriend(email: String ,completion: @escaping (_ message: String) -> Void) {
+        ref.child("user").queryOrdered(byChild: "email").queryEqual(toValue: email).observeSingleEvent(of: .value, with: {
+            snapshot in
+            for child in snapshot.children.allObjects as! [DataSnapshot] {
+                guard let value = child.value as? NSDictionary else {return}
+                self.profileOfSearch.id = child.key
+                self.profileOfSearch.name = value["name"] as? String ?? ""
+            }
+        })
+        completion("종목 검색 완료.")
     }
 }

@@ -125,8 +125,8 @@
 				B42EA6342882A9C6009C5901 /* Info.plist */,
 				B442B7EF288812C90064C0B1 /* GoogleService-Info.plist */,
 				B42EA61E288292B1009C5901 /* HumanCorporationApp.swift */,
-				B42EA62C2882961D009C5901 /* Views */,
 				B42EA6372882AB42009C5901 /* Models */,
+				B42EA62C2882961D009C5901 /* Views */,
 				B42EA622288292B3009C5901 /* Assets.xcassets */,
 				B42EA624288292B3009C5901 /* Preview Content */,
 			);

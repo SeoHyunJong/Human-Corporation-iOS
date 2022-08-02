@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct AddFriendView: View {
-    @State private var nameOfFriend = ""
     @State private var imgOfFriend = UIImage(named: "Mamong")
     @State private var searchEmail = ""
     @FocusState private var storyFocused: Bool
+    @EnvironmentObject var viewModel: ViewModel
     
     var body: some View {
         List {
@@ -26,19 +26,25 @@ struct AddFriendView: View {
                 }
                 .padding(.horizontal)
                 Button {
+                    viewModel.profileOfSearch.name = ""
                     storyFocused = false
+                    viewModel.searchFriend(email: searchEmail, completion: { message in
+                        print(message)
+                    })
                 } label: {
                     Label("Search", systemImage: "magnifyingglass")
                         .foregroundColor(.orange)
                 }
+                .buttonStyle(BorderlessButtonStyle())
             }
-            if nameOfFriend.isEmpty {
+            if viewModel.profileOfSearch.name.isEmpty {
                 Text("검색 결과 없음")
                     .foregroundColor(.secondary)
             } else {
                 HStack(spacing: 20) {
                     ProfileImage(image: imgOfFriend!)
-                    Text(nameOfFriend)
+                        .frame(width: 50, height: 50)
+                    Text(viewModel.profileOfSearch.name)
                     Spacer()
                     Button("Follow") {
                         
@@ -55,6 +61,9 @@ struct AddFriendView: View {
 
 struct AddFriendView_Previews: PreviewProvider {
     static var previews: some View {
-        AddFriendView()
+        Group {
+            AddFriendView()
+                .environmentObject(ViewModel())
+        }
     }
 }
