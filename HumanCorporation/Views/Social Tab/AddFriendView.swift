@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct AddFriendView: View {
-    @State private var imgOfFriend = UIImage(named: "Mamong")
     @State private var searchEmail = ""
     @FocusState private var storyFocused: Bool
     @EnvironmentObject var viewModel: ViewModel
@@ -27,6 +26,7 @@ struct AddFriendView: View {
                 .padding(.horizontal)
                 Button {
                     viewModel.profileOfSearch.name = ""
+                    viewModel.imageOfSearchProfile = UIImage(named: "Mamong")
                     storyFocused = false
                     viewModel.searchFriend(email: searchEmail, completion: { message in
                         print(message)
@@ -42,13 +42,14 @@ struct AddFriendView: View {
                     .foregroundColor(.secondary)
             } else {
                 HStack(spacing: 20) {
-                    ProfileImage(image: imgOfFriend!)
+                    ProfileImage(image: viewModel.imageOfSearchProfile!)
                         .frame(width: 50, height: 50)
                     Text(viewModel.profileOfSearch.name)
                     Spacer()
                     Button("Follow") {
                         
                     }
+                    .buttonStyle(BorderlessButtonStyle())
                 }
             }
         }

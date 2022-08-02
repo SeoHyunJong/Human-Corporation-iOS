@@ -6,6 +6,7 @@
 //
 //HomeView -> Chart, Evaluation, Analysis, Discuss, Settings
 import SwiftUI
+import GoogleSignIn
 // 시세   실적추가    종목분석    종목토론실
 struct HomeView: View {
     @EnvironmentObject var viewModel: ViewModel
@@ -67,7 +68,8 @@ struct HomeView: View {
                 if viewModel.state == .signedIn { //프리뷰 오류 때문에 추가...
                     //프로필 로드
                     viewModel.readUserFromDB()
-                    viewModel.downloadImage()
+                    guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
+                    viewModel.downloadImage(uid: uid, mode: .MyProfile)
                     //차트 데이터 로드
                     viewModel.priceRead(completion: { message in
                         print(message)

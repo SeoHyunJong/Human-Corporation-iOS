@@ -45,6 +45,13 @@ class ViewModel: ObservableObject {
     
     //----for social----
     @Published var profileOfSearch = Profile()
+    @Published var imageOfSearchProfile = UIImage(named: "Mamong")
+    
+    enum KindOfProfileImg {
+        case MyProfile
+        case Search
+        case Others
+    }
     
     // MARK: Sign in, sign out
     func signIn() {
@@ -165,8 +172,7 @@ class ViewModel: ObservableObject {
             self.profileImage = image
         }
     }
-    func downloadImage(){
-        guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
+    func downloadImage(uid: String, mode: KindOfProfileImg){
         let imageRef = storageRef.child("images/\(uid)/profile.jpg")
         // Download in memory with a maximum allowed size of 1MB (1 * 1024 * 1024 bytes)
         imageRef.getData(maxSize: 3 * 1024 * 1024) { data, error in
@@ -174,11 +180,29 @@ class ViewModel: ObservableObject {
                 print("cannot load profile image")
             } else {
                 if data != nil {
-                    self.profileImage = UIImage(data: data!)
+                    if mode == .MyProfile {
+                        self.profileImage = UIImage(data: data!)
+                    } else if mode == .Search {
+                        self.imageOfSearchProfile = UIImage(data: data!)
+                    }
                 }
             }
         }
     }
+//    func downloadImage(){
+//        guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
+//        let imageRef = storageRef.child("images/\(uid)/profile.jpg")
+//        // Download in memory with a maximum allowed size of 1MB (1 * 1024 * 1024 bytes)
+//        imageRef.getData(maxSize: 3 * 1024 * 1024) { data, error in
+//            if let _ = error {
+//                print("cannot load profile image")
+//            } else {
+//                if data != nil {
+//                    self.profileImage = UIImage(data: data!)
+//                }
+//            }
+//        }
+//    }
     func trashAllExepProfile() {
         guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
         ref.child("temp").child(uid).removeValue()
@@ -336,12 +360,13 @@ class ViewModel: ObservableObject {
     }
     // MARK: Social
     func searchFriend(email: String ,completion: @escaping (_ message: String) -> Void) {
-        ref.child("user").queryOrdered(byChild: "email").queryEqual(toValue: email).observeSingleEvent(of: .value, with: {
+        ref.child("user").queryOrdered(byChild: "email").queryEqual(toValue: email).observeSingleEvent(of: .value, with: { [self]
             snapshot in
             for child in snapshot.children.allObjects as! [DataSnapshot] {
                 guard let value = child.value as? NSDictionary else {return}
                 self.profileOfSearch.id = child.key
                 self.profileOfSearch.name = value["name"] as? String ?? ""
+                self.downloadImage(uid: child.key, mode: .Search)
             }
         })
         completion("종목 검색 완료.")
