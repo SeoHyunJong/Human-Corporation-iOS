@@ -9,13 +9,12 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject var viewModel: ViewModel
-    @State private var infoNext = false
     var body: some View {
         switch viewModel.state {
         case .signedIn:
             if viewModel.isNewUser {
-                if !infoNext {
-                    NewCommerView(infoNext: $infoNext)
+                if !viewModel.infoNext {
+                    NewCommerView()
                 } else {
                     FirstComeView()
                 }

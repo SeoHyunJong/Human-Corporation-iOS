@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct NewCommerView: View {
+    @EnvironmentObject var viewModel: ViewModel
     @State private var message: [String] =
     ["환영한다, 인간! 난 외계행성에서 온 외계투자자 마몽이라고 한다! 이 앱을 개발했지!",
      "왜 외계인이 자기개발 앱을 만든거야?",
@@ -30,7 +31,6 @@ struct NewCommerView: View {
      "그렇다! 이제 너 지구인의 정보를 입력하라!"
     ]
     @State private var step: Int = 0
-    @Binding var infoNext: Bool
     
     var body: some View {
         VStack {
@@ -48,7 +48,7 @@ struct NewCommerView: View {
                 if step < message.count - 1 {
                     step += 1
                 } else {
-                    infoNext = true
+                    viewModel.infoNext = true
                 }
             } label: {
                 Label("next", systemImage: "arrow.right.circle.fill")
@@ -60,6 +60,7 @@ struct NewCommerView: View {
 
 struct NewCommerView_Previews: PreviewProvider {
     static var previews: some View {
-        NewCommerView(infoNext: .constant(false))
+        NewCommerView()
+            .environmentObject(ViewModel())
     }
 }

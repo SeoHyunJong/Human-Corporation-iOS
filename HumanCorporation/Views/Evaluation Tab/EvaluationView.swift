@@ -70,7 +70,7 @@ struct EvaluationView: View {
                         Label(String(format: "%.0f", currentPrice), systemImage: "dollarsign.circle.fill")
                     }
                     miniBar(priceList: viewModel.tempPriceList)
-                        .frame(width: 300, height: 300, alignment: .center)
+                        .scaledToFit()
                     MessageBox(message: "잠깐! 완성하기를 누르기 전에 그 날 자정부터 오후 11:59분까지 꼼꼼하게 일기를 작성했는지 확인해라!", leftSpeaker: true)
                     MessageBox(message: "오늘 일기를 먼저 쓰고 제출해버렸어. 어제 일기도 쓰고 싶은데, 그게 안되네...", leftSpeaker: false)
                     MessageBox(message: "날짜 선택은 최근 추가된 실적을 기준으로 범위가 제한된다! 이건 분식회계를 방지하기 위한 최소조치지.", leftSpeaker: true)
@@ -118,7 +118,7 @@ struct EvaluationView: View {
                 if viewModel.priceList.isEmpty == false {
                     viewModel.findRecentDay(completion: { message in
                         print(message)
-                 })
+                    })
                     //2. 전날 종가 불러오기
                     previousClose = viewModel.priceList.last!.close
                 }
@@ -198,14 +198,16 @@ struct EvaluationView: View {
      */
     func updateSelectedDate(){
         //0. 임시 저장된 데이터 삭제하기 (날짜를 새로 선택했으므로)
-        viewModel.removeTemp()
-        viewModel.tempDiaryList.removeAll()
-        viewModel.tempPriceList.removeAll()
+        if viewModel.tempDiaryList.isEmpty == false {
+            viewModel.removeTemp()
+            viewModel.tempDiaryList.removeAll()
+            viewModel.tempPriceList.removeAll()
+        }
         //1. 캘린더 날짜 선택기간 제한
         if viewModel.priceList.isEmpty == false {
             viewModel.findRecentDay(completion: { message in
                 print(message)
-         })
+            })
             //2. 전날 종가 불러오기
             previousClose = viewModel.priceList.last!.close
             //3. 임시저장된 데이터가 없으니 종가에서 현재가 그대로 설정

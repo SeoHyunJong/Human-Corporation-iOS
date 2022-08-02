@@ -12,6 +12,7 @@ struct Setting: View {
     @State private var showSheet = false
     @State private var showAlert = false
     @State private var showError = false
+    @State private var showWarning = false
     
     var body: some View {
         NavigationView{
@@ -52,13 +53,26 @@ struct Setting: View {
                         }
                     }
                 }
-                
+                Button {
+                    
+                } label: {
+                    Label("초기화", systemImage: "trash")
+                }
+                .buttonStyle(BorderlessButtonStyle())
                 Label("Sign out", systemImage: "rectangle.portrait.and.arrow.right")
                     .onTapGesture {
                         viewModel.signOut()
                     }
             }
             .navigationTitle("Settings")
+            .alert("정말 초기화하시겠습니까? 프로필 정보를 제외한 일기, 차트가 모두 초기화됩니다.", isPresented: $showWarning) {
+                Button("계속"){
+                    viewModel.trashAllExepProfile()
+                }
+                Button("취소", role: .cancel) {
+                    
+                }
+            }
             .sheet(isPresented: $showSheet) {
                 ImagePicker(sourceType: .photoLibrary)
                     .environmentObject(viewModel)

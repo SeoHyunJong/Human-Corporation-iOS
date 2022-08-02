@@ -20,6 +20,7 @@ class ViewModel: ObservableObject {
     lazy var storageRef = Storage.storage().reference()
     
     @Published var isNewUser = false
+    @Published var infoNext = false
     @Published var userProfile: Profile = Profile()
     @Published var profileImage = UIImage(named: "Mamong") //프리뷰를 위해 임시 설정
     @Published var priceList: [CandleChartDataEntry] = []
@@ -115,15 +116,11 @@ class ViewModel: ObservableObject {
         //        uploadImg(image: UIImage(named: "Mamong")!)
     }
     
-    private func userCheck(){
+    private func userCheck(){ //새로운 유저인지 아닌지 체크
         guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
         ref.child("user").child(uid).observeSingleEvent(of: .value, with: { snapshot in
             // Get user value
-            guard let value = snapshot.value as? NSDictionary else {self.isNewUser = true; return}
-            let username = value["name"] as? String ?? "error"
-            if username == "error" {
-                self.isNewUser = true
-            }
+            guard let _ = snapshot.value as? NSDictionary else {self.isNewUser = true; self.infoNext = false; return}
         }) { error in
             print(error.localizedDescription)
         }
@@ -179,7 +176,12 @@ class ViewModel: ObservableObject {
             }
         }
     }
-    
+    func trashAllExepProfile() {
+        guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
+        ref.child("temp").child(uid).removeValue()
+        ref.child("price").child(uid).removeValue()
+        ref.child("diary").child(uid).removeValue()
+    }
     // MARK: Diary
     func diaryAdd(diaryList: [Diary], completion: @escaping (_ message: String) -> Void) {
         let dateformatter = DateFormatter()
