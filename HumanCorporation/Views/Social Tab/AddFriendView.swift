@@ -13,6 +13,7 @@ struct AddFriendView: View {
     @FocusState private var storyFocused: Bool
     @EnvironmentObject var viewModel: ViewModel
     @State private var showError = false
+    @State private var showAlert = false
     
     var body: some View {
         List {
@@ -49,11 +50,7 @@ struct AddFriendView: View {
                     Text(viewModel.profileOfSearch.name)
                     Spacer()
                     Button("Follow") {
-                        if viewModel.profileOfSearch.id != viewModel.userProfile.id {
-                            viewModel.addFollow(uid: viewModel.profileOfSearch.id)
-                        } else {
-                            showError.toggle()
-                        }
+                        showAlert.toggle()
                     }
                     .buttonStyle(BorderlessButtonStyle())
                     .disabled(viewModel.idFollowList.contains(viewModel.profileOfSearch.id) ? true : false)
@@ -63,6 +60,23 @@ struct AddFriendView: View {
         .listStyle(.plain)
         .onTapGesture {
             storyFocused = false
+        }
+        .alert("정말 이 종목을 관심종목에 추가하시겠습니까?", isPresented: $showAlert) {
+            Button("추가") {
+                let uid = viewModel.profileOfSearch.id
+                if uid != viewModel.userProfile.id {
+                    viewModel.addFollow(uid: uid)
+                    viewModel.idFollowList.append(uid)
+                    viewModel.downloadImage(uid: uid, mode: .Others)
+                    viewModel.readUserFromDB(uid: uid, mode: .Others, completion: { message in
+                        print(message)
+                    })
+                } else {
+                    showError.toggle()
+                }
+            }
+            Button("취소", role: .cancel) {
+            }
         }
         .toast(isPresenting: $showError) {
             AlertToast(displayMode: .alert, type: .error(.red), title: "자기 자신을 팔로우\n할 수 없습니다.")
