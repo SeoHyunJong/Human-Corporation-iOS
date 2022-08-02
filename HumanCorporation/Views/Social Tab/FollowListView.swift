@@ -14,7 +14,7 @@ struct FollowListView: View {
             List {
                 ForEach(viewModel.followList, id: \.self) { profile in
                     HStack(spacing: 20) {
-                        ProfileImage(image: UIImage(named: "Mamong")!)
+                        ProfileImage(image: (viewModel.profileImgList[profile.id] ?? UIImage(named: "Mamong"))!)
                             .frame(width: 50, height: 50)
                         Text(profile.name)
                         Spacer()
@@ -25,6 +25,8 @@ struct FollowListView: View {
             .navigationTitle("Featured")
             .toolbar {
                 Button {
+                    viewModel.profileImgList.removeAll()
+                    viewModel.idFollowList.removeAll()
                     viewModel.followList.removeAll()
                     viewModel.readFollowList(completion: { message in
                         print(message)

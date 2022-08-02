@@ -48,6 +48,7 @@ class ViewModel: ObservableObject {
     @Published var imageOfSearchProfile = UIImage(named: "Mamong")
     @Published var idFollowList: [String] = []
     @Published var followList: [Profile] = []
+    @Published var profileImgList: [String:UIImage] = [:]
     
     enum KindOfProfile {
         case MyProfile
@@ -117,8 +118,6 @@ class ViewModel: ObservableObject {
             tempPriceList.removeAll()
             diaryListFromFirebase.removeAll()
             profileOfSearch = Profile()
-            idFollowList.removeAll()
-            followList.removeAll()
         } catch {
             print(error.localizedDescription)
         }
@@ -163,20 +162,6 @@ class ViewModel: ObservableObject {
         }
     }
     
-//    func readUserFromDB(){
-//        guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
-//        ref.child("user").child(uid).observe(.value, with: { snapshot in
-//            // Get user value
-//            guard let value = snapshot.value as? NSDictionary else {return}
-//            self.userProfile.name = value["name"] as? String ?? "로드 실패"
-//            self.userProfile.goal = value["goal"] as? String ?? "로드 실패"
-//            self.userProfile.email = value["email"] as? String ?? "로드 실패"
-//            self.userProfile.id = uid
-//        }) { error in
-//            print(error.localizedDescription)
-//        }
-//    }
-    
     func editProfile() {
         self.ref.child("user").child(userProfile.id).updateChildValues(["name":userProfile.name,"goal":userProfile.goal])
     }
@@ -211,6 +196,8 @@ class ViewModel: ObservableObject {
                         self.profileImage = UIImage(data: data!)
                     } else if mode == .Search {
                         self.imageOfSearchProfile = UIImage(data: data!)
+                    } else if mode == .Others {
+                        self.profileImgList[uid] = UIImage(data: data!)
                     }
                 }
             }
@@ -393,6 +380,7 @@ class ViewModel: ObservableObject {
             for child in snapshot.children.allObjects as! [DataSnapshot] {
                 guard let value = child.value as? NSString else {return}
                 self.idFollowList.append(value as String)
+                self.downloadImage(uid: value as String, mode: .Others)
                 self.readUserFromDB(uid: value as String, mode: .Others, completion: { message in
                     print(message)
                 })
