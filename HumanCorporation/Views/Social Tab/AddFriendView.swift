@@ -47,7 +47,7 @@ struct AddFriendView: View {
                     Text(viewModel.profileOfSearch.name)
                     Spacer()
                     Button("Follow") {
-                        
+                        viewModel.addFollow(uid: viewModel.profileOfSearch.id)
                     }
                     .buttonStyle(BorderlessButtonStyle())
                 }

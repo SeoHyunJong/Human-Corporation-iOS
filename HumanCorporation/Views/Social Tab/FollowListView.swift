@@ -8,13 +8,27 @@
 import SwiftUI
 
 struct FollowListView: View {
+    @EnvironmentObject var viewModel: ViewModel
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        NavigationView {
+            List {
+                ForEach() { uid in
+                    
+                }
+            }
+            .onAppear() {
+                viewModel.readFollowList(completion: { message in
+                    print(message)
+                })
+            }
+        }
+        .navigationTitle("Featured")
     }
 }
 
 struct FollowListView_Previews: PreviewProvider {
     static var previews: some View {
         FollowListView()
+            .environmentObject(ViewModel())
     }
 }

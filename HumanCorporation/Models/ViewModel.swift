@@ -46,8 +46,9 @@ class ViewModel: ObservableObject {
     //----for social----
     @Published var profileOfSearch = Profile()
     @Published var imageOfSearchProfile = UIImage(named: "Mamong")
+    @Published var idFollowList: [String] = []
     
-    enum KindOfProfileImg {
+    enum KindOfProfile {
         case MyProfile
         case Search
         case Others
@@ -114,6 +115,8 @@ class ViewModel: ObservableObject {
             tempDiaryList.removeAll()
             tempPriceList.removeAll()
             diaryListFromFirebase.removeAll()
+            profileOfSearch = Profile()
+            idFollowList.removeAll()
         } catch {
             print(error.localizedDescription)
         }
@@ -136,19 +139,36 @@ class ViewModel: ObservableObject {
         }
     }
     
-    func readUserFromDB(){
-        guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
+    func readUserFromDB(uid: String, mode: KindOfProfile){
         ref.child("user").child(uid).observe(.value, with: { snapshot in
             // Get user value
             guard let value = snapshot.value as? NSDictionary else {return}
-            self.userProfile.name = value["name"] as? String ?? "로드 실패"
-            self.userProfile.goal = value["goal"] as? String ?? "로드 실패"
-            self.userProfile.email = value["email"] as? String ?? "로드 실패"
-            self.userProfile.id = uid
+            if mode == .MyProfile {
+                self.userProfile.name = value["name"] as? String ?? "로드 실패"
+                self.userProfile.goal = value["goal"] as? String ?? "로드 실패"
+                self.userProfile.email = value["email"] as? String ?? "로드 실패"
+                self.userProfile.id = uid
+            } else if mode == .Others {
+                
+            }
         }) { error in
             print(error.localizedDescription)
         }
     }
+    
+//    func readUserFromDB(){
+//        guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
+//        ref.child("user").child(uid).observe(.value, with: { snapshot in
+//            // Get user value
+//            guard let value = snapshot.value as? NSDictionary else {return}
+//            self.userProfile.name = value["name"] as? String ?? "로드 실패"
+//            self.userProfile.goal = value["goal"] as? String ?? "로드 실패"
+//            self.userProfile.email = value["email"] as? String ?? "로드 실패"
+//            self.userProfile.id = uid
+//        }) { error in
+//            print(error.localizedDescription)
+//        }
+//    }
     
     func editProfile() {
         self.ref.child("user").child(userProfile.id).updateChildValues(["name":userProfile.name,"goal":userProfile.goal])
@@ -172,7 +192,7 @@ class ViewModel: ObservableObject {
             self.profileImage = image
         }
     }
-    func downloadImage(uid: String, mode: KindOfProfileImg){
+    func downloadImage(uid: String, mode: KindOfProfile){
         let imageRef = storageRef.child("images/\(uid)/profile.jpg")
         // Download in memory with a maximum allowed size of 1MB (1 * 1024 * 1024 bytes)
         imageRef.getData(maxSize: 3 * 1024 * 1024) { data, error in
@@ -189,20 +209,6 @@ class ViewModel: ObservableObject {
             }
         }
     }
-//    func downloadImage(){
-//        guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
-//        let imageRef = storageRef.child("images/\(uid)/profile.jpg")
-//        // Download in memory with a maximum allowed size of 1MB (1 * 1024 * 1024 bytes)
-//        imageRef.getData(maxSize: 3 * 1024 * 1024) { data, error in
-//            if let _ = error {
-//                print("cannot load profile image")
-//            } else {
-//                if data != nil {
-//                    self.profileImage = UIImage(data: data!)
-//                }
-//            }
-//        }
-//    }
     func trashAllExepProfile() {
         guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
         ref.child("temp").child(uid).removeValue()
@@ -370,5 +376,18 @@ class ViewModel: ObservableObject {
             }
         })
         completion("종목 검색 완료.")
+    }
+    func addFollow(uid: String) {
+        self.ref.child("social").child(userProfile.id).child("follow").childByAutoId().setValue(uid)
+    }
+    func readFollowList(completion: @escaping (_ message: String) -> Void) {
+        guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
+        ref.child("social").child(uid).child("follow").observeSingleEvent(of: .value, with: { snapshot in
+            for child in snapshot.children.allObjects as! [DataSnapshot] {
+                guard let value = child.value as? NSString else {return}
+                self.idFollowList.append(value as String)
+            }
+            completion("관심종목 id fetch 완료.")
+        })
     }
 }
