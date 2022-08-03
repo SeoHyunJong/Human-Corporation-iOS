@@ -10,6 +10,8 @@ import Charts
 
 struct ChartView: View {
     @EnvironmentObject var viewModel: ViewModel
+    @State private var fluctuation: Double = 0
+    
     var body: some View {
         GeometryReader { geo in
             let width = min(geo.size.width, geo.size.height)
@@ -19,9 +21,14 @@ struct ChartView: View {
                         .frame(width: width*0.3, height: width*0.3)
                         .padding(.vertical)
                     VStack(alignment: .leading) {
-                        Text(viewModel.userProfile.name)
-                            .font(.system(size: width*0.06))
-                            .padding()
+                        HStack {
+                            Text(viewModel.userProfile.name)
+                                .font(.system(size: width*0.06))
+                            Label(String(format: "%.2f", fluctuation) + "%", systemImage: fluctuation > 0 ? "arrowtriangle.up.circle.fill" : "arrowtriangle.down.circle.fill")
+                                .foregroundColor(fluctuation > 0 ? .red : .blue)
+                                .scaledToFit()
+                        }
+                        .padding()
                         Text(viewModel.userProfile.goal)
                             .font(.system(size: width*0.04))
                             .foregroundColor(.secondary)
@@ -61,6 +68,15 @@ struct ChartView: View {
                 MessageBox(message: "상장 가격은 1000원부터 시작한다! 모쪼록 성실하게 일해서 너의 가치를 올리도록!", leftSpeaker: true)
                 MessageBox(message: "혹시 내 가격이 오르면 나한테도 배당금 같은거 줘?", leftSpeaker: false)
                 MessageBox(message: "...외계인들의 화폐라 지구인들은 쓸 수 없다!", leftSpeaker: true)
+            }
+            .onChange(of: viewModel.priceList) { _ in
+                let current = viewModel.priceList.last?.close ?? 1000
+                let past_idx = viewModel.priceList.count - 2
+                var past: Double = 1000
+                if past_idx >= 0 {
+                    past = viewModel.priceList[past_idx].close
+                }
+                fluctuation = (current / past) * 100 - 100
             }
             .listStyle(.plain)
         }

@@ -86,7 +86,7 @@ struct Setting: View {
         }
     }
     func isValidInput(_ Input:String) -> Bool {
-        let RegEx = "\\w{2,18}"
+        let RegEx = "\\w{2,10}"
         let Test = NSPredicate(format:"SELF MATCHES %@", RegEx)
         return Test.evaluate(with: Input)
     }

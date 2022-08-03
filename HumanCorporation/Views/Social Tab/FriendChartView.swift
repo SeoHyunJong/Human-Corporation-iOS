@@ -9,6 +9,7 @@ import SwiftUI
 
 struct FriendChartView: View {
     @EnvironmentObject var viewModel: ViewModel
+    @State private var fluctuation: Double = 0
     var profile: Profile
     
     var body: some View {
@@ -20,9 +21,14 @@ struct FriendChartView: View {
                         .frame(width: width*0.3, height: width*0.3)
                         .padding(.vertical)
                     VStack(alignment: .leading) {
-                        Text(profile.name)
-                            .font(.system(size: width*0.06))
-                            .padding()
+                        HStack {
+                            Text(profile.name)
+                                .font(.system(size: width*0.06))
+                                .padding()
+                            Label(String(format: "%.2f", fluctuation) + "%", systemImage: fluctuation > 0 ? "arrowtriangle.up.circle.fill" : "arrowtriangle.down.circle.fill")
+                                .foregroundColor(fluctuation > 0 ? .red : .blue)
+                                .scaledToFit()
+                        }
                         Text(profile.goal)
                             .font(.system(size: width*0.04))
                             .foregroundColor(.secondary)
@@ -64,6 +70,15 @@ struct FriendChartView: View {
                 viewModel.priceRead(uid: profile.id, mode: .Others, completion: { message in
                     print(message)
                 })
+            }
+            .onChange(of: viewModel.followOnePriceList) { _ in
+                let current = viewModel.followOnePriceList.last?.close ?? 1000
+                let past_idx = viewModel.followOnePriceList.count - 2
+                var past: Double = 1000
+                if past_idx >= 0 {
+                    past = viewModel.followOnePriceList[past_idx].close
+                }
+                fluctuation = (current / past) * 100 - 100
             }
             .listStyle(.plain)
         }
