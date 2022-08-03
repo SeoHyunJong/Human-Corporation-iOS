@@ -56,6 +56,7 @@ struct AddFriendView: View {
                     .disabled(viewModel.followIDList.contains(viewModel.profileOfSearch.id) ? true : false)
                 }
             }
+            MessageBox(message: "개발자 이메일: shj971219@gmail.com\n추가해서 테스트해봐!", leftSpeaker: true)
         }
         .listStyle(.plain)
         .onTapGesture {

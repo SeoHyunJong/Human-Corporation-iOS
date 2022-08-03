@@ -54,7 +54,7 @@ struct Setting: View {
                     }
                 }
                 Button {
-                    
+                    showWarning.toggle()
                 } label: {
                     Label("초기화", systemImage: "trash")
                 }
