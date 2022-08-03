@@ -10,6 +10,7 @@ import SwiftUI
 struct FriendChartView: View {
     @EnvironmentObject var viewModel: ViewModel
     @State private var fluctuation: Double = 0
+    @State private var showAlert = false
     var profile: Profile
     
     var body: some View {
@@ -28,6 +29,15 @@ struct FriendChartView: View {
                             Label(String(format: "%.2f", fluctuation) + "%", systemImage: fluctuation > 0 ? "arrowtriangle.up.circle.fill" : "arrowtriangle.down.circle.fill")
                                 .foregroundColor(fluctuation > 0 ? .red : .blue)
                                 .scaledToFit()
+                                .onChange(of: viewModel.followOnePriceList) { _ in
+                                    let current = viewModel.followOnePriceList.last?.close ?? 1000
+                                    let past_idx = viewModel.followOnePriceList.count - 2
+                                    var past: Double = 1000
+                                    if past_idx >= 0 {
+                                        past = viewModel.followOnePriceList[past_idx].close
+                                    }
+                                    fluctuation = (current / past) * 100 - 100
+                                }
                         }
                         Text(profile.goal)
                             .font(.system(size: width*0.04))
@@ -66,21 +76,29 @@ struct FriendChartView: View {
                 .padding(.horizontal)
                 .foregroundColor(.blue)
             }
+            .navigationTitle(profile.name)
+            .toolbar{
+                Button {
+                    showAlert.toggle()
+                } label: {
+                    Label("팔로우 취소", systemImage: "person.badge.minus")
+                }
+            }
             .onAppear() {
                 viewModel.priceRead(uid: profile.id, mode: .Others, completion: { message in
                     print(message)
                 })
             }
-            .onChange(of: viewModel.followOnePriceList) { _ in
-                let current = viewModel.followOnePriceList.last?.close ?? 1000
-                let past_idx = viewModel.followOnePriceList.count - 2
-                var past: Double = 1000
-                if past_idx >= 0 {
-                    past = viewModel.followOnePriceList[past_idx].close
-                }
-                fluctuation = (current / past) * 100 - 100
-            }
             .listStyle(.plain)
+            .alert("해당 종목을 언팔로우하시겠습니까?", isPresented: $showAlert) {
+                Button("Unfollow") {
+                    viewModel.deleteFollow(uid: profile.id)
+                    viewModel.followIDList = viewModel.followIDList.filter(){$0 != profile.id}
+                    viewModel.followProfileList = viewModel.followProfileList.filter(){$0 != profile}
+                }
+                Button("취소", role: .cancel) {
+                }
+            }
         }
     }
 }

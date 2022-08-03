@@ -40,7 +40,7 @@ struct FollowListView: View {
                     Label("새로고침", systemImage: "goforward")
                 }
             }
-        }
+        }.navigationViewStyle(.stack)
     }
 }
 

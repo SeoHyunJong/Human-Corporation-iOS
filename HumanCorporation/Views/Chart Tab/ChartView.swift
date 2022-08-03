@@ -27,6 +27,15 @@ struct ChartView: View {
                             Label(String(format: "%.2f", fluctuation) + "%", systemImage: fluctuation > 0 ? "arrowtriangle.up.circle.fill" : "arrowtriangle.down.circle.fill")
                                 .foregroundColor(fluctuation > 0 ? .red : .blue)
                                 .scaledToFit()
+                                .onChange(of: viewModel.priceList) { _ in
+                                    let current = viewModel.priceList.last?.close ?? 1000
+                                    let past_idx = viewModel.priceList.count - 2
+                                    var past: Double = 1000
+                                    if past_idx >= 0 {
+                                        past = viewModel.priceList[past_idx].close
+                                    }
+                                    fluctuation = (current / past) * 100 - 100
+                                }
                         }
                         .padding()
                         Text(viewModel.userProfile.goal)
@@ -65,18 +74,11 @@ struct ChartView: View {
                 }
                 .padding(.horizontal)
                 .foregroundColor(.blue)
-                MessageBox(message: "상장 가격은 1000원부터 시작한다! 모쪼록 성실하게 일해서 너의 가치를 올리도록!", leftSpeaker: true)
-                MessageBox(message: "혹시 내 가격이 오르면 나한테도 배당금 같은거 줘?", leftSpeaker: false)
-                MessageBox(message: "...외계인들의 화폐라 지구인들은 쓸 수 없다!", leftSpeaker: true)
-            }
-            .onChange(of: viewModel.priceList) { _ in
-                let current = viewModel.priceList.last?.close ?? 1000
-                let past_idx = viewModel.priceList.count - 2
-                var past: Double = 1000
-                if past_idx >= 0 {
-                    past = viewModel.priceList[past_idx].close
+                VStack {
+                    MessageBox(message: "상장 가격은 1000원부터 시작한다! 모쪼록 성실하게 일해서 너의 가치를 올리도록!", leftSpeaker: true)
+                    MessageBox(message: "혹시 내 가격이 오르면 나한테도 배당금 같은거 줘?", leftSpeaker: false)
+                    MessageBox(message: "...외계인들의 화폐라 지구인들은 쓸 수 없다!", leftSpeaker: true)
                 }
-                fluctuation = (current / past) * 100 - 100
             }
             .listStyle(.plain)
         }

@@ -71,9 +71,11 @@ struct EvaluationView: View {
                     }
                     miniBar(priceList: viewModel.tempPriceList)
                         .scaledToFit()
-                    MessageBox(message: "잠깐! 완성하기를 누르기 전에 그 날 자정부터 오후 11:59분까지 꼼꼼하게 일기를 작성했는지 확인해라!", leftSpeaker: true)
-                    MessageBox(message: "오늘 일기를 먼저 쓰고 제출해버렸어. 어제 일기도 쓰고 싶은데, 그게 안되네...", leftSpeaker: false)
-                    MessageBox(message: "날짜 선택은 최근 추가된 실적을 기준으로 범위가 제한된다! 이건 분식회계를 방지하기 위한 최소조치지.", leftSpeaker: true)
+                    VStack {
+                        MessageBox(message: "잠깐! 완성하기를 누르기 전에 그 날 자정부터 오후 11:59분까지 꼼꼼하게 일기를 작성했는지 확인해라!", leftSpeaker: true)
+                        MessageBox(message: "오늘 일기를 먼저 쓰고 제출해버렸어. 어제 일기도 쓰고 싶은데, 그게 안되네...", leftSpeaker: false)
+                        MessageBox(message: "날짜 선택은 최근 추가된 실적을 기준으로 범위가 제한된다! 이건 분식회계를 방지하기 위한 최소조치지.", leftSpeaker: true)
+                    }
                 }
                 .listStyle(.plain)
                 HStack() {

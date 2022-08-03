@@ -381,6 +381,14 @@ class ViewModel: ObservableObject {
     func addFollow(uid: String) {
         self.ref.child("social").child(userProfile.id).child("follow").childByAutoId().setValue(uid)
     }
+    func deleteFollow(uid: String) {
+        ref.child("social").child(userProfile.id).child("follow").queryOrderedByValue().queryEqual(toValue: uid).observeSingleEvent(of: .value, with: { [self] snapshot in
+            for child in snapshot.children.allObjects as! [DataSnapshot] {
+                let key = child.key
+                ref.child("social").child(userProfile.id).child("follow").child(key).removeValue()
+            }
+        })
+    }
     func readFollowList(completion: @escaping (_ message: String) -> Void) {
         guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
         ref.child("social").child(uid).child("follow").observeSingleEvent(of: .value, with: { snapshot in
