@@ -12,6 +12,7 @@ struct HomeView: View {
     @EnvironmentObject var viewModel: ViewModel
     @State private var selection: Tab = .Chart
     @State private var showSetting = false
+    var fetchCounter: Int
     
     enum Tab {
         case Chart
@@ -35,55 +36,56 @@ struct HomeView: View {
                     .padding(.horizontal)
                 }
                 TabView(selection: $selection){
-                    ChartView()
-                        .tabItem{
-                            Label("시세", systemImage: "chart.line.uptrend.xyaxis")
-                        }
-                        .tag(Tab.Chart)
                     Group {
-                        if viewModel.recentDay >= Date() {
-                            NoMoreAddDiary()
+                        if fetchCounter >= 4 {
+                            ChartView()
                         } else {
-                            EvaluationView()
+                            LoadingView()
+                        }
+                    }
+                    .tabItem{
+                        Label("시세", systemImage: "chart.line.uptrend.xyaxis")
+                    }
+                    .tag(Tab.Chart)
+                    Group {
+                        if fetchCounter >= 4 {
+                            if viewModel.recentDay >= Date() {
+                                NoMoreAddDiary()
+                            } else {
+                                EvaluationView()
+                            }
+                        } else {
+                            LoadingView()
                         }
                     }
                     .tabItem{
                         Label("실적추가", systemImage: "note.text.badge.plus")
                     }
                     .tag(Tab.Evaluation)
-                    RecordView()
-                        .tabItem{
-                            Label("전자공시", systemImage: "scroll")
+                    Group {
+                        if fetchCounter >= 4 {
+                            RecordView()
+                        } else {
+                            LoadingView()
                         }
-                        .tag(Tab.Analysis)
-                    SocialView()
-                        .tabItem{
-                            Label("종목비교", systemImage: "quote.bubble.fill")
+                    }
+                    .tabItem{
+                        Label("전자공시", systemImage: "scroll")
+                    }
+                    .tag(Tab.Analysis)
+                    Group {
+                        if fetchCounter >= 4 {
+                            SocialView()
+                        } else {
+                            LoadingView()
                         }
-                        .tag(Tab.Discussion)
+                    }
+                    .tabItem{
+                        Label("종목비교", systemImage: "quote.bubble.fill")
+                    }
+                    .tag(Tab.Discussion)
                 }
                 .padding(.bottom)
-            }
-            .onAppear(){
-                if viewModel.state == .signedIn { //프리뷰 오류 때문에 추가...
-                    //프로필 로드
-                    guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
-                    viewModel.readUserFromDB(uid: uid, mode: .MyProfile, completion: { message in
-                        print(message)
-                    })
-                    viewModel.downloadImage(uid: uid, mode: .MyProfile)
-                    //차트 데이터 로드
-                    viewModel.priceRead(uid: uid, mode: .MyProfile, completion: { message in
-                        print(message)
-                    })
-                    //임시 저장 데이터 로드
-                    viewModel.readTempPriceList(completion: { message in
-                        print(message)
-                    })
-                    viewModel.readTempDiaryList(completion: { message in
-                        print(message)
-                    })
-                }
             }
             .sheet(isPresented: $showSetting){
                 Setting()
@@ -96,7 +98,7 @@ struct HomeView: View {
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        HomeView()
+        HomeView(fetchCounter: 4)
             .environmentObject(ViewModel())
     }
 }
