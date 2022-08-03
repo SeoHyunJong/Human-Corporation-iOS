@@ -27,7 +27,7 @@ struct ChartView: View {
                             Label(String(format: "%.2f", fluctuation) + "%", systemImage: fluctuation > 0 ? "arrowtriangle.up.circle.fill" : "arrowtriangle.down.circle.fill")
                                 .foregroundColor(fluctuation > 0 ? .red : .blue)
                                 .scaledToFit()
-                                .onChange(of: viewModel.priceList) { _ in
+                                .onAppear() {
                                     let current = viewModel.priceList.last?.close ?? 1000
                                     let past_idx = viewModel.priceList.count - 2
                                     var past: Double = 1000

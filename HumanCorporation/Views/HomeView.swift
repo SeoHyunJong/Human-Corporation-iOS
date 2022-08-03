@@ -37,7 +37,7 @@ struct HomeView: View {
                 }
                 TabView(selection: $selection){
                     Group {
-                        if fetchCounter >= 4 {
+                        if fetchCounter >= 6 {
                             ChartView()
                         } else {
                             LoadingView()
@@ -48,7 +48,7 @@ struct HomeView: View {
                     }
                     .tag(Tab.Chart)
                     Group {
-                        if fetchCounter >= 4 {
+                        if fetchCounter >= 6 {
                             if viewModel.recentDay >= Date() {
                                 NoMoreAddDiary()
                             } else {
@@ -63,7 +63,7 @@ struct HomeView: View {
                     }
                     .tag(Tab.Evaluation)
                     Group {
-                        if fetchCounter >= 4 {
+                        if fetchCounter >= 6 {
                             RecordView()
                         } else {
                             LoadingView()
@@ -74,7 +74,7 @@ struct HomeView: View {
                     }
                     .tag(Tab.Analysis)
                     Group {
-                        if fetchCounter >= 4 {
+                        if fetchCounter >= 6 {
                             SocialView()
                         } else {
                             LoadingView()

@@ -12,6 +12,7 @@ struct FriendChartView: View {
     @State private var fluctuation: Double = 0
     @State private var showAlert = false
     var profile: Profile
+    var fetchCounter: Int
     
     var body: some View {
         GeometryReader { geo in
@@ -29,7 +30,7 @@ struct FriendChartView: View {
                             Label(String(format: "%.2f", fluctuation) + "%", systemImage: fluctuation > 0 ? "arrowtriangle.up.circle.fill" : "arrowtriangle.down.circle.fill")
                                 .foregroundColor(fluctuation > 0 ? .red : .blue)
                                 .scaledToFit()
-                                .onChange(of: viewModel.followOnePriceList) { _ in
+                                .onChange(of: fetchCounter) { _ in
                                     let current = viewModel.followOnePriceList.last?.close ?? 1000
                                     let past_idx = viewModel.followOnePriceList.count - 2
                                     var past: Double = 1000
@@ -84,11 +85,6 @@ struct FriendChartView: View {
                     Label("팔로우 취소", systemImage: "person.badge.minus")
                 }
             }
-            .onAppear() {
-                viewModel.priceRead(uid: profile.id, mode: .Others, completion: { message in
-                    print(message)
-                })
-            }
             .listStyle(.plain)
             .alert("해당 종목을 언팔로우하시겠습니까?", isPresented: $showAlert) {
                 Button("Unfollow") {
@@ -105,7 +101,7 @@ struct FriendChartView: View {
 
 struct FriendChartView_Previews: PreviewProvider {
     static var previews: some View {
-        FriendChartView(profile: Profile(id: "nothing", name: "Tester", email: "nothing", goal: "test preview"))
+        FriendChartView(profile: Profile(id: "nothing", name: "Tester", email: "nothing", goal: "test preview"), fetchCounter: 1)
             .environmentObject(ViewModel())
     }
 }

@@ -9,12 +9,21 @@ import SwiftUI
 
 struct FollowListView: View {
     @EnvironmentObject var viewModel: ViewModel
+    @State var fetchCounter = 0
+    
     var body: some View {
         NavigationView {
             List {
                 ForEach(viewModel.followProfileList, id: \.self) { profile in
                     NavigationLink {
-                        FriendChartView(profile: profile)
+                        FriendChartView(profile: profile, fetchCounter: fetchCounter)
+                            .onAppear() {
+                                fetchCounter = 0
+                                viewModel.priceRead(uid: profile.id, mode: .Others, completion: { message in
+                                    print(message)
+                                    fetchCounter += 1
+                                })
+                            }
                     } label: {
                         HStack(spacing: 20) {
                             ProfileImage(image: (viewModel.profileImgList[profile.id] ?? UIImage(named: "Mamong"))!)

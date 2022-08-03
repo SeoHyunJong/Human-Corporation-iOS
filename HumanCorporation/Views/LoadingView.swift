@@ -11,6 +11,7 @@ struct LoadingView: View {
     var body: some View {
         VStack {
             Text("Loading...")
+                .bold()
                 .font(.system(size: 30))
                 .padding()
             MessageBox(message: "파이어베이스에서 데이터를 가져오는 중이다!", leftSpeaker: true)

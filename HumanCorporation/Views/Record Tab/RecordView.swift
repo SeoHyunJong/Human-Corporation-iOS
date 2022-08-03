@@ -31,11 +31,6 @@ struct RecordView: View {
         .navigationViewStyle(.stack)
         .onAppear() {
             dateFormatter.dateFormat = "YYYY.MM.dd.E"
-            if viewModel.diaryListByDate.isEmpty {
-                viewModel.readDiaryList(completion: { message in
-                    print(message)
-                })
-            }
         }
     }
 }

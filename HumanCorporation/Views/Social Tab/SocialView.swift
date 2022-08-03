@@ -38,13 +38,6 @@ struct SocialView: View {
                 }
                 .tag(Tab.AddFriend)
         }
-        .onAppear() {
-            if viewModel.followProfileList.isEmpty {
-                viewModel.readFollowList(completion: { message in
-                    print(message)
-                })
-            }
-        }
     }
 }
 

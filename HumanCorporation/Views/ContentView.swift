@@ -47,6 +47,16 @@ struct ContentView: View {
                                 print(message)
                                 fetchCounter += 1
                             })
+                            //일기장 가져오기
+                            viewModel.readDiaryList(completion: { message in
+                                print(message)
+                                fetchCounter += 1
+                            })
+                            //친구 목록 불러오기
+                            viewModel.readFollowList(completion: { message in
+                                print(message)
+                                fetchCounter += 1
+                            })
                         }
                     }
             }
