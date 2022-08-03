@@ -13,13 +13,17 @@ struct FollowListView: View {
         NavigationView {
             List {
                 ForEach(viewModel.followProfileList, id: \.self) { profile in
-                    HStack(spacing: 20) {
-                        ProfileImage(image: (viewModel.profileImgList[profile.id] ?? UIImage(named: "Mamong"))!)
-                            .frame(width: 50, height: 50)
-                        Text(profile.name)
-                        Spacer()
-                        Label(String(format: "%.0f", viewModel.followCurrentPriceList[profile.id] ?? 1000), systemImage: "g.circle.fill")
-                            .foregroundColor(.orange)
+                    NavigationLink {
+                        FriendChartView(profile: profile)
+                    } label: {
+                        HStack(spacing: 20) {
+                            ProfileImage(image: (viewModel.profileImgList[profile.id] ?? UIImage(named: "Mamong"))!)
+                                .frame(width: 50, height: 50)
+                            Text(profile.name)
+                            Spacer()
+                            Label(String(format: "%.0f", viewModel.followCurrentPriceList[profile.id] ?? 1000), systemImage: "g.circle.fill")
+                                .foregroundColor(.orange)
+                        }
                     }
                 }
             }

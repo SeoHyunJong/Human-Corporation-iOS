@@ -17,7 +17,7 @@ struct ChartView: View {
                 HStack {
                     ProfileImage(image: viewModel.profileImage!)
                         .frame(width: width*0.3, height: width*0.3)
-                        .padding()
+                        .padding(.vertical)
                     VStack(alignment: .leading) {
                         Text(viewModel.userProfile.name)
                             .font(.system(size: width*0.06))
@@ -61,8 +61,6 @@ struct ChartView: View {
                 MessageBox(message: "상장 가격은 1000원부터 시작한다! 모쪼록 성실하게 일해서 너의 가치를 올리도록!", leftSpeaker: true)
                 MessageBox(message: "혹시 내 가격이 오르면 나한테도 배당금 같은거 줘?", leftSpeaker: false)
                 MessageBox(message: "...외계인들의 화폐라 지구인들은 쓸 수 없다!", leftSpeaker: true)
-                
-                
             }
             .listStyle(.plain)
         }

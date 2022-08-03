@@ -73,7 +73,7 @@ struct HomeView: View {
                     })
                     viewModel.downloadImage(uid: uid, mode: .MyProfile)
                     //차트 데이터 로드
-                    viewModel.priceRead(completion: { message in
+                    viewModel.priceRead(uid: uid, mode: .MyProfile, completion: { message in
                         print(message)
                     })
                     //임시 저장 데이터 로드

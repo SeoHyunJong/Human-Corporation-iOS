@@ -50,6 +50,7 @@ class ViewModel: ObservableObject {
     @Published var followProfileList: [Profile] = []
     @Published var profileImgList: [String:UIImage] = [:]
     @Published var followCurrentPriceList: [String:Double] = [:]
+    @Published var followOnePriceList: [CandleChartDataEntry] = []
     
     enum KindOfProfile {
         case MyProfile
@@ -338,8 +339,7 @@ class ViewModel: ObservableObject {
         })
     }
     
-    func priceRead(completion: @escaping (_ message: String) -> Void){
-        guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
+    func priceRead(uid: String, mode: KindOfProfile, completion: @escaping (_ message: String) -> Void){
         ref.child("price").child(uid).observeSingleEvent(of: .value, with: { snapshot in
             // Get user value
             var idx: Double = 0
@@ -355,7 +355,11 @@ class ViewModel: ObservableObject {
                 idx += 1
             }
             tempList.sort(by: {$0.x < $1.x})
-            self.priceList = tempList
+            if mode == .MyProfile {
+                self.priceList = tempList
+            } else if mode == .Others {
+                self.followOnePriceList = tempList
+            }
             completion("가격 정보 로드")
         }) { error in
             print(error.localizedDescription)
