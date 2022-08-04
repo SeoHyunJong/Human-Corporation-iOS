@@ -88,9 +88,9 @@ struct EvaluationView: View {
                             .foregroundColor(Color.white)
                             .padding(.vertical,10)
                             .padding(.horizontal,15)
-                            .background(viewModel.tempPriceList.count > 0 ? Color.green:Color.gray)
+                            .background(viewModel.tempDiaryList.count > 0 ? Color.green:Color.gray)
                             .cornerRadius(45)
-                    }.disabled(viewModel.tempPriceList.count > 0 ? false:true)
+                    }.disabled(viewModel.tempDiaryList.count > 0 ? false:true)
                     Button{
                         undoAction()
                     } label: {
@@ -99,9 +99,9 @@ struct EvaluationView: View {
                             .foregroundColor(Color.white)
                             .padding(.vertical,10)
                             .padding(.horizontal,15)
-                            .background(viewModel.tempPriceList.count > 0 ? Color.red:Color.gray)
+                            .background(viewModel.tempDiaryList.count > 0 ? Color.red:Color.gray)
                             .cornerRadius(45)
-                    }.disabled(viewModel.tempPriceList.count > 0 ? false:true)
+                    }.disabled(viewModel.tempDiaryList.count > 0 ? false:true)
                 }
                 Spacer()
             }
@@ -127,10 +127,7 @@ struct EvaluationView: View {
                 }
                 //정렬하고 가격 리스트를 만든다.
                 sortTempDiaryAndCreatePriceList()
-//                //3. 임시저장된 데이터에서 현재가 불러오기
-//                currentPrice = viewModel.tempPriceList.last!
                 //4. 시간 세팅하기
-//                endTime = viewModel.tempDiaryList.last!.endTime
                 endTime = sortedDiary.last!.endTime
                 startTime = endTime
                 //5. 뷰 타이틀 변경하기
@@ -146,12 +143,10 @@ struct EvaluationView: View {
             Button("제출") {
                 //값 타입으로 전달하여 리스트가 초기화 될 때 비동기 처리에서 문제가 안생기게 하여야...
                 //0. Firebase에 데이터 업로드
-//                let valDiaryList = viewModel.tempDiaryList
                 let valDiaryList = sortedDiary
                 viewModel.diaryAdd(diaryList: valDiaryList, completion: { message in
                     print(message)
                 })
-//                let valPriceList = viewModel.tempPriceList
                 let valPriceList = sortedPrice
                 let idx: Double = Double(viewModel.priceList.count)
                 let price = CandleChartDataEntry(x: idx, shadowH: valPriceList.max()!, shadowL: valPriceList.min()!, open: valPriceList.first!, close: valPriceList.last!)
@@ -171,7 +166,6 @@ struct EvaluationView: View {
                     viewModel.tempDiaryList.removeAll()
                     sortedDiary.removeAll()
                     sortedPrice.removeAll()
-//                    viewModel.tempPriceList.removeAll()
                 }
                 showSuccess.toggle()
             }
@@ -215,7 +209,6 @@ struct EvaluationView: View {
             viewModel.tempDiaryList.removeAll()
             sortedDiary.removeAll()
             sortedPrice.removeAll()
-//            viewModel.tempPriceList.removeAll()
         }
         //1. 캘린더 날짜 선택기간 제한
         if viewModel.priceList.isEmpty == false {
@@ -238,17 +231,13 @@ struct EvaluationView: View {
     func undoAction() {
         //1. 마지막 요소 pop
         viewModel.tempDiaryList.removeLast()
-//        viewModel.tempPriceList.removeLast()
         //db에서도 pop
         viewModel.popTempDiary()
-//        viewModel.popTempPrice()
         //정렬하고 가격 리스트를 새로 만든다.
         sortTempDiaryAndCreatePriceList()
         //2. 시간 세팅하기
         endTime = viewModel.tempDiaryList.last?.endTime ?? Calendar.current.startOfDay(for: date)
         startTime = endTime
-//        //3. 현재가 수정
-//        currentPrice = viewModel.tempPriceList.last ?? previousClose
         story = ""
     }
     func addDiary() {
@@ -266,10 +255,8 @@ struct EvaluationView: View {
         viewModel.tempDiaryList.append(diary)
         //정렬하고 가격 리스트를 새로 만든다.
         sortTempDiaryAndCreatePriceList()
-//        viewModel.tempPriceList.append(currentPrice)
         //db에 임시 저장
         viewModel.addTempDiary()
-//        viewModel.addTempPrice()
         //시간 세팅
         startTime = endTime
         showToast.toggle()
@@ -278,6 +265,7 @@ struct EvaluationView: View {
     func sortTempDiaryAndCreatePriceList() {
         sortedDiary = viewModel.tempDiaryList.sorted{ $0.startTime < $1.startTime }
         currentPrice = previousClose
+        sortedPrice.removeAll()
         for diary in sortedDiary {
             let time = diary.endTime.timeIntervalSince(diary.startTime) / 60
             let variance = previousClose * (time * 0.01) * 0.01

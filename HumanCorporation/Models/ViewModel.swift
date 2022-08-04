@@ -35,7 +35,6 @@ class ViewModel: ObservableObject {
     @Published var recentDay = Date(timeIntervalSince1970: 0)
     //임시 저장
     @Published var tempDiaryList: [Diary] = []
-    @Published var tempPriceList: [Double] = []
     //일기장
     @Published var diaryListFromFirebase: [Diary] = []
     var diaryListByDate: [Date: [Diary]] {
@@ -124,7 +123,6 @@ class ViewModel: ObservableObject {
             recentDay = Date(timeIntervalSince1970: 0)
             // 임시 저장 초기화
             tempDiaryList.removeAll()
-            tempPriceList.removeAll()
             // 일기장 초기화
             diaryListFromFirebase.removeAll()
             // 검색된 프로필 초기화
@@ -226,7 +224,6 @@ class ViewModel: ObservableObject {
         priceList.removeAll()
         recentDay = Date(timeIntervalSince1970: 0)
         tempDiaryList.removeAll()
-        tempPriceList.removeAll()
         diaryListFromFirebase.removeAll()
     }
     // MARK: Diary
@@ -325,30 +322,6 @@ class ViewModel: ObservableObject {
         let values: [String: Double?] = ["open": price.open, "close": price.close, "shadowH": price.high, "shadowL": price.low]
         self.ref.child("price").child(userProfile.id).childByAutoId().setValue(values)
         completion("일봉이 파이어베이스에 업로드 됨.")
-    }
-    
-    func addTempPrice() {
-        guard let price = self.tempPriceList.last else {return}
-        self.ref.child("temp").child(userProfile.id).child("price").childByAutoId().setValue(price)
-    }
-    
-    func popTempPrice() {
-        self.ref.child("temp").child(userProfile.id).child("price").observeSingleEvent(of: .value, with: { snapshot in
-            guard let child = snapshot.children.allObjects.last as? DataSnapshot else {return}
-            let key = child.key
-            self.ref.child("temp").child(self.userProfile.id).child("price").child(key).removeValue()
-        })
-    }
-    
-    func readTempPriceList(completion: @escaping (_ message: String) -> Void) {
-        guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
-        ref.child("temp").child(uid).child("price").observeSingleEvent(of: .value, with: { snapshot in
-            for child in snapshot.children.allObjects as! [DataSnapshot] {
-                guard let value = child.value as? NSNumber else {return}
-                self.tempPriceList.append(Double(truncating: value))
-            }
-            completion("임시 저장된 가격 리스트가 로드됨.")
-        })
     }
     
     func priceRead(uid: String, mode: KindOfProfile, completion: @escaping (_ message: String) -> Void){

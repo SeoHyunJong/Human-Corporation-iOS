@@ -11,6 +11,7 @@ import GoogleSignIn
 struct ContentView: View {
     @EnvironmentObject var viewModel: ViewModel
     @State private var fetchCounter: Double = 0
+    @State private var completeNum: Double = 5
     
     var body: some View {
         switch viewModel.state {
@@ -22,7 +23,7 @@ struct ContentView: View {
                     FirstComeView()
                 }
             } else {
-                HomeView(fetchCounter: fetchCounter)
+                HomeView(fetchCounter: fetchCounter, completeNumber: completeNum)
                     .onAppear(){
                         fetchCounter = 0
                         if viewModel.state == .signedIn { //프리뷰 오류 때문에 추가...
@@ -39,10 +40,6 @@ struct ContentView: View {
                                 fetchCounter += 1
                             })
                             //임시 저장 데이터 로드
-                            viewModel.readTempPriceList(completion: { message in
-                                print(message)
-                                fetchCounter += 1
-                            })
                             viewModel.readTempDiaryList(completion: { message in
                                 print(message)
                                 fetchCounter += 1

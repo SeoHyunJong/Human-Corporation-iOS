@@ -13,6 +13,7 @@ struct HomeView: View {
     @State private var selection: Tab = .Chart
     @State private var showSetting = false
     var fetchCounter: Double
+    var completeNumber: Double
     
     enum Tab {
         case Chart
@@ -37,7 +38,7 @@ struct HomeView: View {
                 }
                 TabView(selection: $selection){
                     Group {
-                        if fetchCounter >= 6 {
+                        if fetchCounter >= completeNumber {
                             ChartView()
                         } else {
                             LoadingView(fetchCounter: fetchCounter)
@@ -48,7 +49,7 @@ struct HomeView: View {
                     }
                     .tag(Tab.Chart)
                     Group {
-                        if fetchCounter >= 6 {
+                        if fetchCounter >= completeNumber {
                             if viewModel.recentDay >= Date() {
                                 NoMoreAddDiary()
                             } else {
@@ -63,7 +64,7 @@ struct HomeView: View {
                     }
                     .tag(Tab.Evaluation)
                     Group {
-                        if fetchCounter >= 6 {
+                        if fetchCounter >= completeNumber {
                             RecordView()
                         } else {
                             LoadingView(fetchCounter: fetchCounter)
@@ -74,7 +75,7 @@ struct HomeView: View {
                     }
                     .tag(Tab.Analysis)
                     Group {
-                        if fetchCounter >= 6 {
+                        if fetchCounter >= completeNumber {
                             SocialView()
                         } else {
                             LoadingView(fetchCounter: fetchCounter)
@@ -98,7 +99,7 @@ struct HomeView: View {
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        HomeView(fetchCounter: 3)
+        HomeView(fetchCounter: 3, completeNumber: 5)
             .environmentObject(ViewModel())
     }
 }
