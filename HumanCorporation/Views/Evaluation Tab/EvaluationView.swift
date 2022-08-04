@@ -5,17 +5,12 @@
 //  Created by 서현종 on 2022/07/19.
 //
 /*
- 실적을 제출하거나 다시 작성 버튼을 누르면 다이어리 리스트, 가격 리스트가 초기화 되어야 한다.
- 다른 날짜를 선택할 때에도 다이어리, 가격 리스트가 초기화 되어야 한다.
- **참고: Swift의 Array는 구조체로 구현되어 있어 값타입 -> 복사할때 서로 영향 X
- 그러나 요소에 값 타입이 아닌 참조 타입이 들어간 경우 복사할 때 영향이 있다고 한다.
- 이미 오늘 날짜까지 일정을 추가한 경우 (viewModel >= Date()) "추가할 실적이 없네요..." 라는 뷰가 떠야 한다.
- 
- 임시저장: 임시 다이어리, 가격 리스트를 db에 따로 저장했다가 onAppear 에서 불러오는 게 가능.
- 유저가 최종 발행할때 이 임시 데이터들은 삭제됨.
+ 일기 추가할때 시간 검사
+ 1. startTime < some startTime in diaryList < endTime
+ 2. startTime < some endTime in diaryList < endTime
  */
 //24hr == 86400
-//1 min == 0.04%
+//1 min == 0.01% ~ 0.04%
 import SwiftUI
 import AlertToast
 import Charts
@@ -50,8 +45,8 @@ struct EvaluationView: View {
             VStack(alignment: .center) {
                 List{
                     Section("시간별로 일기를 작성하여 실적을 완성하세요!") {
-                        DatePicker("일과 시작 시간", selection: $startTime, in: pickStart..., displayedComponents: [.hourAndMinute])
-                        DatePicker("일과 종료 시간", selection: $endTime, in: startTime...Calendar.current.date(byAdding: .minute, value: 1439, to: Calendar.current.startOfDay(for: startTime))!, displayedComponents: [.hourAndMinute])
+                        DatePicker("일기 시작 시간", selection: $startTime, in: pickStart..., displayedComponents: [.hourAndMinute])
+                        DatePicker("일기 종료 시간", selection: $endTime, in: startTime..., displayedComponents: [.hourAndMinute])
                         HStack {
                             Label(String(format: "%.0f", endTime.timeIntervalSince(startTime) / 60)+" min", systemImage: "clock")
                             Spacer()
