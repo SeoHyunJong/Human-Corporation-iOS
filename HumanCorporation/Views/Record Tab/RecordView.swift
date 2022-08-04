@@ -27,6 +27,16 @@ struct RecordView: View {
                 .listStyle(.plain)
                 MessageBox(message: "여기서 너가 썼던 일기들을 감상할 수 있다. 최대 300개까지 저장된다!", leftSpeaker: true)
             }
+            .toolbar {
+                Button{
+                    viewModel.diaryListFromFirebase.removeAll()
+                    viewModel.readDiaryList(completion: { message in
+                        print(message)
+                    })
+                } label: {
+                    Label("새로고침", systemImage: "goforward")
+                }
+            }
         }
         .navigationViewStyle(.stack)
         .onAppear() {

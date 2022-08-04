@@ -30,6 +30,9 @@ struct EvaluationView: View {
     //sortedDiary는 시간 순서대로 정렬된 diary.
     @State private var sortedDiary: [Diary] = []
     @State private var sortedPrice: [Double] = []
+    @State private var amountOfProductive: Double = 0
+    @State private var amountOfUnproductive: Double = 0
+    @State private var amountOfNeutral: Double = 0
     //------------
     
     @State private var story = ""
@@ -65,7 +68,24 @@ struct EvaluationView: View {
                             .buttonStyle(BorderlessButtonStyle())
                             .disabled(endTime.timeIntervalSince(startTime) > 0 ? false:true)
                         }
-                        CircleTimeView()
+                        HStack(spacing: 30) {
+                            CircleTimeView()
+                            VStack(alignment: .leading) {
+                                HStack {
+                                    Label("", systemImage: "plus.circle")
+                                    Text(String(format: "%.1f", amountOfProductive)+" h")
+                                }.foregroundColor(.red)
+                                HStack {
+                                    Label("", systemImage: "minus.circle")
+                                    Text(String(format: "%.1f", amountOfUnproductive)+" h")
+                                }.foregroundColor(.blue)
+                                HStack {
+                                    Label("", systemImage: "moon.zzz")
+                                    Text(String(format: "%.1f", amountOfNeutral)+" h")
+                                }.foregroundColor(.green)
+                            }
+
+                        }
                     }
                     Section("현재 가격") {
                         Label(String(format: "%.0f", currentPrice), systemImage: "dollarsign.circle.fill")
@@ -266,17 +286,24 @@ struct EvaluationView: View {
         sortedDiary = viewModel.tempDiaryList.sorted{ $0.startTime < $1.startTime }
         currentPrice = previousClose
         sortedPrice.removeAll()
+        amountOfProductive = 0
+        amountOfUnproductive = 0
+        amountOfNeutral = 0
         for diary in sortedDiary {
             let time = diary.endTime.timeIntervalSince(diary.startTime) / 60
+            let amount = time / 60
             let variance = previousClose * (time * 0.01) * 0.01
             switch diary.eval {
             case .productive:
                 //집중도에 비례해서 가격이 올라감
                 currentPrice += variance * concentration
+                amountOfProductive += amount
             case .unproductive:
                 //3배 곱해서 깎음...
                 currentPrice -= variance * 3
-            case .neutral: break
+                amountOfUnproductive += amount
+            case .neutral:
+                amountOfNeutral += amount
             case .cancel:
                 story = ""
                 return
