@@ -10,7 +10,7 @@ import GoogleSignIn
 
 struct ContentView: View {
     @EnvironmentObject var viewModel: ViewModel
-    @State private var fetchCounter = 0
+    @State private var fetchCounter: Double = 0
     
     var body: some View {
         switch viewModel.state {

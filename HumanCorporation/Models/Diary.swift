@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Diary: Equatable {
+struct Diary: Equatable, Hashable {
     var story: String
     var startTime: Date
     var endTime: Date

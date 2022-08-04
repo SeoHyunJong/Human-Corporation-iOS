@@ -15,7 +15,7 @@ struct RecordRow: View {
     
     var body: some View {
         List {
-            ForEach(items, id: \.self.startTime) { diary in
+            ForEach(items.sorted{$0.startTime < $1.startTime}, id: \.self.startTime) { diary in
                 VStack(alignment: .leading){
                     Label("\(dateFormatter.string(from: diary.startTime))  ~  \(dateFormatter.string(from: diary.endTime))", systemImage: switchIcon(eval: diary.eval))
                         .padding(.vertical)

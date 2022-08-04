@@ -12,7 +12,7 @@ struct HomeView: View {
     @EnvironmentObject var viewModel: ViewModel
     @State private var selection: Tab = .Chart
     @State private var showSetting = false
-    var fetchCounter: Int
+    var fetchCounter: Double
     
     enum Tab {
         case Chart
@@ -40,7 +40,7 @@ struct HomeView: View {
                         if fetchCounter >= 6 {
                             ChartView()
                         } else {
-                            LoadingView()
+                            LoadingView(fetchCounter: fetchCounter)
                         }
                     }
                     .tabItem{
@@ -55,7 +55,7 @@ struct HomeView: View {
                                 EvaluationView()
                             }
                         } else {
-                            LoadingView()
+                            LoadingView(fetchCounter: fetchCounter)
                         }
                     }
                     .tabItem{
@@ -66,7 +66,7 @@ struct HomeView: View {
                         if fetchCounter >= 6 {
                             RecordView()
                         } else {
-                            LoadingView()
+                            LoadingView(fetchCounter: fetchCounter)
                         }
                     }
                     .tabItem{
@@ -77,7 +77,7 @@ struct HomeView: View {
                         if fetchCounter >= 6 {
                             SocialView()
                         } else {
-                            LoadingView()
+                            LoadingView(fetchCounter: fetchCounter)
                         }
                     }
                     .tabItem{
@@ -98,7 +98,7 @@ struct HomeView: View {
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        HomeView(fetchCounter: 4)
+        HomeView(fetchCounter: 3)
             .environmentObject(ViewModel())
     }
 }

@@ -6,8 +6,7 @@
 //
 /*
  일기 추가할때 시간 검사
- 1. startTime < some startTime in diaryList < endTime
- 2. startTime < some endTime in diaryList < endTime
+range.overlap을 이용하면 된다!!
  */
 //24hr == 86400
 //1 min == 0.01% ~ 0.04%
@@ -23,7 +22,6 @@ struct EvaluationView: View {
     @State private var strDate = "2022.07.22.Fri"
     @State private var startTime = Date()
     @State private var endTime = Date()
-    @State private var pickStart = Date()
     @State private var previousClose: Double = 1000
     @State private var currentPrice: Double = 1000
     //------------
@@ -34,6 +32,7 @@ struct EvaluationView: View {
     
     @State private var showToast = false
     @State private var showSuccess = false
+    @State private var showError = false
     @State private var showDiary = false
     @State private var showAlert = false
     @State private var showCalendarAlert = false
@@ -45,7 +44,7 @@ struct EvaluationView: View {
             VStack(alignment: .center) {
                 List{
                     Section("시간별로 일기를 작성하여 실적을 완성하세요!") {
-                        DatePicker("일기 시작 시간", selection: $startTime, in: pickStart..., displayedComponents: [.hourAndMinute])
+                        DatePicker("일기 시작 시간", selection: $startTime, displayedComponents: [.hourAndMinute])
                         DatePicker("일기 종료 시간", selection: $endTime, in: startTime..., displayedComponents: [.hourAndMinute])
                         HStack {
                             Label(String(format: "%.0f", endTime.timeIntervalSince(startTime) / 60)+" min", systemImage: "clock")
@@ -60,6 +59,7 @@ struct EvaluationView: View {
                             .buttonStyle(BorderlessButtonStyle())
                             .disabled(endTime.timeIntervalSince(startTime) > 0 ? false:true)
                         }
+                        CircleTimeView()
                     }
                     Section("현재 가격") {
                         Label(String(format: "%.0f", currentPrice), systemImage: "dollarsign.circle.fill")
@@ -121,9 +121,8 @@ struct EvaluationView: View {
                 }
                 //3. 임시저장된 데이터에서 현재가 불러오기
                 currentPrice = viewModel.tempPriceList.last!
-                //4. 시간 3형제 설정하기
+                //4. 시간 세팅하기
                 endTime = viewModel.tempDiaryList.last!.endTime
-                pickStart = endTime
                 startTime = endTime
                 //5. 뷰 타이틀 변경하기
                 date = endTime
@@ -187,6 +186,9 @@ struct EvaluationView: View {
         .toast(isPresenting: $showSuccess) {
             AlertToast(displayMode: .alert, type: .complete(.green), title: "실적 제출 성공!")
         }
+        .toast(isPresenting: $showError) {
+            AlertToast(displayMode: .alert, type: .error(.red), title: "중복된 시간!")
+        }
     }
     /*
      날짜 선택시 네비게이션 타이틀 바를 업데이트하고,
@@ -210,9 +212,8 @@ struct EvaluationView: View {
             //3. 임시저장된 데이터가 없으니 종가에서 현재가 그대로 설정
             currentPrice = previousClose
         }
-        //4. 시간 3형제 설정하기
+        //4. 시간 세팅하기
         endTime = Calendar.current.startOfDay(for: date)
-        pickStart = endTime
         startTime = endTime
         //5. 뷰 타이틀 변경하기
         let dateFormatter = DateFormatter()
@@ -226,15 +227,24 @@ struct EvaluationView: View {
         //db에서도 pop
         viewModel.popTempDiary()
         viewModel.popTempPrice()
-        //2. 시간 3형제 설정
+        //2. 시간 세팅하기
         endTime = viewModel.tempDiaryList.last?.endTime ?? Calendar.current.startOfDay(for: date)
-        pickStart = endTime
         startTime = endTime
         //3. 현재가 수정
         currentPrice = viewModel.tempPriceList.last ?? previousClose
         story = ""
     }
     func addDiary() {
+        //중복된 시간이 있는지 검사
+        let timeRange = startTime..<endTime
+        let duplicate = viewModel.tempDiaryList.filter{
+            timeRange.overlaps($0.startTime..<$0.endTime)
+        }
+        if !duplicate.isEmpty {
+            showError.toggle()
+            return
+        }
+        //중복된 시간이 없다면
         let time = endTime.timeIntervalSince(startTime) / 60
         let variance = previousClose * (time * 0.01) * 0.01
         
@@ -257,8 +267,7 @@ struct EvaluationView: View {
         //db에 임시 저장
         viewModel.addTempDiary()
         viewModel.addTempPrice()
-        
-        pickStart = endTime
+        //시간 세팅
         startTime = endTime
         showToast.toggle()
         story = ""
