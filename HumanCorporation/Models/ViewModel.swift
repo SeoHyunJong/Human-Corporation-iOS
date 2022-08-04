@@ -18,17 +18,25 @@ class ViewModel: ObservableObject {
     // MARK: Property
     lazy var ref = Database.database().reference()
     lazy var storageRef = Storage.storage().reference()
-    
+    //로그인 유무
+    enum SignInState {
+        case signedIn
+        case signedOut
+    }
+    @Published var state: SignInState = .signedOut
+    //튜토리얼
     @Published var isNewUser = false
     @Published var infoNext = false
+    //유저의 프로필, 가격
     @Published var userProfile: Profile = Profile()
     @Published var profileImage = UIImage(named: "Mamong") //프리뷰를 위해 임시 설정
     @Published var priceList: [CandleChartDataEntry] = []
+    //선택 가능한 최근 날짜
     @Published var recentDay = Date(timeIntervalSince1970: 0)
-    
+    //임시 저장
     @Published var tempDiaryList: [Diary] = []
     @Published var tempPriceList: [Double] = []
-    
+    //일기장
     @Published var diaryListFromFirebase: [Diary] = []
     var diaryListByDate: [Date: [Diary]] {
         //시작 시간을 기준으로 날짜별로 diary를 그룹화.
@@ -36,20 +44,16 @@ class ViewModel: ObservableObject {
             grouping: diaryListFromFirebase,
             by: {Calendar.current.startOfDay(for: $0.startTime)})
     }
-    
-    enum SignInState {
-        case signedIn
-        case signedOut
-    }
-    @Published var state: SignInState = .signedOut
-    
     //----for social----
+    //검색된 프로필
     @Published var profileOfSearch = Profile()
     @Published var imageOfSearchProfile = UIImage(named: "Mamong")
+    //친구 목록
     @Published var followIDList: [String] = []
     @Published var followProfileList: [Profile] = []
     @Published var profileImgList: [String:UIImage] = [:]
     @Published var followCurrentPriceList: [String:Double] = [:]
+    //찬구의 차트 가격
     @Published var followOnePriceList: [CandleChartDataEntry] = []
     
     enum KindOfProfile {
@@ -112,14 +116,20 @@ class ViewModel: ObservableObject {
             try Auth.auth().signOut()
             state = .signedOut
             // 전 사용자의 정보를 보이지 않기 위해 뷰 모델 초기화
+            // 프로필, 가격 초기화
             userProfile = Profile()
             profileImage = UIImage(named: "Mamong")
             priceList.removeAll()
+            // 선택 가능한 최근 날짜 초기화
             recentDay = Date(timeIntervalSince1970: 0)
+            // 임시 저장 초기화
             tempDiaryList.removeAll()
             tempPriceList.removeAll()
+            // 일기장 초기화
             diaryListFromFirebase.removeAll()
+            // 검색된 프로필 초기화
             profileOfSearch = Profile()
+            // 친구 목록 초기화
             followIDList.removeAll()
             followProfileList.removeAll()
         } catch {

@@ -50,8 +50,8 @@ struct EvaluationView: View {
             VStack(alignment: .center) {
                 List{
                     Section("시간별로 일기를 작성하여 실적을 완성하세요!") {
-                        DatePicker("시작 시간", selection: $startTime, in: pickStart...)
-                        DatePicker("종료 시간", selection: $endTime, in: startTime...Calendar.current.date(byAdding: .minute, value: 1439, to: Calendar.current.startOfDay(for: pickStart))!)
+                        DatePicker("일과 시작 시간", selection: $startTime, in: pickStart..., displayedComponents: [.hourAndMinute])
+                        DatePicker("일과 종료 시간", selection: $endTime, in: startTime...Calendar.current.date(byAdding: .minute, value: 1439, to: Calendar.current.startOfDay(for: startTime))!, displayedComponents: [.hourAndMinute])
                         HStack {
                             Label(String(format: "%.0f", endTime.timeIntervalSince(startTime) / 60)+" min", systemImage: "clock")
                             Spacer()
