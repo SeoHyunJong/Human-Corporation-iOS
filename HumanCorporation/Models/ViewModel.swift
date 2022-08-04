@@ -234,7 +234,7 @@ class ViewModel: ObservableObject {
         let dateformatter = DateFormatter()
         dateformatter.dateFormat = "yyyy-MM-dd HH:mm"
         for diary in diaryList {
-            let values: [String: Any] = ["story":diary.story, "startTime":dateformatter.string(from: diary.startTime), "endTime":dateformatter.string(from: diary.endTime), "eval":diary.eval.rawValue]
+            let values: [String: Any] = ["story":diary.story, "startTime":dateformatter.string(from: diary.startTime), "endTime":dateformatter.string(from: diary.endTime), "eval":diary.eval.rawValue, "concentration":diary.concentration]
             self.ref.child("diary").child(userProfile.id).childByAutoId().setValue(values)
         }
         completion("실적이 파이어베이스에 업로드 됨.")
@@ -251,7 +251,8 @@ class ViewModel: ObservableObject {
                 let startTime = value["startTime"] as? String
                 let endTime = value["endTime"] as? String
                 let eval = value["eval"] as? String
-                let diary = Diary(story: story!, startTime: dateformatter.date(from: startTime!)!, endTime: dateformatter.date(from: endTime!)!, eval: Diary.Evaluation(rawValue: eval!)!)
+                let concentration = value["concentration"] as? Double ?? 2
+                let diary = Diary(story: story!, startTime: dateformatter.date(from: startTime!)!, endTime: dateformatter.date(from: endTime!)!, eval: Diary.Evaluation(rawValue: eval!)!, concentration: concentration)
                 self.diaryListFromFirebase.append(diary)
             }
             completion("일기들이 로드됨.")
@@ -263,7 +264,7 @@ class ViewModel: ObservableObject {
         let dateformatter = DateFormatter()
         dateformatter.dateFormat = "yyyy-MM-dd HH:mm"
         guard let diary = self.tempDiaryList.last else {return}//최근에 추가된 다이어리
-        let values: [String: Any] = ["story":diary.story, "startTime":dateformatter.string(from: diary.startTime), "endTime":dateformatter.string(from: diary.endTime), "eval":diary.eval.rawValue]
+        let values: [String: Any] = ["story":diary.story, "startTime":dateformatter.string(from: diary.startTime), "endTime":dateformatter.string(from: diary.endTime), "eval":diary.eval.rawValue, "concentration":diary.concentration]
         self.ref.child("temp").child(userProfile.id).child("diary").childByAutoId().setValue(values)
     }
     
@@ -286,7 +287,8 @@ class ViewModel: ObservableObject {
                 let startTime = value["startTime"] as? String
                 let endTime = value["endTime"] as? String
                 let eval = value["eval"] as? String
-                let diary = Diary(story: story!, startTime: dateformatter.date(from: startTime!)!, endTime: dateformatter.date(from: endTime!)!, eval: Diary.Evaluation(rawValue: eval!)!)
+                let concentration = value["concentration"] as? Double ?? 2
+                let diary = Diary(story: story!, startTime: dateformatter.date(from: startTime!)!, endTime: dateformatter.date(from: endTime!)!, eval: Diary.Evaluation(rawValue: eval!)!, concentration: concentration)
                 self.tempDiaryList.append(diary)
             }
             completion("임시 저장된 일기들이 로드됨.")

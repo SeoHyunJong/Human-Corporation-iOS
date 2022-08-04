@@ -11,7 +11,6 @@ struct Diary: Equatable, Hashable {
     var story: String
     var startTime: Date
     var endTime: Date
-    
     enum Evaluation: String, Equatable {
         case productive = "productive"
         case unproductive = "unproductive"
@@ -30,4 +29,5 @@ struct Diary: Equatable, Hashable {
            }
     }
     var eval = Evaluation.neutral
+    var concentration: Double = 2
 }

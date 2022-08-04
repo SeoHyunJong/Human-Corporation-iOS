@@ -6,7 +6,9 @@
 //
 /*
  일기 추가할때 시간 검사
-range.overlap을 이용하면 된다!!
+ range.overlap을 이용하면 된다!!
+ 시간 선택에 자유를 주었으니 대신,
+ 시스템에서 다이어리 리스트 정렬과 가격 리스트를 새로 생성해야.
  */
 //24hr == 86400
 //1 min == 0.01% ~ 0.04%
@@ -24,6 +26,10 @@ struct EvaluationView: View {
     @State private var endTime = Date()
     @State private var previousClose: Double = 1000
     @State private var currentPrice: Double = 1000
+    //tempDiaryList는 시간 순서와 상관없이 유저가 추가한 순서대로 배열. -> undoAction에 필요
+    //sortedDiary는 시간 순서대로 정렬된 diary.
+    @State private var sortedDiary: [Diary] = []
+    @State private var sortedPrice: [Double] = []
     //------------
     
     @State private var story = ""
@@ -64,7 +70,7 @@ struct EvaluationView: View {
                     Section("현재 가격") {
                         Label(String(format: "%.0f", currentPrice), systemImage: "dollarsign.circle.fill")
                     }
-                    miniBar(priceList: viewModel.tempPriceList)
+                    miniBar(priceList: sortedPrice)
                         .scaledToFit()
                     VStack {
                         MessageBox(message: "잠깐! 완성하기를 누르기 전에 그 날 자정부터 오후 11:59분까지 꼼꼼하게 일기를 작성했는지 확인해라!", leftSpeaker: true)
@@ -110,7 +116,7 @@ struct EvaluationView: View {
         .navigationViewStyle(.stack)
         .onAppear(){
             //자동으로 임시저장된 데이터를 불러온다.
-            if viewModel.tempDiaryList.count > 0 && viewModel.tempPriceList.count > 0 {
+            if viewModel.tempDiaryList.count > 0 {
                 //1. 캘린더 날짜 선택기간 제한
                 if viewModel.priceList.isEmpty == false {
                     viewModel.findRecentDay(completion: { message in
@@ -119,10 +125,13 @@ struct EvaluationView: View {
                     //2. 전날 종가 불러오기
                     previousClose = viewModel.priceList.last!.close
                 }
-                //3. 임시저장된 데이터에서 현재가 불러오기
-                currentPrice = viewModel.tempPriceList.last!
+                //정렬하고 가격 리스트를 만든다.
+                sortTempDiaryAndCreatePriceList()
+//                //3. 임시저장된 데이터에서 현재가 불러오기
+//                currentPrice = viewModel.tempPriceList.last!
                 //4. 시간 세팅하기
-                endTime = viewModel.tempDiaryList.last!.endTime
+//                endTime = viewModel.tempDiaryList.last!.endTime
+                endTime = sortedDiary.last!.endTime
                 startTime = endTime
                 //5. 뷰 타이틀 변경하기
                 date = endTime
@@ -137,11 +146,13 @@ struct EvaluationView: View {
             Button("제출") {
                 //값 타입으로 전달하여 리스트가 초기화 될 때 비동기 처리에서 문제가 안생기게 하여야...
                 //0. Firebase에 데이터 업로드
-                let valDiaryList = viewModel.tempDiaryList
+//                let valDiaryList = viewModel.tempDiaryList
+                let valDiaryList = sortedDiary
                 viewModel.diaryAdd(diaryList: valDiaryList, completion: { message in
                     print(message)
                 })
-                let valPriceList = viewModel.tempPriceList
+//                let valPriceList = viewModel.tempPriceList
+                let valPriceList = sortedPrice
                 let idx: Double = Double(viewModel.priceList.count)
                 let price = CandleChartDataEntry(x: idx, shadowH: valPriceList.max()!, shadowL: valPriceList.min()!, open: valPriceList.first!, close: valPriceList.last!)
                 viewModel.priceAdd(price: price, completion: { message in
@@ -158,7 +169,9 @@ struct EvaluationView: View {
                     //임시 저장 삭제하기
                     viewModel.removeTemp()
                     viewModel.tempDiaryList.removeAll()
-                    viewModel.tempPriceList.removeAll()
+                    sortedDiary.removeAll()
+                    sortedPrice.removeAll()
+//                    viewModel.tempPriceList.removeAll()
                 }
                 showSuccess.toggle()
             }
@@ -200,7 +213,9 @@ struct EvaluationView: View {
         if viewModel.tempDiaryList.isEmpty == false {
             viewModel.removeTemp()
             viewModel.tempDiaryList.removeAll()
-            viewModel.tempPriceList.removeAll()
+            sortedDiary.removeAll()
+            sortedPrice.removeAll()
+//            viewModel.tempPriceList.removeAll()
         }
         //1. 캘린더 날짜 선택기간 제한
         if viewModel.priceList.isEmpty == false {
@@ -223,15 +238,17 @@ struct EvaluationView: View {
     func undoAction() {
         //1. 마지막 요소 pop
         viewModel.tempDiaryList.removeLast()
-        viewModel.tempPriceList.removeLast()
+//        viewModel.tempPriceList.removeLast()
         //db에서도 pop
         viewModel.popTempDiary()
-        viewModel.popTempPrice()
+//        viewModel.popTempPrice()
+        //정렬하고 가격 리스트를 새로 만든다.
+        sortTempDiaryAndCreatePriceList()
         //2. 시간 세팅하기
         endTime = viewModel.tempDiaryList.last?.endTime ?? Calendar.current.startOfDay(for: date)
         startTime = endTime
-        //3. 현재가 수정
-        currentPrice = viewModel.tempPriceList.last ?? previousClose
+//        //3. 현재가 수정
+//        currentPrice = viewModel.tempPriceList.last ?? previousClose
         story = ""
     }
     func addDiary() {
@@ -244,33 +261,40 @@ struct EvaluationView: View {
             showError.toggle()
             return
         }
-        //중복된 시간이 없다면
-        let time = endTime.timeIntervalSince(startTime) / 60
-        let variance = previousClose * (time * 0.01) * 0.01
-        
-        switch eval {
-        case .productive:
-            //집중도에 비례해서 가격이 올라감
-            currentPrice += variance * concentration
-        case .unproductive:
-            //3배 곱해서 깎음...
-            currentPrice -= variance * 3
-        case .neutral: break
-        case .cancel:
-            story = ""
-            return
-        }
-        
-        let diary = Diary(story: story, startTime: startTime, endTime: endTime, eval: eval)
-        viewModel.tempPriceList.append(currentPrice)
+        //중복된 시간이 없다면 다이어리를 temp에 push하고
+        let diary = Diary(story: story, startTime: startTime, endTime: endTime, eval: eval, concentration: concentration)
         viewModel.tempDiaryList.append(diary)
+        //정렬하고 가격 리스트를 새로 만든다.
+        sortTempDiaryAndCreatePriceList()
+//        viewModel.tempPriceList.append(currentPrice)
         //db에 임시 저장
         viewModel.addTempDiary()
-        viewModel.addTempPrice()
+//        viewModel.addTempPrice()
         //시간 세팅
         startTime = endTime
         showToast.toggle()
         story = ""
+    }
+    func sortTempDiaryAndCreatePriceList() {
+        sortedDiary = viewModel.tempDiaryList.sorted{ $0.startTime < $1.startTime }
+        currentPrice = previousClose
+        for diary in sortedDiary {
+            let time = diary.endTime.timeIntervalSince(diary.startTime) / 60
+            let variance = previousClose * (time * 0.01) * 0.01
+            switch diary.eval {
+            case .productive:
+                //집중도에 비례해서 가격이 올라감
+                currentPrice += variance * concentration
+            case .unproductive:
+                //3배 곱해서 깎음...
+                currentPrice -= variance * 3
+            case .neutral: break
+            case .cancel:
+                story = ""
+                return
+            }
+            sortedPrice.append(currentPrice)
+        }
     }
 }
 
