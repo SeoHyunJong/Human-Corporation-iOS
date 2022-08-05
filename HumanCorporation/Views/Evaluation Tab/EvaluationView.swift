@@ -49,91 +49,92 @@ struct EvaluationView: View {
     @EnvironmentObject var viewModel: ViewModel
     
     var body: some View {
-        NavigationView{ //NavigationView는 아이패드나 맥에서 다르게 보인다.
-            VStack(alignment: .center) {
-                List{
-                    Section("시간별로 일기를 작성하여 실적을 완성하세요!") {
-                        DatePicker("일기 시작 시간", selection: $startTime, displayedComponents: [.hourAndMinute])
-                        DatePicker("일기 종료 시간", selection: $endTime, in: startTime..., displayedComponents: [.hourAndMinute])
-                        HStack {
-                            Label(String(format: "%.0f", endTime.timeIntervalSince(startTime) / 60)+" min", systemImage: "clock")
-                            Spacer()
-                            Button {
-                                eval = .cancel
-                                concentration = 2
-                                showDiary.toggle()
-                            } label: {
-                                Label("미니 일기 작성", systemImage: "plus.circle.fill")
-                            }
-                            .buttonStyle(BorderlessButtonStyle())
-                            .disabled(endTime.timeIntervalSince(startTime) > 0 ? false:true)
-                        }
-                        HStack(spacing: 30) {
-                            CircleTimeView()
-                            VStack(alignment: .leading) {
-                                HStack {
-                                    Label("", systemImage: "plus.circle")
-                                    Text(String(format: "%.1f", amountOfProductive)+" h")
-                                }.foregroundColor(.red)
-                                HStack {
-                                    Label("", systemImage: "minus.circle")
-                                    Text(String(format: "%.1f", amountOfUnproductive)+" h")
-                                }.foregroundColor(.blue)
-                                HStack {
-                                    Label("", systemImage: "moon.zzz")
-                                    Text(String(format: "%.1f", amountOfNeutral)+" h")
-                                }.foregroundColor(.green)
-                            }
-
-                        }
-                    }
-                    Section("현재 가격") {
-                        Label(String(format: "%.0f", currentPrice), systemImage: "dollarsign.circle.fill")
-                    }
-                    miniBar(priceList: sortedPrice)
-                        .scaledToFit()
-                    VStack {
-                        MessageBox(message: "잠깐! 완성하기를 누르기 전에 그 날 자정부터 오후 11:59분까지 꼼꼼하게 일기를 작성했는지 확인해라!", leftSpeaker: true)
-                        MessageBox(message: "오늘 일기를 먼저 쓰고 제출해버렸어. 어제 일기도 쓰고 싶은데, 그게 안되네...", leftSpeaker: false)
-                        MessageBox(message: "날짜 선택은 최근 추가된 실적을 기준으로 범위가 제한된다! 이건 분식회계를 방지하기 위한 최소조치지.", leftSpeaker: true)
-                    }
-                }
-                .listStyle(.plain)
-                HStack() {
-                    Button{
-                        showAlert.toggle()
-                    } label: {
-                        Text("완성하기")
-                            .font(.system(size: 15))
-                            .foregroundColor(Color.white)
-                            .padding(.vertical,10)
-                            .padding(.horizontal,15)
-                            .background(viewModel.tempDiaryList.count > 0 ? Color.green:Color.gray)
-                            .cornerRadius(45)
-                    }.disabled(viewModel.tempDiaryList.count > 0 ? false:true)
-                    Button{
-                        undoAction()
-                    } label: {
-                        Text("되돌리기")
-                            .font(.system(size: 15))
-                            .foregroundColor(Color.white)
-                            .padding(.vertical,10)
-                            .padding(.horizontal,15)
-                            .background(viewModel.tempDiaryList.count > 0 ? Color.red:Color.gray)
-                            .cornerRadius(45)
-                    }.disabled(viewModel.tempDiaryList.count > 0 ? false:true)
-                }
-                Spacer()
-            }
-            .navigationTitle(strDate)
-            .toolbar{
-                Label("select date", systemImage: "calendar")
+        VStack(alignment: .center, spacing: 0) {
+            HStack {
+                Text(strDate)
+                    .font(.system(size: 25, weight: .bold, design: .default))
                     .onTapGesture {
                         showCalendarAlert.toggle()
                     }
+                Spacer()
+                Button {
+                    showCalendarAlert.toggle()
+                } label: {
+                    Label("", systemImage: "calendar")
+                }
+            }.padding()
+            List{
+                Section("시간별로 일기를 작성하여 실적을 완성하세요!") {
+                    DatePicker("일기 시작 시간", selection: $startTime, displayedComponents: [.hourAndMinute])
+                    DatePicker("일기 종료 시간", selection: $endTime, in: startTime..., displayedComponents: [.hourAndMinute])
+                    HStack {
+                        Label(String(format: "%.0f", endTime.timeIntervalSince(startTime) / 60)+" min", systemImage: "clock")
+                        Spacer()
+                        Button {
+                            eval = .cancel
+                            concentration = 2
+                            showDiary.toggle()
+                        } label: {
+                            Label("미니 일기 작성", systemImage: "plus.circle.fill")
+                        }
+                        .buttonStyle(BorderlessButtonStyle())
+                        .disabled(endTime.timeIntervalSince(startTime) > 0 ? false:true)
+                    }
+                    HStack(spacing: 30) {
+                        CircleTimeView()
+                        VStack(alignment: .leading) {
+                            HStack {
+                                Label("", systemImage: "plus.circle")
+                                Text(String(format: "%.1f", amountOfProductive)+" h")
+                            }.foregroundColor(.red)
+                            HStack {
+                                Label("", systemImage: "minus.circle")
+                                Text(String(format: "%.1f", amountOfUnproductive)+" h")
+                            }.foregroundColor(.blue)
+                            HStack {
+                                Label("", systemImage: "moon.zzz")
+                                Text(String(format: "%.1f", amountOfNeutral)+" h")
+                            }.foregroundColor(.green)
+                        }
+                        
+                    }
+                }
+                Section("현재 가격") {
+                    Label(String(format: "%.0f", currentPrice), systemImage: "dollarsign.circle.fill")
+                }
+                miniBar(priceList: sortedPrice)
+                    .scaledToFit()
+                VStack {
+                    MessageBox(message: "잠깐! 완성하기를 누르기 전에 그 날 자정부터 오후 11:59분까지 꼼꼼하게 일기를 작성했는지 확인해라!", leftSpeaker: true)
+                    MessageBox(message: "오늘 일기를 먼저 쓰고 제출해버렸어. 어제 일기도 쓰고 싶은데, 그게 안되네...", leftSpeaker: false)
+                    MessageBox(message: "날짜 선택은 최근 추가된 실적을 기준으로 범위가 제한된다! 이건 분식회계를 방지하기 위한 최소조치지.", leftSpeaker: true)
+                }
             }
+            .listStyle(.plain)
+            HStack() {
+                Button{
+                    showAlert.toggle()
+                } label: {
+                    Text("완성하기")
+                        .padding(.vertical,10)
+                        .padding(.horizontal,15)
+                        .background(viewModel.tempDiaryList.count > 0 ? Color.green:Color.gray)
+                        .cornerRadius(45)
+                }.disabled(viewModel.tempDiaryList.count > 0 ? false:true)
+                Button{
+                    undoAction()
+                } label: {
+                    Text("되돌리기")
+                        .padding(.vertical,10)
+                        .padding(.horizontal,15)
+                        .background(viewModel.tempDiaryList.count > 0 ? Color.red:Color.gray)
+                        .cornerRadius(45)
+                }.disabled(viewModel.tempDiaryList.count > 0 ? false:true)
+            }
+            .padding(.vertical, 5)
+            .font(.system(size: 15))
+            .foregroundColor(Color.white)
         }
-        .navigationViewStyle(.stack)
         .onAppear(){
             //자동으로 임시저장된 데이터를 불러온다.
             if viewModel.tempDiaryList.count > 0 {

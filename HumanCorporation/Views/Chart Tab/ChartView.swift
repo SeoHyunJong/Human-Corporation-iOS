@@ -11,39 +11,52 @@ import Charts
 struct ChartView: View {
     @EnvironmentObject var viewModel: ViewModel
     @State private var fluctuation: Double = 0
+    @State private var showSetting = false
     
     var body: some View {
         GeometryReader { geo in
             let width = min(geo.size.width, geo.size.height)
             List {
-                HStack {
-                    ProfileImage(image: viewModel.profileImage!)
-                        .frame(width: width*0.3, height: width*0.3)
-                        .padding(.vertical)
-                    VStack(alignment: .leading) {
-                        HStack {
-                            Text(viewModel.userProfile.name)
-                                .font(.system(size: width*0.06))
-                            Label(String(format: "%.2f", fluctuation) + "%", systemImage: fluctuation > 0 ? "arrowtriangle.up.circle.fill" : "arrowtriangle.down.circle.fill")
-                                .foregroundColor(fluctuation > 0 ? .red : .blue)
-                                .scaledToFit()
-                                .onAppear() {
-                                    let current = viewModel.priceList.last?.close ?? 1000
-                                    let past_idx = viewModel.priceList.count - 2
-                                    var past: Double = 1000
-                                    if past_idx >= 0 {
-                                        past = viewModel.priceList[past_idx].close
-                                    }
-                                    fluctuation = (current / past) * 100 - 100
-                                }
-                        }
-                        .padding()
-                        Text(viewModel.userProfile.goal)
-                            .font(.system(size: width*0.04))
-                            .foregroundColor(.secondary)
-                            .padding(.horizontal)
+                VStack(alignment: .trailing) {
+                    Button {
+                        showSetting.toggle()
+                    } label: {
+                        Label("Settings", systemImage: "gearshape")
+                            .labelStyle(.iconOnly)
                     }
-                    Spacer()
+                    .buttonStyle(BorderlessButtonStyle())
+                    HStack {
+                        ProfileImage(image: viewModel.profileImage!)
+                            .frame(width: width*0.3, height: width*0.3)
+                            .padding(.vertical)
+                        VStack(alignment: .leading) {
+                            HStack {
+                                Text(viewModel.userProfile.name)
+                                    .font(.system(size: width*0.06))
+                                    .fixedSize(horizontal: true, vertical: false)
+                                Label(String(format: "%.2f", fluctuation) + "%", systemImage: fluctuation > 0 ? "arrowtriangle.up.circle.fill" : "arrowtriangle.down.circle.fill")
+                                    .foregroundColor(fluctuation > 0 ? .red : .blue)
+                                    .scaledToFit()
+                                    .fixedSize(horizontal: true, vertical: false)
+                                    .onAppear() {
+                                        let current = viewModel.priceList.last?.close ?? 1000
+                                        let past_idx = viewModel.priceList.count - 2
+                                        var past: Double = 1000
+                                        if past_idx >= 0 {
+                                            past = viewModel.priceList[past_idx].close
+                                        }
+                                        fluctuation = (current / past) * 100 - 100
+                                    }
+                            }
+                            .padding()
+                            Text(viewModel.userProfile.goal)
+                                .font(.system(size: width*0.04))
+                                .foregroundColor(.secondary)
+                                .padding(.horizontal)
+                                .fixedSize(horizontal: true, vertical: false)
+                        }
+                        Spacer()
+                    }
                 }
                 Bar(entries: viewModel.priceList)
                     .scaledToFit()
@@ -81,6 +94,10 @@ struct ChartView: View {
                 }
             }
             .listStyle(.plain)
+            .sheet(isPresented: $showSetting){
+                Setting()
+                    .environmentObject(viewModel)
+            }
         }
     }
 }

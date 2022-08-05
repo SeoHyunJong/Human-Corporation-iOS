@@ -27,9 +27,10 @@ struct FriendChartView: View {
                             Text(profile.name)
                                 .font(.system(size: width*0.06))
                                 .padding()
+                                .fixedSize(horizontal: true, vertical: false)
                             Label(String(format: "%.2f", fluctuation) + "%", systemImage: fluctuation > 0 ? "arrowtriangle.up.circle.fill" : "arrowtriangle.down.circle.fill")
                                 .foregroundColor(fluctuation > 0 ? .red : .blue)
-                                .scaledToFit()
+                                .fixedSize(horizontal: true, vertical: false)
                                 .onChange(of: fetchCounter) { _ in
                                     let current = viewModel.followOnePriceList.last?.close ?? 1000
                                     let past_idx = viewModel.followOnePriceList.count - 2
@@ -44,6 +45,7 @@ struct FriendChartView: View {
                             .font(.system(size: width*0.04))
                             .foregroundColor(.secondary)
                             .padding(.horizontal)
+                            .fixedSize(horizontal: true, vertical: false)
                     }
                     Spacer()
                 }

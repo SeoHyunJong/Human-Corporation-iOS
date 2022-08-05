@@ -19,80 +19,73 @@ struct HomeView: View {
         case Chart
         case Evaluation
         case Analysis
+        case DataStatic
         case Discussion
     }
     var body: some View {
-        GeometryReader { geo in
-            let width = min(geo.size.width, geo.size.height)
-            VStack{
-                HStack{
-                    Spacer()
-                    Button {
-                        showSetting.toggle()
-                    } label: {
-                        Label("Settings", systemImage: "gearshape")
-                            .labelStyle(.iconOnly)
-                            .font(.system(size: width*0.04))
+        VStack{
+            TabView(selection: $selection){
+                Group {
+                    if fetchCounter >= completeNumber {
+                        ChartView()
+                    } else {
+                        LoadingView(fetchCounter: fetchCounter, completeNumber: completeNumber)
                     }
-                    .padding(.horizontal)
                 }
-                TabView(selection: $selection){
-                    Group {
-                        if fetchCounter >= completeNumber {
-                            ChartView()
-                        } else {
-                            LoadingView(fetchCounter: fetchCounter)
-                        }
-                    }
-                    .tabItem{
-                        Label("시세", systemImage: "chart.line.uptrend.xyaxis")
-                    }
-                    .tag(Tab.Chart)
-                    Group {
-                        if fetchCounter >= completeNumber {
-                            if viewModel.recentDay >= Date() {
-                                NoMoreAddDiary()
-                            } else {
-                                EvaluationView()
-                            }
-                        } else {
-                            LoadingView(fetchCounter: fetchCounter)
-                        }
-                    }
-                    .tabItem{
-                        Label("실적추가", systemImage: "note.text.badge.plus")
-                    }
-                    .tag(Tab.Evaluation)
-                    Group {
-                        if fetchCounter >= completeNumber {
-                            RecordView()
-                        } else {
-                            LoadingView(fetchCounter: fetchCounter)
-                        }
-                    }
-                    .tabItem{
-                        Label("전자공시", systemImage: "scroll")
-                    }
-                    .tag(Tab.Analysis)
-                    Group {
-                        if fetchCounter >= completeNumber {
-                            SocialView()
-                        } else {
-                            LoadingView(fetchCounter: fetchCounter)
-                        }
-                    }
-                    .tabItem{
-                        Label("종목비교", systemImage: "quote.bubble.fill")
-                    }
-                    .tag(Tab.Discussion)
+                .tabItem{
+                    Label("시세", systemImage: "chart.line.uptrend.xyaxis")
                 }
-                .padding(.bottom)
+                .tag(Tab.Chart)
+                Group {
+                    if fetchCounter >= completeNumber {
+                        if viewModel.recentDay >= Date() {
+                            NoMoreAddDiary()
+                        } else {
+                            EvaluationView()
+                        }
+                    } else {
+                        LoadingView(fetchCounter: fetchCounter, completeNumber: completeNumber)
+                    }
+                }
+                .tabItem{
+                    Label("실적추가", systemImage: "note.text.badge.plus")
+                }
+                .tag(Tab.Evaluation)
+                Group {
+                    if fetchCounter >= completeNumber {
+                        StatsView()
+                    } else {
+                        LoadingView(fetchCounter: fetchCounter, completeNumber: completeNumber)
+                    }
+                }
+                .tabItem{
+                    Label("통계", systemImage: "chart.bar.xaxis")
+                }
+                .tag(Tab.Analysis)
+                Group {
+                    if fetchCounter >= completeNumber {
+                        RecordView()
+                    } else {
+                        LoadingView(fetchCounter: fetchCounter, completeNumber: completeNumber)
+                    }
+                }
+                .tabItem{
+                    Label("전자공시", systemImage: "scroll")
+                }
+                .tag(Tab.Analysis)
+                Group {
+                    if fetchCounter >= completeNumber {
+                        SocialView()
+                    } else {
+                        LoadingView(fetchCounter: fetchCounter, completeNumber: completeNumber)
+                    }
+                }
+                .tabItem{
+                    Label("종목비교", systemImage: "quote.bubble.fill")
+                }
+                .tag(Tab.Discussion)
             }
-            .sheet(isPresented: $showSetting){
-                Setting()
-                    .environmentObject(viewModel)
-            }
-            .frame(width: geo.size.width, height: geo.size.height)
+            .padding(.bottom)
         }
     }
 }

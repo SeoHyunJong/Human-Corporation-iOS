@@ -38,6 +38,7 @@
 		B45E0403289BA93E009C7601 /* CircleTimeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45E0402289BA93E009C7601 /* CircleTimeView.swift */; };
 		B45E0407289BE30F009C7601 /* CircleTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45E0406289BE30F009C7601 /* CircleTabView.swift */; };
 		B45E041D289CF275009C7601 /* LocalNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45E041C289CF275009C7601 /* LocalNotificationManager.swift */; };
+		B45E0420289D3A07009C7601 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45E041F289D3A07009C7601 /* StatsView.swift */; };
 		B46EF2DE288A89A500F38878 /* AlertToast in Frameworks */ = {isa = PBXBuildFile; productRef = B46EF2DD288A89A500F38878 /* AlertToast */; };
 		B46EF2E0288E9C3E00F38878 /* Diary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46EF2DF288E9C3E00F38878 /* Diary.swift */; };
 		B4D87F2E2882B1D300A2CCAB /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = B4D87F2D2882B1D300A2CCAB /* GoogleSignIn */; };
@@ -83,6 +84,7 @@
 		B45E0406289BE30F009C7601 /* CircleTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleTabView.swift; sourceTree = "<group>"; };
 		B45E041B289CC809009C7601 /* HumanCorporation.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HumanCorporation.entitlements; sourceTree = "<group>"; };
 		B45E041C289CF275009C7601 /* LocalNotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificationManager.swift; sourceTree = "<group>"; };
+		B45E041F289D3A07009C7601 /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
 		B46EF2DF288E9C3E00F38878 /* Diary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Diary.swift; sourceTree = "<group>"; };
 		B4D87F312882D86800A2CCAB /* GoogleSignInButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleSignInButton.swift; sourceTree = "<group>"; };
 		B4D87F352882E8B700A2CCAB /* FirstComeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstComeView.swift; sourceTree = "<group>"; };
@@ -159,13 +161,14 @@
 				B42EA620288292B1009C5901 /* ContentView.swift */,
 				B4D87F4328868A7D00A2CCAB /* HomeView.swift */,
 				B45E0400289AD97A009C7601 /* LoadingView.swift */,
-				B45E041E289CF28E009C7601 /* Notification */,
+				B45E0421289D46F2009C7601 /* Statistic */,
 				B45E03F72899095E009C7601 /* Social Tab */,
 				B45E03F02896DECB009C7601 /* First */,
 				B4EB64F32892EECB004DD814 /* Record Tab */,
 				B46EF2E1288EAD0B00F38878 /* Evaluation Tab */,
 				B442B7F8288978810064C0B1 /* Chart Tab */,
 				B442B7E72887E21F0064C0B1 /* Profile */,
+				B45E041E289CF28E009C7601 /* Notification */,
 				B4D87F342882E2A300A2CCAB /* Login */,
 			);
 			path = Views;
@@ -228,6 +231,14 @@
 				B45E041C289CF275009C7601 /* LocalNotificationManager.swift */,
 			);
 			path = Notification;
+			sourceTree = "<group>";
+		};
+		B45E0421289D46F2009C7601 /* Statistic */ = {
+			isa = PBXGroup;
+			children = (
+				B45E041F289D3A07009C7601 /* StatsView.swift */,
+			);
+			path = Statistic;
 			sourceTree = "<group>";
 		};
 		B46EF2E1288EAD0B00F38878 /* Evaluation Tab */ = {
@@ -373,6 +384,7 @@
 				B4D87F3E288573E500A2CCAB /* Profile.swift in Sources */,
 				B45E03F42896E380009C7601 /* Triangle.swift in Sources */,
 				B45E0403289BA93E009C7601 /* CircleTimeView.swift in Sources */,
+				B45E0420289D3A07009C7601 /* StatsView.swift in Sources */,
 				B45E0407289BE30F009C7601 /* CircleTabView.swift in Sources */,
 				B442B7E42886D9540064C0B1 /* SocialView.swift in Sources */,
 				B45E03ED2893CFF6009C7601 /* RecordRow.swift in Sources */,
