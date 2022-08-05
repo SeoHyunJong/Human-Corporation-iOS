@@ -13,6 +13,13 @@ struct ContentView: View {
     @State private var fetchCounter: Double = 0
     @State private var completeNum: Double = 5
     
+    func setNotification() {
+        let manager = LocalNotificationManager()
+        manager.requestPermission()
+        manager.addNotification(title: "오늘의 일기를 작성해보세요!")
+        manager.schedule()
+    }
+    
     var body: some View {
         switch viewModel.state {
         case .signedIn:
@@ -25,6 +32,7 @@ struct ContentView: View {
             } else {
                 HomeView(fetchCounter: fetchCounter, completeNumber: completeNum)
                     .onAppear(){
+                        setNotification()
                         fetchCounter = 0
                         if viewModel.state == .signedIn { //프리뷰 오류 때문에 추가...
                             //프로필 로드

@@ -37,6 +37,7 @@
 		B45E0401289AD97A009C7601 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45E0400289AD97A009C7601 /* LoadingView.swift */; };
 		B45E0403289BA93E009C7601 /* CircleTimeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45E0402289BA93E009C7601 /* CircleTimeView.swift */; };
 		B45E0407289BE30F009C7601 /* CircleTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45E0406289BE30F009C7601 /* CircleTabView.swift */; };
+		B45E041D289CF275009C7601 /* LocalNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45E041C289CF275009C7601 /* LocalNotificationManager.swift */; };
 		B46EF2DE288A89A500F38878 /* AlertToast in Frameworks */ = {isa = PBXBuildFile; productRef = B46EF2DD288A89A500F38878 /* AlertToast */; };
 		B46EF2E0288E9C3E00F38878 /* Diary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46EF2DF288E9C3E00F38878 /* Diary.swift */; };
 		B4D87F2E2882B1D300A2CCAB /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = B4D87F2D2882B1D300A2CCAB /* GoogleSignIn */; };
@@ -80,6 +81,8 @@
 		B45E0400289AD97A009C7601 /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		B45E0402289BA93E009C7601 /* CircleTimeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleTimeView.swift; sourceTree = "<group>"; };
 		B45E0406289BE30F009C7601 /* CircleTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleTabView.swift; sourceTree = "<group>"; };
+		B45E041B289CC809009C7601 /* HumanCorporation.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HumanCorporation.entitlements; sourceTree = "<group>"; };
+		B45E041C289CF275009C7601 /* LocalNotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificationManager.swift; sourceTree = "<group>"; };
 		B46EF2DF288E9C3E00F38878 /* Diary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Diary.swift; sourceTree = "<group>"; };
 		B4D87F312882D86800A2CCAB /* GoogleSignInButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleSignInButton.swift; sourceTree = "<group>"; };
 		B4D87F352882E8B700A2CCAB /* FirstComeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstComeView.swift; sourceTree = "<group>"; };
@@ -130,6 +133,7 @@
 		B42EA61D288292B1009C5901 /* HumanCorporation */ = {
 			isa = PBXGroup;
 			children = (
+				B45E041B289CC809009C7601 /* HumanCorporation.entitlements */,
 				B42EA6342882A9C6009C5901 /* Info.plist */,
 				B442B7EF288812C90064C0B1 /* GoogleService-Info.plist */,
 				B42EA61E288292B1009C5901 /* HumanCorporationApp.swift */,
@@ -155,6 +159,7 @@
 				B42EA620288292B1009C5901 /* ContentView.swift */,
 				B4D87F4328868A7D00A2CCAB /* HomeView.swift */,
 				B45E0400289AD97A009C7601 /* LoadingView.swift */,
+				B45E041E289CF28E009C7601 /* Notification */,
 				B45E03F72899095E009C7601 /* Social Tab */,
 				B45E03F02896DECB009C7601 /* First */,
 				B4EB64F32892EECB004DD814 /* Record Tab */,
@@ -215,6 +220,14 @@
 				B45E03FA28990990009C7601 /* AddFriendView.swift */,
 			);
 			path = "Social Tab";
+			sourceTree = "<group>";
+		};
+		B45E041E289CF28E009C7601 /* Notification */ = {
+			isa = PBXGroup;
+			children = (
+				B45E041C289CF275009C7601 /* LocalNotificationManager.swift */,
+			);
+			path = Notification;
 			sourceTree = "<group>";
 		};
 		B46EF2E1288EAD0B00F38878 /* Evaluation Tab */ = {
@@ -367,6 +380,7 @@
 				B4EB64F0289134F9004DD814 /* NoMoreAddDiary.swift in Sources */,
 				B42EA621288292B1009C5901 /* ContentView.swift in Sources */,
 				B42EA61F288292B1009C5901 /* HumanCorporationApp.swift in Sources */,
+				B45E041D289CF275009C7601 /* LocalNotificationManager.swift in Sources */,
 				B4EB64F228914BFA004DD814 /* miniBar.swift in Sources */,
 				B45E03FB28990990009C7601 /* AddFriendView.swift in Sources */,
 				B4EB64EE28910F93004DD814 /* DiaryFieldView.swift in Sources */,
@@ -495,8 +509,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = HumanCorporation/HumanCorporation.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.2.1;
+				CURRENT_PROJECT_VERSION = 1.3.0;
 				DEVELOPMENT_ASSET_PATHS = "\"HumanCorporation/Preview Content\"";
 				DEVELOPMENT_TEAM = SAQDM96LSM;
 				ENABLE_PREVIEWS = YES;
@@ -514,9 +529,10 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.1;
+				MARKETING_VERSION = 1.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.eriel.HumanCorporation;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -528,8 +544,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = HumanCorporation/HumanCorporation.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.2.1;
+				CURRENT_PROJECT_VERSION = 1.3.0;
 				DEVELOPMENT_ASSET_PATHS = "\"HumanCorporation/Preview Content\"";
 				DEVELOPMENT_TEAM = SAQDM96LSM;
 				ENABLE_PREVIEWS = YES;
@@ -547,9 +564,10 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.1;
+				MARKETING_VERSION = 1.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.eriel.HumanCorporation;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
