@@ -23,6 +23,7 @@ struct StatsView: View {
                     ForEach(productiveCount.sorted{ $0.value > $1.value }[0...5], id: \.key) { dict in
                         HStack{
                             Text("\(dict.key)h - \(dict.key+1)h")
+                                .frame(width: 80)
                             ProgressView(value: Double(dict.value), total: Double(maxCount))
                                 .progressViewStyle(.linear)
                                 .tint(dict.value == maxCount ? .orange : .red )
@@ -34,15 +35,17 @@ struct StatsView: View {
                         .bold()
                         .font(.title2)
                         .foregroundColor(.secondary)
-                    ForEach(unproductvieCount.sorted{ $0.value < $1.value }[0...5], id: \.key) { dict in
+                    ForEach(unproductvieCount.sorted{ $0.value > $1.value }[0...5], id: \.key) { dict in
                         HStack{
                             Text("\(dict.key)h - \(dict.key+1)h")
+                                .frame(width: 80)
                             ProgressView(value: Double(dict.value), total: Double(minCount))
                                 .progressViewStyle(.linear)
                                 .tint(dict.value == minCount ? .purple : .blue )
                         }
                     }
                 }
+                MessageBox(message: "통계는 표본이 많을수록 정확해진다! 만약 유저가 많아지면 평균가격도 올리겠다!", leftSpeaker: true)
             }
             .navigationTitle("Statistics")
             .listStyle(.plain)
