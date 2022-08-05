@@ -61,7 +61,7 @@ struct HomeView: View {
                 .tabItem{
                     Label("통계", systemImage: "chart.bar.xaxis")
                 }
-                .tag(Tab.Analysis)
+                .tag(Tab.DataStatic)
                 Group {
                     if fetchCounter >= completeNumber {
                         RecordView()

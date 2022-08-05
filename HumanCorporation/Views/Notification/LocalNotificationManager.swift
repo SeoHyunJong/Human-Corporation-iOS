@@ -22,7 +22,6 @@ class LocalNotificationManager {
             .requestAuthorization(options: [.alert, .badge, .sound]) {
                 granted, error in
                 if granted == true && error == nil {
-                    
                 }
             }
     }
@@ -60,6 +59,7 @@ class LocalNotificationManager {
             let trigger = UNCalendarNotificationTrigger(dateMatching: date, repeats: true)
             let request = UNNotificationRequest(identifier: notification.id, content: content, trigger: trigger)
             
+            UNUserNotificationCenter.current().removeAllDeliveredNotifications()
             UNUserNotificationCenter.current().add(request) { error in
                 guard error == nil else {return}
                 print("알림 스케쥴링 성공")

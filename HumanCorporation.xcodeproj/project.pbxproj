@@ -161,6 +161,7 @@
 				B42EA620288292B1009C5901 /* ContentView.swift */,
 				B4D87F4328868A7D00A2CCAB /* HomeView.swift */,
 				B45E0400289AD97A009C7601 /* LoadingView.swift */,
+				B45E041E289CF28E009C7601 /* Notification */,
 				B45E0421289D46F2009C7601 /* Statistic */,
 				B45E03F72899095E009C7601 /* Social Tab */,
 				B45E03F02896DECB009C7601 /* First */,
@@ -168,7 +169,6 @@
 				B46EF2E1288EAD0B00F38878 /* Evaluation Tab */,
 				B442B7F8288978810064C0B1 /* Chart Tab */,
 				B442B7E72887E21F0064C0B1 /* Profile */,
-				B45E041E289CF28E009C7601 /* Notification */,
 				B4D87F342882E2A300A2CCAB /* Login */,
 			);
 			path = Views;
@@ -523,7 +523,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = HumanCorporation/HumanCorporation.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.3.0;
+				CURRENT_PROJECT_VERSION = 1.3.2;
 				DEVELOPMENT_ASSET_PATHS = "\"HumanCorporation/Preview Content\"";
 				DEVELOPMENT_TEAM = SAQDM96LSM;
 				ENABLE_PREVIEWS = YES;
@@ -541,7 +541,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3.0;
+				MARKETING_VERSION = 1.3.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.eriel.HumanCorporation;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTS_MACCATALYST = NO;
@@ -558,7 +558,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = HumanCorporation/HumanCorporation.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.3.0;
+				CURRENT_PROJECT_VERSION = 1.3.2;
 				DEVELOPMENT_ASSET_PATHS = "\"HumanCorporation/Preview Content\"";
 				DEVELOPMENT_TEAM = SAQDM96LSM;
 				ENABLE_PREVIEWS = YES;
@@ -576,7 +576,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3.0;
+				MARKETING_VERSION = 1.3.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.eriel.HumanCorporation;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTS_MACCATALYST = NO;
