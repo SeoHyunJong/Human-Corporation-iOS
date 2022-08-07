@@ -17,8 +17,6 @@ struct ContentView: View {
     func setNotification() {
         print("알림 설정 시작")
         let manager = LocalNotificationManager()
-        manager.requestPermission()
-        manager.addNotification(title: "오늘의 일기를 작성해보세요!")
         manager.schedule()
     }
     var body: some View {

@@ -22,6 +22,8 @@ class LocalNotificationManager {
             .requestAuthorization(options: [.alert, .badge, .sound]) {
                 granted, error in
                 if granted == true && error == nil {
+                    self.addNotification(title: "오늘의 일기를 작성해보세요!")
+                    self.scheduleNotifications()
                 }
             }
     }
@@ -37,7 +39,8 @@ class LocalNotificationManager {
             case .notDetermined:
                 self.requestPermission()
             case .authorized, .provisional:
-                self.scheduleNotifications()
+                print("이미 알림 설정이 되어있음!")
+                break
             default:
                 break
             }
@@ -47,8 +50,8 @@ class LocalNotificationManager {
     func scheduleNotifications() {
         for notification in notifications {
             let content = UNMutableNotificationContent()
-            content.title = notification.title
             
+            content.title = notification.title
             content.sound = UNNotificationSound.default
             content.body = "벌써 하루가 끝나가는군! 오늘 너의 일과들이 생산적이었는지 점검해보자구!"
             
@@ -60,6 +63,7 @@ class LocalNotificationManager {
             let request = UNNotificationRequest(identifier: notification.id, content: content, trigger: trigger)
             
             UNUserNotificationCenter.current().removeAllDeliveredNotifications()
+            UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
             UNUserNotificationCenter.current().add(request) { error in
                 guard error == nil else {return}
                 print("알림 스케쥴링 성공")
