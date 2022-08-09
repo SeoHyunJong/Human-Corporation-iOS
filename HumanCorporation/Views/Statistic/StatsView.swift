@@ -64,7 +64,7 @@ struct StatsView: View {
                 }
                 maxCount = productiveCount.values.max()!
                 minCount = unproductvieCount.values.max()!
-        }
+            }
         }
     }
 }

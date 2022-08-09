@@ -262,6 +262,10 @@ struct EvaluationView: View {
         story = ""
     }
     func addDiary() {
+        //액션이 취소라면 무시
+        if eval == .cancel{
+            return
+        }
         //중복된 시간이 있는지 검사
         let timeRange = startTime..<endTime
         let duplicate = viewModel.tempDiaryList.filter{
