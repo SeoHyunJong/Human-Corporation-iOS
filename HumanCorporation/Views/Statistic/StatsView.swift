@@ -20,7 +20,7 @@ struct StatsView: View {
                     Text("가장 생산적인 시간")
                         .bold()
                         .font(.title2)
-                    ForEach(productiveCount.sorted{ $0.value > $1.value }[0...5], id: \.key) { dict in
+                    ForEach(productiveCount.sorted{ $0.value > $1.value }[0...4], id: \.key) { dict in
                         HStack{
                             Text("\(dict.key)h - \(dict.key+1)h")
                                 .frame(width: 80)
@@ -35,7 +35,7 @@ struct StatsView: View {
                         .bold()
                         .font(.title2)
                         .foregroundColor(.secondary)
-                    ForEach(unproductvieCount.sorted{ $0.value > $1.value }[0...5], id: \.key) { dict in
+                    ForEach(unproductvieCount.sorted{ $0.value > $1.value }[0...4], id: \.key) { dict in
                         HStack{
                             Text("\(dict.key)h - \(dict.key+1)h")
                                 .frame(width: 80)

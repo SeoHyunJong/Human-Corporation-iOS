@@ -61,12 +61,10 @@ struct LoginView: View {
                                         print(error.localizedDescription)
                                     } else {
                                         viewModel.state = .signedIn
-                                        viewModel.userCheck(uid: idTokenString)
+                                        viewModel.userCheck(uid: Auth.auth().currentUser!.uid)
                                         viewModel.userProfile.platform = "apple"
                                     }
                                 }
-                                
-                                print("\(String(describing: Auth.auth().currentUser?.uid))")
                             default:
                                 break
                                 

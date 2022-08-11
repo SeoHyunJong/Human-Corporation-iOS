@@ -30,7 +30,7 @@ struct ContentView: View {
                 }
             } else {
                 HomeView(fetchCounter: fetchCounter, completeNumber: completeNum)
-                    .onAppear(){
+                    .task{
                         setNotification()
                         fetchCounter = 0
                         if viewModel.state == .signedIn { //프리뷰 오류 때문에 추가...
