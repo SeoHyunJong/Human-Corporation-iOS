@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import GoogleSignIn
+import FirebaseAuth
 import AlertToast
 
 struct FirstComeView: View {
@@ -36,8 +36,11 @@ struct FirstComeView: View {
             }
             Button{
                 if isValidInput(profile.name) {
-                    profile.id = GIDSignIn.sharedInstance.currentUser!.userID!
-                    profile.email = GIDSignIn.sharedInstance.currentUser!.profile!.email
+                    if viewModel.userProfile.platform == "apple" {
+                        profile.platform = "apple"
+                    }
+                    profile.id = Auth.auth().currentUser!.uid
+                    profile.email = Auth.auth().currentUser!.email!
                     viewModel.userAdd(user: profile)
                     viewModel.isNewUser.toggle()
                 } else {

@@ -61,6 +61,8 @@ class ViewModel: ObservableObject {
         case Others
     }
     
+    fileprivate var currentNonce: String?
+    
     // MARK: Sign in, sign out
     func signIn() {
         // 1. 이전에 로그인한 이력이 있으면 그 이력을 토대로 로그인한다.
@@ -103,7 +105,8 @@ class ViewModel: ObservableObject {
                 print(error.localizedDescription)
             } else {
                 self.state = .signedIn
-                userCheck()
+                guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
+                userCheck(uid: uid)
             }
         }
     }
@@ -134,16 +137,14 @@ class ViewModel: ObservableObject {
             print(error.localizedDescription)
         }
     }
-    
     // MARK: User profile
     func userAdd(user: Profile) {
-        let values: [String: Any] = ["name":"\(user.name)", "email":"\(user.email)", "goal":"\(user.goal)"]
+        let values: [String: Any] = ["name":user.name, "email":user.email, "goal":user.goal, "platform":user.platform]
         self.ref.child("user").child("\(user.id)").setValue(values)
         //        uploadImg(image: UIImage(named: "Mamong")!)
     }
     
-    private func userCheck(){ //새로운 유저인지 아닌지 체크
-        guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
+    func userCheck(uid: String){ //새로운 유저인지 아닌지 체크
         ref.child("user").child(uid).observeSingleEvent(of: .value, with: { snapshot in
             // Get user value
             guard let _ = snapshot.value as? NSDictionary else {self.isNewUser = true; self.infoNext = false; return}
@@ -179,7 +180,7 @@ class ViewModel: ObservableObject {
     }
     
     func uploadImg(image: UIImage) {
-        guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
+        guard let uid = Auth.auth().currentUser?.uid else {return}
         var data = Data()
         data = image.jpegData(compressionQuality: 0.8)!
         let imageRef = storageRef.child("images/\(uid)/profile.jpg")
@@ -216,7 +217,7 @@ class ViewModel: ObservableObject {
         }
     }
     func trashAllExepProfile() {
-        guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
+        guard let uid = Auth.auth().currentUser?.uid else {return}
         ref.child("temp").child(uid).removeValue()
         ref.child("price").child(uid).removeValue()
         ref.child("diary").child(uid).removeValue()
@@ -237,7 +238,7 @@ class ViewModel: ObservableObject {
         completion("실적이 파이어베이스에 업로드 됨.")
     }
     func readDiaryList(completion: @escaping (_ message: String) -> Void) {
-        guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
+        guard let uid = Auth.auth().currentUser?.uid else {return}
         let dateformatter = DateFormatter()
         dateformatter.dateFormat = "yyyy-MM-dd HH:mm"
         //최대 100개까지만 읽는다.
@@ -274,7 +275,7 @@ class ViewModel: ObservableObject {
     }
     
     func readTempDiaryList(completion: @escaping (_ message: String) -> Void) {
-        guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
+        guard let uid = Auth.auth().currentUser?.uid else {return}
         let dateformatter = DateFormatter()
         dateformatter.dateFormat = "yyyy-MM-dd HH:mm"
         ref.child("temp").child(uid).child("diary").observeSingleEvent(of: .value, with: { snapshot in
@@ -294,13 +295,13 @@ class ViewModel: ObservableObject {
         }
     }
     func removeTemp() {
-        guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
+        guard let uid = Auth.auth().currentUser?.uid else {return}
         ref.child("temp").child(uid).removeValue()
     }
     func findRecentDay(completion: @escaping (_ message: String) -> Void) {
         let dateformatter = DateFormatter()
         dateformatter.dateFormat = "yyyy-MM-dd HH:mm"
-        guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return} //오류가 생겨 guard let 구문으로 처리
+        guard let uid = Auth.auth().currentUser?.uid else {return} //오류가 생겨 guard let 구문으로 처리
         // why 오류? onAppear에서 호출되는 이 함수가 signOut 처리보다 더 늦게 비동기적으로 실행되어 생기는 문제
         ref.child("diary").child(uid).observeSingleEvent(of: .value, with: { snapshot in
             guard let child = snapshot.children.allObjects.last as? DataSnapshot else {return}
@@ -375,7 +376,7 @@ class ViewModel: ObservableObject {
         })
     }
     func readFollowList(completion: @escaping (_ message: String) -> Void) {
-        guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
+        guard let uid = Auth.auth().currentUser?.uid else {return}
         ref.child("social").child(uid).child("follow").observeSingleEvent(of: .value, with: { snapshot in
             for child in snapshot.children.allObjects as! [DataSnapshot] {
                 guard let value = child.value as? NSString else {return}

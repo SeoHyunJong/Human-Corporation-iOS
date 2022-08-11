@@ -6,7 +6,7 @@
 //
 //ContentView -> FirstComeView, HomeView, LoginView
 import SwiftUI
-import GoogleSignIn
+import FirebaseAuth
 import UserNotifications
 
 struct ContentView: View {
@@ -35,7 +35,7 @@ struct ContentView: View {
                         fetchCounter = 0
                         if viewModel.state == .signedIn { //프리뷰 오류 때문에 추가...
                             //프로필 로드
-                            guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
+                            guard let uid = Auth.auth().currentUser?.uid else {return}
                             viewModel.readUserFromDB(uid: uid, mode: .MyProfile, completion: { message in
                                 print(message)
                                 fetchCounter += 1

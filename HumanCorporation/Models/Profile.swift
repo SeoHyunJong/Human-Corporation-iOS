@@ -12,4 +12,5 @@ struct Profile: Codable, Hashable {
     var name = ""
     var email = ""
     var goal = ""
+    var platform = "google"
 }

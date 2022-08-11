@@ -6,7 +6,6 @@
 //
 //HomeView -> Chart, Evaluation, Analysis, Discuss, Settings
 import SwiftUI
-import GoogleSignIn
 // 시세   실적추가    종목분석    종목토론실
 struct HomeView: View {
     @EnvironmentObject var viewModel: ViewModel
