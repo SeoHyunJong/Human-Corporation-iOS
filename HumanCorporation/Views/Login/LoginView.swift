@@ -77,6 +77,7 @@ struct LoginView: View {
                     }
                 )
                 .frame(width: width*0.8, height: width*0.1)
+                .signInWithAppleButtonStyle(.whiteOutline)
                 Spacer()
             }
             .frame(width: geo.size.width, height: geo.size.height)

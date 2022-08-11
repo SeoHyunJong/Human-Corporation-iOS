@@ -45,8 +45,8 @@ class ViewModel: ObservableObject {
     }
     //----for social----
     //검색된 프로필
-    @Published var profileOfSearch = Profile()
-    @Published var imageOfSearchProfile = UIImage(named: "Mamong")
+    @Published var profileOfSearch: [Profile] = []
+    @Published var imageOfSearchProfile: [String:UIImage] = [:]
     //친구 목록
     @Published var followIDList: [String] = []
     @Published var followProfileList: [Profile] = []
@@ -105,7 +105,7 @@ class ViewModel: ObservableObject {
                 print(error.localizedDescription)
             } else {
                 self.state = .signedIn
-                guard let uid = GIDSignIn.sharedInstance.currentUser?.userID else {return}
+                guard let uid = Auth.auth().currentUser?.uid else {return}
                 userCheck(uid: uid)
             }
         }
@@ -129,7 +129,7 @@ class ViewModel: ObservableObject {
             // 일기장 초기화
             diaryListFromFirebase.removeAll()
             // 검색된 프로필 초기화
-            profileOfSearch = Profile()
+            profileOfSearch.removeAll()
             // 친구 목록 초기화
             followIDList.removeAll()
             followProfileList.removeAll()
@@ -208,7 +208,7 @@ class ViewModel: ObservableObject {
                     if mode == .MyProfile {
                         self.profileImage = UIImage(data: data!)
                     } else if mode == .Search {
-                        self.imageOfSearchProfile = UIImage(data: data!)
+                        self.imageOfSearchProfile[uid] = UIImage(data: data!)
                     } else if mode == .Others {
                         self.profileImgList[uid] = UIImage(data: data!)
                     }
@@ -357,9 +357,11 @@ class ViewModel: ObservableObject {
             snapshot in
             for child in snapshot.children.allObjects as! [DataSnapshot] {
                 guard let value = child.value as? NSDictionary else {return}
-                self.profileOfSearch.id = child.key
-                self.profileOfSearch.name = value["name"] as? String ?? ""
-                self.downloadImage(uid: child.key, mode: .Search)
+                var profile: Profile = Profile()
+                profile.id = child.key
+                profile.name = value["name"] as? String ?? ""
+                self.profileOfSearch.append(profile)
+                self.downloadImage(uid: profile.id, mode: .Search)
             }
         })
         completion("종목 검색 완료.")

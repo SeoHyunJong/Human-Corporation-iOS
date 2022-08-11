@@ -304,8 +304,8 @@ struct EvaluationView: View {
                 currentPrice += variance * concentration
                 amountOfProductive += amount
             case .unproductive:
-                //3배 곱해서 깎음...
-                currentPrice -= variance * 3
+                //2배 곱해서 깎음... 향후 노멀, 하드 모드 분리...?
+                currentPrice -= variance * 2
                 amountOfUnproductive += amount
             case .neutral:
                 amountOfNeutral += amount

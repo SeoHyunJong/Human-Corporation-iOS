@@ -36,6 +36,7 @@ struct ContentView: View {
                         if viewModel.state == .signedIn { //프리뷰 오류 때문에 추가...
                             //프로필 로드
                             guard let uid = Auth.auth().currentUser?.uid else {return}
+                            print("uid: \(uid)")
                             viewModel.readUserFromDB(uid: uid, mode: .MyProfile, completion: { message in
                                 print(message)
                                 fetchCounter += 1

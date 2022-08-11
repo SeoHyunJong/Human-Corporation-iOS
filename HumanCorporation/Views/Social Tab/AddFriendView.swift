@@ -14,6 +14,7 @@ struct AddFriendView: View {
     @EnvironmentObject var viewModel: ViewModel
     @State private var showError = false
     @State private var showAlert = false
+    @State private var uid: String?
     
     var body: some View {
         List {
@@ -28,8 +29,8 @@ struct AddFriendView: View {
                 }
                 .padding(.horizontal)
                 Button {
-                    viewModel.profileOfSearch.name = ""
-                    viewModel.imageOfSearchProfile = UIImage(named: "Mamong")
+                    viewModel.profileOfSearch.removeAll()
+                    viewModel.imageOfSearchProfile.removeAll()
                     storyFocused = false
                     viewModel.searchFriend(email: searchEmail, completion: { message in
                         print(message)
@@ -40,20 +41,23 @@ struct AddFriendView: View {
                 }
                 .buttonStyle(BorderlessButtonStyle())
             }
-            if viewModel.profileOfSearch.name.isEmpty {
+            if viewModel.profileOfSearch.isEmpty {
                 Text("검색 결과 없음")
                     .foregroundColor(.secondary)
             } else {
-                HStack(spacing: 20) {
-                    ProfileImage(image: viewModel.imageOfSearchProfile!)
-                        .frame(width: 50, height: 50)
-                    Text(viewModel.profileOfSearch.name)
-                    Spacer()
-                    Button("Follow") {
-                        showAlert.toggle()
+                ForEach(viewModel.profileOfSearch, id: \.self.id) { profile in
+                    HStack(spacing: 20) {
+                        ProfileImage(image: viewModel.imageOfSearchProfile[profile.id] ?? UIImage(named: "Mamong")!)
+                            .frame(width: 50, height: 50)
+                        Text(profile.name)
+                        Spacer()
+                        Button("Follow") {
+                            uid = profile.id
+                            showAlert.toggle()
+                        }
+                        .buttonStyle(BorderlessButtonStyle())
+                        .disabled(viewModel.followIDList.contains(profile.id) ? true : false)
                     }
-                    .buttonStyle(BorderlessButtonStyle())
-                    .disabled(viewModel.followIDList.contains(viewModel.profileOfSearch.id) ? true : false)
                 }
             }
             MessageBox(message: "개발자 이메일: shj971219@gmail.com\n추가해서 테스트해봐!", leftSpeaker: true)
@@ -64,14 +68,13 @@ struct AddFriendView: View {
         }
         .alert("정말 이 종목을 관심종목에 추가하시겠습니까?", isPresented: $showAlert) {
             Button("추가") {
-                let uid = viewModel.profileOfSearch.id
                 if uid != viewModel.userProfile.id {
-                    viewModel.addFollow(uid: uid)
+                    viewModel.addFollow(uid: uid!)
                     //친구 리스트 갱신
-                    viewModel.followIDList.append(uid)
-                    viewModel.downloadImage(uid: uid, mode: .Others)
-                    viewModel.getRecentPrice(uid: uid)
-                    viewModel.readUserFromDB(uid: uid, mode: .Others, completion: { message in
+                    viewModel.followIDList.append(uid!)
+                    viewModel.downloadImage(uid: uid!, mode: .Others)
+                    viewModel.getRecentPrice(uid: uid!)
+                    viewModel.readUserFromDB(uid: uid!, mode: .Others, completion: { message in
                         print(message)
                     })
                 } else {
