@@ -49,23 +49,38 @@ struct StatsView: View {
             }
             .navigationTitle("Statistics")
             .listStyle(.plain)
-            .onAppear() {
-                let productiveList = viewModel.diaryListFromFirebase.filter{ $0.eval == .productive }.map{ ($0.startTime.timeIntervalSince(Calendar.current.startOfDay(for: $0.startTime)), $0.endTime.timeIntervalSince(Calendar.current.startOfDay(for: $0.startTime))) }
-                let unproductiveList = viewModel.diaryListFromFirebase.filter{ $0.eval == .unproductive }.map{ ($0.startTime.timeIntervalSince(Calendar.current.startOfDay(for: $0.startTime)), $0.endTime.timeIntervalSince(Calendar.current.startOfDay(for: $0.startTime))) }
-                
-                for clock in 0...23 {
-                    let start: Double = Double(clock * 3600)
-                    let end: Double = start + 3600
-                    let timeRange = start..<end
-                    let temp = productiveList.filter{ timeRange.overlaps($0..<$1) }
-                    let temp2 = unproductiveList.filter{ timeRange.overlaps($0..<$1) }
-                    productiveCount[clock] = temp.count
-                    unproductvieCount[clock] = temp2.count
+            .toolbar {
+                Button{
+                    viewModel.diaryListFromFirebase.removeAll()
+                    viewModel.readDiaryList(completion: { message in
+                        print(message)
+                        calcStatistics()
+                    })
+                } label: {
+                    Label("새로고침", systemImage: "goforward")
                 }
-                maxCount = productiveCount.values.max()!
-                minCount = unproductvieCount.values.max()!
+            }
+            .onAppear() {
+                calcStatistics()
             }
         }
+        .navigationViewStyle(.stack)
+    }
+    func calcStatistics() {
+        let productiveList = viewModel.diaryListFromFirebase.filter{ $0.eval == .productive }.map{ ($0.startTime.timeIntervalSince(Calendar.current.startOfDay(for: $0.startTime)), $0.endTime.timeIntervalSince(Calendar.current.startOfDay(for: $0.startTime))) }
+        let unproductiveList = viewModel.diaryListFromFirebase.filter{ $0.eval == .unproductive }.map{ ($0.startTime.timeIntervalSince(Calendar.current.startOfDay(for: $0.startTime)), $0.endTime.timeIntervalSince(Calendar.current.startOfDay(for: $0.startTime))) }
+        
+        for clock in 0...23 {
+            let start: Double = Double(clock * 3600)
+            let end: Double = start + 3600
+            let timeRange = start..<end
+            let temp = productiveList.filter{ timeRange.overlaps($0..<$1) }
+            let temp2 = unproductiveList.filter{ timeRange.overlaps($0..<$1) }
+            productiveCount[clock] = temp.count
+            unproductvieCount[clock] = temp2.count
+        }
+        maxCount = productiveCount.values.max()!
+        minCount = unproductvieCount.values.max()!
     }
 }
 

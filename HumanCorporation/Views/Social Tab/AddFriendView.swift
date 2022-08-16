@@ -20,14 +20,14 @@ struct AddFriendView: View {
         List {
             HStack{
                 ZStack{
-                    TextField("     이름, 이메일로 친구 추가", text: $searchEmail)
+                    TextField("이름, 이메일로 친구 추가", text: $searchEmail)
                         .keyboardType(.emailAddress)
                         .focused($storyFocused)
+                        .frame(width: 200, height: 30)
                     Rectangle()
                         .fill(.clear)
                         .border(.orange, width: 1)
                 }
-                .padding(.horizontal)
                 Button {
                     viewModel.profileOfSearch.removeAll()
                     viewModel.imageOfSearchProfile.removeAll()

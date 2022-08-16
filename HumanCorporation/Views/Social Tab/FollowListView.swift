@@ -42,6 +42,7 @@ struct FollowListView: View {
                 Button {
                     viewModel.followIDList.removeAll()
                     viewModel.followProfileList.removeAll()
+                    viewModel.followCurrentPriceList.removeAll()
                     viewModel.readFollowList(completion: { message in
                         print(message)
                     })
