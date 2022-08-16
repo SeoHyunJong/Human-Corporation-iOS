@@ -18,9 +18,9 @@ struct LoginView: View {
         GeometryReader { geo in
             let width = min(geo.size.width, geo.size.height)
             VStack(alignment: .center){
-                Image("Mamong")
+                Image("MamongChart")
                     .resizable()
-                    .frame(width: width*0.5, height: width*0.5)
+                    .frame(width: width*0.8, height: width*0.8)
                 Text("Human Corporation")
                     .font(.system(size: width*0.06, weight: .bold))
                     .padding()
