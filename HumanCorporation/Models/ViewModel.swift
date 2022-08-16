@@ -352,8 +352,8 @@ class ViewModel: ObservableObject {
         }
     }
     // MARK: Social
-    func searchFriend(email: String ,completion: @escaping (_ message: String) -> Void) {
-        ref.child("user").queryOrdered(byChild: "email").queryEqual(toValue: email).observeSingleEvent(of: .value, with: { [self]
+    func searchFriend(search: String ,completion: @escaping (_ message: String) -> Void) {
+        ref.child("user").queryOrdered(byChild: "name").queryEqual(toValue: search).observeSingleEvent(of: .value, with: { [self]
             snapshot in
             for child in snapshot.children.allObjects as! [DataSnapshot] {
                 guard let value = child.value as? NSDictionary else {return}
@@ -363,8 +363,20 @@ class ViewModel: ObservableObject {
                 self.profileOfSearch.append(profile)
                 self.downloadImage(uid: profile.id, mode: .Search)
             }
+            completion("이름 검색 완료.")
         })
-        completion("종목 검색 완료.")
+        ref.child("user").queryOrdered(byChild: "email").queryEqual(toValue: search).observeSingleEvent(of: .value, with: { [self]
+            snapshot in
+            for child in snapshot.children.allObjects as! [DataSnapshot] {
+                guard let value = child.value as? NSDictionary else {return}
+                var profile: Profile = Profile()
+                profile.id = child.key
+                profile.name = value["name"] as? String ?? ""
+                self.profileOfSearch.append(profile)
+                self.downloadImage(uid: profile.id, mode: .Search)
+            }
+            completion("이메일 검색 완료.")
+        })
     }
     func addFollow(uid: String) {
         self.ref.child("social").child(userProfile.id).child("follow").childByAutoId().setValue(uid)

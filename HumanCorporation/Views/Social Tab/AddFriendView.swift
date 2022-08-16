@@ -20,7 +20,7 @@ struct AddFriendView: View {
         List {
             HStack{
                 ZStack{
-                    TextField("     이메일로 친구 추가", text: $searchEmail)
+                    TextField("     이름, 이메일로 친구 추가", text: $searchEmail)
                         .keyboardType(.emailAddress)
                         .focused($storyFocused)
                     Rectangle()
@@ -32,7 +32,7 @@ struct AddFriendView: View {
                     viewModel.profileOfSearch.removeAll()
                     viewModel.imageOfSearchProfile.removeAll()
                     storyFocused = false
-                    viewModel.searchFriend(email: searchEmail, completion: { message in
+                    viewModel.searchFriend(search: searchEmail, completion: { message in
                         print(message)
                     })
                 } label: {
