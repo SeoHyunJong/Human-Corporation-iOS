@@ -13,22 +13,21 @@ import FirebaseAuth
 struct LoginView: View {
     @EnvironmentObject var viewModel: ViewModel
     @State private var currentNonce: String?
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
-        GeometryReader { geo in
-            let width = min(geo.size.width, geo.size.height)
+        ScrollView {
             VStack(alignment: .center){
                 Image("MamongChart")
                     .resizable()
-                    .frame(width: width*0.8, height: width*0.8)
+                    .frame(width: 300, height: 300)
                 Text("Human Corporation")
-                    .font(.system(size: width*0.06, weight: .bold))
-                    .padding()
+                    .font(.system(size: 20, weight: .bold))
                 Text("Sign with social login.")
-                    .font(.system(size: width*0.03, design: .monospaced))
+                    .font(.system(size: 15))
                     .foregroundColor(.secondary)
                 GoogleSignInButton()
-                    .frame(width: width*0.8, height: width*0.15)
+                    .frame(width: 305, height: 44)
                     .onTapGesture {
                         viewModel.signIn()
                     }
@@ -74,11 +73,10 @@ struct LoginView: View {
                         }
                     }
                 )
-                .frame(width: width*0.8, height: width*0.1)
-                .signInWithAppleButtonStyle(.whiteOutline)
+                .frame(width: 300, height: 44)
+                .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
                 Spacer()
             }
-            .frame(width: geo.size.width, height: geo.size.height)
             //geometry reader를 쓰고나면 꼭 컨테이너 크기를 리폼해줘야 한다.
         }
     }
