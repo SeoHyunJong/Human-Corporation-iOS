@@ -56,8 +56,19 @@ struct ChartView: View {
                     Spacer()
                 }
             }
-            Bar(entries: viewModel.priceList)
-                .scaledToFit()
+            ZStack (alignment: .topTrailing){
+                Bar(entries: viewModel.priceList)
+                    .scaledToFit()
+                Button{
+                    viewModel.priceRead(uid: viewModel.userProfile.id, mode: .MyProfile, completion: { message in
+                        print(message)
+                    })
+                } label: {
+                    Label("새로고침", systemImage: "goforward")
+                        .labelStyle(.iconOnly)
+                }
+                .buttonStyle(BorderlessButtonStyle())
+            }
             HStack(spacing: 30){
                 Label("현재 나의 가치", systemImage: "c.circle.fill")
                 Spacer()

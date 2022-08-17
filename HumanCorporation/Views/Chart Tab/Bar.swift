@@ -33,7 +33,7 @@ struct Bar: UIViewRepresentable {
         if !entries.isEmpty {
             chart.data = addData()
         }
-//        chart.animate(yAxisDuration: 1.5)
+        chart.animate(yAxisDuration: 1.5)
         return chart
     }
     

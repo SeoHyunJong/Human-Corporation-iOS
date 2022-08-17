@@ -39,6 +39,8 @@
 		B45E0407289BE30F009C7601 /* CircleTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45E0406289BE30F009C7601 /* CircleTabView.swift */; };
 		B45E041D289CF275009C7601 /* LocalNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45E041C289CF275009C7601 /* LocalNotificationManager.swift */; };
 		B45E0420289D3A07009C7601 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45E041F289D3A07009C7601 /* StatsView.swift */; };
+		B45E045B28ACD75B009C7601 /* ApiModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45E045A28ACD75B009C7601 /* ApiModel.swift */; };
+		B45E045D28ACDB1D009C7601 /* GithubDiary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45E045C28ACDB1D009C7601 /* GithubDiary.swift */; };
 		B46EF2DE288A89A500F38878 /* AlertToast in Frameworks */ = {isa = PBXBuildFile; productRef = B46EF2DD288A89A500F38878 /* AlertToast */; };
 		B46EF2E0288E9C3E00F38878 /* Diary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46EF2DF288E9C3E00F38878 /* Diary.swift */; };
 		B4D87F2E2882B1D300A2CCAB /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = B4D87F2D2882B1D300A2CCAB /* GoogleSignIn */; };
@@ -85,6 +87,8 @@
 		B45E041B289CC809009C7601 /* HumanCorporation.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HumanCorporation.entitlements; sourceTree = "<group>"; };
 		B45E041C289CF275009C7601 /* LocalNotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificationManager.swift; sourceTree = "<group>"; };
 		B45E041F289D3A07009C7601 /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
+		B45E045A28ACD75B009C7601 /* ApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiModel.swift; sourceTree = "<group>"; };
+		B45E045C28ACDB1D009C7601 /* GithubDiary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GithubDiary.swift; sourceTree = "<group>"; };
 		B46EF2DF288E9C3E00F38878 /* Diary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Diary.swift; sourceTree = "<group>"; };
 		B4D87F312882D86800A2CCAB /* GoogleSignInButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleSignInButton.swift; sourceTree = "<group>"; };
 		B4D87F352882E8B700A2CCAB /* FirstComeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstComeView.swift; sourceTree = "<group>"; };
@@ -180,6 +184,7 @@
 				B4D87F3D288573E500A2CCAB /* Profile.swift */,
 				B42EA6352882AB3B009C5901 /* ViewModel.swift */,
 				B46EF2DF288E9C3E00F38878 /* Diary.swift */,
+				B45E045A28ACD75B009C7601 /* ApiModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -250,6 +255,7 @@
 				B4EB64ED28910F93004DD814 /* DiaryFieldView.swift */,
 				B4EB64EF289134F9004DD814 /* NoMoreAddDiary.swift */,
 				B4EB64F128914BFA004DD814 /* miniBar.swift */,
+				B45E045C28ACDB1D009C7601 /* GithubDiary.swift */,
 			);
 			path = "Evaluation Tab";
 			sourceTree = "<group>";
@@ -380,11 +386,13 @@
 				B45E03F92899097E009C7601 /* FollowListView.swift in Sources */,
 				B46EF2E0288E9C3E00F38878 /* Diary.swift in Sources */,
 				B442B7DC2886D5960064C0B1 /* ProfileImage.swift in Sources */,
+				B45E045B28ACD75B009C7601 /* ApiModel.swift in Sources */,
 				B45E03EF2896DE5F009C7601 /* NewCommerView.swift in Sources */,
 				B4D87F3E288573E500A2CCAB /* Profile.swift in Sources */,
 				B45E03F42896E380009C7601 /* Triangle.swift in Sources */,
 				B45E0403289BA93E009C7601 /* CircleTimeView.swift in Sources */,
 				B45E0420289D3A07009C7601 /* StatsView.swift in Sources */,
+				B45E045D28ACDB1D009C7601 /* GithubDiary.swift in Sources */,
 				B45E0407289BE30F009C7601 /* CircleTabView.swift in Sources */,
 				B442B7E42886D9540064C0B1 /* SocialView.swift in Sources */,
 				B45E03ED2893CFF6009C7601 /* RecordRow.swift in Sources */,

@@ -47,6 +47,7 @@ struct EvaluationView: View {
     @State private var showCalendarAlert = false
     
     @EnvironmentObject var viewModel: ViewModel
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         VStack(alignment: .center, spacing: 0) {
@@ -61,6 +62,13 @@ struct EvaluationView: View {
                     showCalendarAlert.toggle()
                 } label: {
                     Label("", systemImage: "calendar")
+                }
+                Button {
+                    
+                } label: {
+                    Image(colorScheme == .dark ? "octocat_light" : "octocat_dark")
+                        .resizable()
+                        .frame(width: 20, height: 20)
                 }
             }.padding()
             List{
