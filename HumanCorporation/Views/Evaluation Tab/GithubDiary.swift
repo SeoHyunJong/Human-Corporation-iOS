@@ -85,8 +85,10 @@ struct GithubDiary: View {
                                         Text(repo.name)
                                     }
                                 }
-                                .onTapGesture {
-                                    loadData()
+                                .onChange(of: committerName) { _ in
+                                    if !focused {
+                                        loadData()
+                                    }
                                 }
                                 Spacer()
                             }
