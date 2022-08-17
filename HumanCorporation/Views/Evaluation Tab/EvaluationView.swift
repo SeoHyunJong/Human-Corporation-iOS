@@ -18,6 +18,7 @@ import Charts
 
 struct EvaluationView: View {
     @State private var showCalendar = false
+    @State private var showGithub = false
     
     //최중요 프로퍼티들
     @State private var date = Date()
@@ -64,7 +65,7 @@ struct EvaluationView: View {
                     Label("", systemImage: "calendar")
                 }
                 Button {
-                    
+                    showGithub.toggle()
                 } label: {
                     Image(colorScheme == .dark ? "octocat_light" : "octocat_dark")
                         .resizable()
@@ -212,6 +213,9 @@ struct EvaluationView: View {
         .sheet(isPresented: $showCalendar, onDismiss: updateSelectedDate){
             DatePicker("날짜를 고르세요.", selection: $date, in: viewModel.recentDay...Date(), displayedComponents: [.date])
                 .datePickerStyle(.graphical)
+        }
+        .sheet(isPresented: $showGithub) {
+            GithubDiary()
         }
         .sheet(isPresented: $showDiary, onDismiss: addDiary) {
             DiaryFieldView(story: $story, eval: $eval, showDiary: $showDiary, concentration: $concentration)
