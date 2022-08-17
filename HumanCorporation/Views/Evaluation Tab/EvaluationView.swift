@@ -215,7 +215,7 @@ struct EvaluationView: View {
                 .datePickerStyle(.graphical)
         }
         .sheet(isPresented: $showGithub) {
-            GithubDiary()
+            GithubDiary(date: date)
         }
         .sheet(isPresented: $showDiary, onDismiss: addDiary) {
             DiaryFieldView(story: $story, eval: $eval, showDiary: $showDiary, concentration: $concentration)
