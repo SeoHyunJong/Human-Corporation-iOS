@@ -11,7 +11,7 @@ struct GithubDiary: View {
     @Environment(\.colorScheme) var colorScheme
     @State private var ownerName: String = ""
     @State private var committerName: String = ""
-    @State private var reposName: String = "저장소 선택하기"
+    @State private var reposName: String = ""
     @State private var repoList = [TaskEntry]()
     @FocusState private var focused: Bool
     @State private var showCommitDiary = false
@@ -21,7 +21,7 @@ struct GithubDiary: View {
     var body: some View {
         ScrollView {
             if showCommitDiary {
-                
+                CommitDiary(date: date, repoName: reposName, ownerName: ownerName, committer: committerName)
             } else {
                 Group {
                     VStack(alignment: .center, spacing: 15) {
@@ -79,15 +79,13 @@ struct GithubDiary: View {
                             HStack {
                                 Text("Repos")
                                 Divider()
-                                Picker("저장소를 선택하세요.", selection: $reposName) {
-                                    Text("저장소 선택하기")
+                                Menu("저장소를 선택하세요.") {
                                     ForEach(repoList, id: \.id) { repo in
-                                        Text(repo.name)
-                                    }
-                                }
-                                .onChange(of: committerName) { _ in
-                                    if !focused {
-                                        loadData()
+                                        Button(repo.name){
+                                            reposName = repo.name
+                                            showCommitDiary.toggle()
+                                            print("저장소 이름: \(reposName)")
+                                        }
                                     }
                                 }
                                 Spacer()
@@ -99,14 +97,6 @@ struct GithubDiary: View {
                         }
                         .padding()
                         .frame(width: 300, height: 50)
-                        
-                        Button {
-                            
-                        } label: {
-                            Label("next", systemImage: "arrow.right.circle.fill")
-                        }
-                        .padding()
-                        .disabled(reposName == "저장소 선택하기" ? true:false)
                     }
                 }
             }
@@ -114,6 +104,7 @@ struct GithubDiary: View {
         .onTapGesture {
             focused = false
             committerName = ownerName
+            loadData()
         }
         .listStyle(.plain)
     }

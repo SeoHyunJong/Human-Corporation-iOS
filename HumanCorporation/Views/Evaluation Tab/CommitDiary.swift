@@ -6,12 +6,15 @@
 //
 
 import SwiftUI
+import AlertToast
 
 struct CommitDiary: View {
     @State private var commitList = [Commit]()
     @State private var commitDiaryList = [Diary]()
     @State private var dateFormatter = DateFormatter()
     @FocusState private var storyFocused: Bool
+    @EnvironmentObject var viewModel: ViewModel
+    @State var showError = false
     
     var date: Date
     var repoName: String
@@ -21,6 +24,8 @@ struct CommitDiary: View {
     var body: some View {
         VStack {
             Text("시작시간을 재설정하세요!")
+                .bold()
+                .padding()
             List {
                 ForEach($commitDiaryList, id: \.self) { $diary in
                     Section {
@@ -38,16 +43,17 @@ struct CommitDiary: View {
                                         .foregroundColor(.secondary)
                                     Text(dateFormatter.string(from:diary.endTime))
                                 }
-                                .frame(width:120)
+                                .frame(width:100)
                             }
                             Slider(value: $diary.concentration, in: 1...4, step: 1)
                                 .tint(.green)
                             Button{
-                                
+                                addDiary(diary: diary)
                             } label: {
                                 Label("submit", systemImage: "arrow.right.circle.fill")
                             }
                         }
+                        .frame(width: 300, height: 200)
                     }
                 }
             }
@@ -60,10 +66,30 @@ struct CommitDiary: View {
                     print(message)
                     sortCommit()
                 })
+            }
         }
+        .toast(isPresenting: $showError) {
+            AlertToast(displayMode: .alert, type: .error(.red), title: "중복된 시간!")
         }
     }
-    
+    func addDiary(diary: Diary) {
+        //액션이 취소라면 무시
+        //중복된 시간이 있는지 검사
+        let timeRange = diary.startTime..<diary.endTime
+        let duplicate = viewModel.tempDiaryList.filter{
+            timeRange.overlaps($0.startTime..<$0.endTime)
+        }
+        if !duplicate.isEmpty {
+            showError.toggle()
+            return
+        }
+        //중복된 시간이 없다면 다이어리를 temp에 push하고
+        viewModel.tempDiaryList.append(diary)
+        //정렬하고 가격 리스트를 새로 만든다.
+        //db에 임시 저장
+        viewModel.addTempDiary()
+        //시간 세팅
+    }
     func sortCommit() {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
@@ -101,5 +127,6 @@ struct CommitDiary: View {
 struct CommitDiary_Previews: PreviewProvider {
     static var previews: some View {
         CommitDiary(date: Date(), repoName: "Human-Corporation-iOS", ownerName: "SeoHyunJong", committer: "SeoHyunJong")
+            .environmentObject(ViewModel())
     }
 }

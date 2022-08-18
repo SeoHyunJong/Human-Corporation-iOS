@@ -214,7 +214,7 @@ struct EvaluationView: View {
             DatePicker("날짜를 고르세요.", selection: $date, in: viewModel.recentDay...Date(), displayedComponents: [.date])
                 .datePickerStyle(.graphical)
         }
-        .sheet(isPresented: $showGithub) {
+        .sheet(isPresented: $showGithub, onDismiss: sortTempDiaryAndCreatePriceList) {
             GithubDiary(date: date)
         }
         .sheet(isPresented: $showDiary, onDismiss: addDiary) {
