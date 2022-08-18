@@ -535,7 +535,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = HumanCorporation/HumanCorporation.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.0.0;
+				CURRENT_PROJECT_VERSION = 1.4.0;
 				DEVELOPMENT_ASSET_PATHS = "\"HumanCorporation/Preview Content\"";
 				DEVELOPMENT_TEAM = SAQDM96LSM;
 				ENABLE_PREVIEWS = YES;
@@ -570,7 +570,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = HumanCorporation/HumanCorporation.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.0.0;
+				CURRENT_PROJECT_VERSION = 1.4.0;
 				DEVELOPMENT_ASSET_PATHS = "\"HumanCorporation/Preview Content\"";
 				DEVELOPMENT_TEAM = SAQDM96LSM;
 				ENABLE_PREVIEWS = YES;

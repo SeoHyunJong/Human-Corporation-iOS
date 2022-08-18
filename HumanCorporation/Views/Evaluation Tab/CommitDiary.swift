@@ -27,21 +27,21 @@ struct CommitDiary: View {
                 LoadingView(fetchCounter: fetchCounter, completeNumber: 1)
             } else if fetchCounter == 1 {
                 MessageBox(message: "추가하기 전에 시작시간 재설정이 필요하다!", leftSpeaker: true)
-                List(commitDiaryList.indices, id: \.self) { idx in
+                List($commitDiaryList, id: \.self) { $diary in
                     Section {
                         VStack {
                             HStack{
-                                TextEditor(text: $commitDiaryList[idx].story)
+                                TextEditor(text: $diary.story)
                                     .focused($storyFocused)
                                     .padding()
                                 Divider()
                                 VStack(alignment: .trailing){
                                     Text("시작")
                                         .foregroundColor(.secondary)
-                                    DatePicker("", selection: $commitDiaryList[idx].startTime, in: ...commitDiaryList[idx].endTime, displayedComponents: [.hourAndMinute])
+                                    DatePicker("", selection: $diary.startTime, in: ...diary.endTime, displayedComponents: [.hourAndMinute])
                                     Text("종료")
                                         .foregroundColor(.secondary)
-                                    Text(dateFormatter.string(from:commitDiaryList[idx].endTime))
+                                    Text(dateFormatter.string(from:diary.endTime))
                                 }
                                 .frame(width: 100, height: 120)
                             }
@@ -49,16 +49,16 @@ struct CommitDiary: View {
                                 Text("집중도(생산성)")
                                     .foregroundColor(.secondary)
                                     .font(.system(size: 15))
-                                Slider(value: $commitDiaryList[idx].concentration, in: 1...4, step: 1)
+                                Slider(value: $diary.concentration, in: 1...4, step: 1)
                                     .tint(.green)
                             }
                             Button{
-                                addDiary(diary: commitDiaryList[idx])
+                                addDiary(diary: diary)
                             } label: {
                                 Label("submit", systemImage: "arrow.right.circle.fill")
                             }
                             .buttonStyle(BorderlessButtonStyle())
-                            .disabled(isDuplicate(diary: commitDiaryList[idx]) ? true : false)
+                            .disabled(isDuplicate(diary: diary) ? true : false)
                         }
                     }
                 }
@@ -70,7 +70,7 @@ struct CommitDiary: View {
         }
         .onAppear(){
             fetchCounter = 0
-            dateFormatter.dateFormat = "HH:mm"
+            dateFormatter.dateFormat = "hh:mm a"
             loadData(completion: { message in
                 print(message)
                 sortCommit()
