@@ -18,8 +18,6 @@ import Charts
 
 struct EvaluationView: View {
     @State private var showCalendar = false
-    @State private var showGithub = false
-    
     //최중요 프로퍼티들
     @State private var date = Date()
     @State private var strDate = "2022.07.22.Fri"
@@ -51,27 +49,7 @@ struct EvaluationView: View {
     @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
-        VStack(alignment: .center, spacing: 0) {
-            HStack {
-                Text(strDate)
-                    .font(.system(size: 25, weight: .bold, design: .default))
-                    .onTapGesture {
-                        showCalendarAlert.toggle()
-                    }
-                Spacer()
-                Button {
-                    showCalendarAlert.toggle()
-                } label: {
-                    Label("", systemImage: "calendar")
-                }
-                Button {
-                    showGithub.toggle()
-                } label: {
-                    Image(colorScheme == .dark ? "octocat_light" : "octocat_dark")
-                        .resizable()
-                        .frame(width: 20, height: 20)
-                }
-            }.padding()
+        NavigationView {
             List{
                 Section("시간별로 일기를 작성하여 실적을 완성하세요!") {
                     DatePicker("일기 시작 시간", selection: $startTime, displayedComponents: [.hourAndMinute])
@@ -120,6 +98,25 @@ struct EvaluationView: View {
                 }
             }
             .listStyle(.plain)
+            .navigationBarTitle(strDate, displayMode: .inline)
+            .navigationViewStyle(.stack)
+            .navigationBarItems(
+                trailing:
+                    HStack{
+                        Button {
+                            showCalendarAlert.toggle()
+                        } label: {
+                            Label("", systemImage: "calendar")
+                        }
+                        NavigationLink {
+                            GithubDiary(date: date)
+                        } label: {
+                            Image(colorScheme == .dark ? "octocat_light" : "octocat_dark")
+                                .resizable()
+                                .frame(width: 20, height: 20)
+                        }
+                    }
+            )
             HStack() {
                 Button{
                     showAlert.toggle()
@@ -213,9 +210,6 @@ struct EvaluationView: View {
         .sheet(isPresented: $showCalendar, onDismiss: updateSelectedDate){
             DatePicker("날짜를 고르세요.", selection: $date, in: viewModel.recentDay...Date(), displayedComponents: [.date])
                 .datePickerStyle(.graphical)
-        }
-        .sheet(isPresented: $showGithub, onDismiss: sortTempDiaryAndCreatePriceList) {
-            GithubDiary(date: date)
         }
         .sheet(isPresented: $showDiary, onDismiss: addDiary) {
             DiaryFieldView(story: $story, eval: $eval, showDiary: $showDiary, concentration: $concentration)

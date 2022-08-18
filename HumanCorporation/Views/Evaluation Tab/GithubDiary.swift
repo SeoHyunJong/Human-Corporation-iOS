@@ -19,11 +19,11 @@ struct GithubDiary: View {
     var date: Date
     
     var body: some View {
-        ScrollView {
+        VStack {
             if showCommitDiary {
                 CommitDiary(date: date, repoName: reposName, ownerName: ownerName, committer: committerName)
             } else {
-                Group {
+                ScrollView {
                     VStack(alignment: .center, spacing: 15) {
                         HStack {
                             Image(colorScheme == .dark ? "octocat_light" : "octocat_dark")

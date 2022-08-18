@@ -27,47 +27,48 @@ struct CommitDiary: View {
             if fetchCounter == 0 {
                 LoadingView(fetchCounter: fetchCounter, completeNumber: 1)
             } else if fetchCounter == 1 {
-                Text("시작시간을 재설정하세요!")
-                    .bold()
-                    .padding()
-                List {
-                    ForEach(commitDiaryList.indices, id: \.self) { idx in
-                        Section {
-                            VStack {
-                                HStack{
-                                    TextEditor(text: $commitDiaryList[idx].story)
-                                        .focused($storyFocused)
-                                        .padding()
-                                    Divider()
-                                    VStack(alignment: .trailing){
-                                        Text("시작")
-                                            .foregroundColor(.secondary)
-                                        DatePicker("", selection: $commitDiaryList[idx].startTime, displayedComponents: [.hourAndMinute])
-                                        Text("종료")
-                                            .foregroundColor(.secondary)
-                                        Text(dateFormatter.string(from:commitDiaryList[idx].endTime))
-                                    }
-                                    .frame(width: 100, height: 150)
+                MessageBox(message: "추가하기 전에 시작시간 재설정이 필요하다!", leftSpeaker: true)
+                List(commitDiaryList.indices, id: \.self) { idx in
+                    Section {
+                        VStack {
+                            HStack{
+                                TextEditor(text: $commitDiaryList[idx].story)
+                                    .focused($storyFocused)
+                                    .padding()
+                                Divider()
+                                VStack(alignment: .trailing){
+                                    Text("시작")
+                                        .foregroundColor(.secondary)
+                                    DatePicker("", selection: $commitDiaryList[idx].startTime, displayedComponents: [.hourAndMinute])
+                                    Text("종료")
+                                        .foregroundColor(.secondary)
+                                    Text(dateFormatter.string(from:commitDiaryList[idx].endTime))
                                 }
+                                .frame(width: 100, height: 120)
+                            }
+                            VStack(alignment: .leading){
+                                Text("집중도(생산성)")
+                                    .foregroundColor(.secondary)
+                                    .font(.system(size: 15))
                                 Slider(value: $commitDiaryList[idx].concentration, in: 1...4, step: 1)
                                     .tint(.green)
-                                Button{
-                                    addDiary(diary: commitDiaryList[idx])
-                                } label: {
-                                    Label("submit", systemImage: "arrow.right.circle.fill")
-                                }
                             }
+                            Button{
+                                addDiary(diary: commitDiaryList[idx])
+                            } label: {
+                                Label("submit", systemImage: "arrow.right.circle.fill")
+                            }
+                            .buttonStyle(BorderlessButtonStyle())
                         }
                     }
-                    .toast(isPresenting: $showError) {
-                        AlertToast(displayMode: .alert, type: .error(.red), title: "중복된 시간!")
-                    }
-                    .onTapGesture {
-                        storyFocused = false
-                    }
                 }
-                .scaledToFit()
-                Spacer()
+                .toast(isPresenting: $showError) {
+                    AlertToast(displayMode: .alert, type: .error(.red), title: "중복된 시간!")
+                }
+                .onTapGesture {
+                    storyFocused = false
+                }
+                
             }
         }
         .onAppear(){
