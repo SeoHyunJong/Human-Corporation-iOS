@@ -12,6 +12,9 @@ struct LoadingView: View {
     var completeNumber: Double
     var body: some View {
         VStack {
+            Image("MamongChart")
+                .resizable()
+                .frame(width:200, height: 200)
             Text("Loading...")
                 .bold()
                 .font(.system(size: 30))
@@ -19,7 +22,7 @@ struct LoadingView: View {
             ProgressView(value: fetchCounter, total: completeNumber)
                 .padding()
                 .tint(.blue)
-            MessageBox(message: "파이어베이스에서 데이터를 가져오는 중이다!", leftSpeaker: true)
+                .frame(width: 300)
         }
     }
 }

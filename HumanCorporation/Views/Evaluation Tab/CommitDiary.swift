@@ -15,6 +15,7 @@ struct CommitDiary: View {
     @FocusState private var storyFocused: Bool
     @EnvironmentObject var viewModel: ViewModel
     @State var showError = false
+    @State var fetchCounter:Double = 0
     
     var date: Date
     var repoName: String
@@ -23,53 +24,61 @@ struct CommitDiary: View {
     
     var body: some View {
         VStack {
-            Text("시작시간을 재설정하세요!")
-                .bold()
-                .padding()
-            List {
-                ForEach($commitDiaryList, id: \.self) { $diary in
-                    Section {
-                        VStack {
-                            HStack{
-                                TextEditor(text: $diary.story)
-                                    .focused($storyFocused)
-                                    .padding()
-                                Divider()
-                                VStack(alignment: .trailing){
-                                    Text("시작")
-                                        .foregroundColor(.secondary)
-                                    DatePicker("", selection: $diary.startTime, displayedComponents: [.hourAndMinute])
-                                    Text("종료")
-                                        .foregroundColor(.secondary)
-                                    Text(dateFormatter.string(from:diary.endTime))
+            if fetchCounter == 0 {
+                LoadingView(fetchCounter: fetchCounter, completeNumber: 1)
+            } else if fetchCounter == 1 {
+                Text("시작시간을 재설정하세요!")
+                    .bold()
+                    .padding()
+                List {
+                    ForEach(commitDiaryList.indices, id: \.self) { idx in
+                        Section {
+                            VStack {
+                                HStack{
+                                    TextEditor(text: $commitDiaryList[idx].story)
+                                        .focused($storyFocused)
+                                        .padding()
+                                    Divider()
+                                    VStack(alignment: .trailing){
+                                        Text("시작")
+                                            .foregroundColor(.secondary)
+                                        DatePicker("", selection: $commitDiaryList[idx].startTime, displayedComponents: [.hourAndMinute])
+                                        Text("종료")
+                                            .foregroundColor(.secondary)
+                                        Text(dateFormatter.string(from:commitDiaryList[idx].endTime))
+                                    }
+                                    .frame(width: 100, height: 150)
                                 }
-                                .frame(width:100)
-                            }
-                            Slider(value: $diary.concentration, in: 1...4, step: 1)
-                                .tint(.green)
-                            Button{
-                                addDiary(diary: diary)
-                            } label: {
-                                Label("submit", systemImage: "arrow.right.circle.fill")
+                                Slider(value: $commitDiaryList[idx].concentration, in: 1...4, step: 1)
+                                    .tint(.green)
+                                Button{
+                                    addDiary(diary: commitDiaryList[idx])
+                                } label: {
+                                    Label("submit", systemImage: "arrow.right.circle.fill")
+                                }
                             }
                         }
-                        .frame(width: 300, height: 200)
+                    }
+                    .toast(isPresenting: $showError) {
+                        AlertToast(displayMode: .alert, type: .error(.red), title: "중복된 시간!")
+                    }
+                    .onTapGesture {
+                        storyFocused = false
                     }
                 }
-            }
-            .onTapGesture {
-                storyFocused = false
-            }
-            .onAppear(){
-                dateFormatter.dateFormat = "HH:mm"
-                loadData(completion: { message in
-                    print(message)
-                    sortCommit()
-                })
+                .scaledToFit()
+                Spacer()
             }
         }
-        .toast(isPresenting: $showError) {
-            AlertToast(displayMode: .alert, type: .error(.red), title: "중복된 시간!")
+        .onAppear(){
+            fetchCounter = 0
+            dateFormatter.dateFormat = "HH:mm"
+            loadData(completion: { message in
+                print(message)
+                sortCommit()
+                print(commitDiaryList)
+                fetchCounter += 1
+            })
         }
     }
     func addDiary(diary: Diary) {
@@ -113,10 +122,10 @@ struct CommitDiary: View {
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let data = data {
                 if let response = try? JSONDecoder().decode([Commit].self, from: data) {
-                    DispatchQueue.main.async {
+                    DispatchQueue.global(qos: .userInteractive).sync {
                         self.commitList = response
-                        completion("커밋기록 가져오기 성공")
                     }
+                    completion("커밋 기록 가져오기 성공")
                     return
                 }
             }
@@ -126,7 +135,7 @@ struct CommitDiary: View {
 
 struct CommitDiary_Previews: PreviewProvider {
     static var previews: some View {
-        CommitDiary(date: Date(), repoName: "Human-Corporation-iOS", ownerName: "SeoHyunJong", committer: "SeoHyunJong")
+        CommitDiary(date: Date().addingTimeInterval(-86400), repoName: "Human-Corporation-iOS", ownerName: "SeoHyunJong", committer: "SeoHyunJong")
             .environmentObject(ViewModel())
     }
 }

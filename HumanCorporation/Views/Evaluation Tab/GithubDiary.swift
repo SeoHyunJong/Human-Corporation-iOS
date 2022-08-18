@@ -85,6 +85,8 @@ struct GithubDiary: View {
                                             reposName = repo.name
                                             showCommitDiary.toggle()
                                             print("저장소 이름: \(reposName)")
+                                            print("소유자 이름: \(ownerName)")
+                                            print("커미터 이름: \(committerName)")
                                         }
                                     }
                                 }
