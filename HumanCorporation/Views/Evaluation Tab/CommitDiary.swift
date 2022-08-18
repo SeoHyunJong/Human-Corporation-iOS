@@ -14,7 +14,6 @@ struct CommitDiary: View {
     @State private var dateFormatter = DateFormatter()
     @FocusState private var storyFocused: Bool
     @EnvironmentObject var viewModel: ViewModel
-    @State var showError = false
     @State var fetchCounter:Double = 0
     
     var date: Date
@@ -39,7 +38,7 @@ struct CommitDiary: View {
                                 VStack(alignment: .trailing){
                                     Text("시작")
                                         .foregroundColor(.secondary)
-                                    DatePicker("", selection: $commitDiaryList[idx].startTime, displayedComponents: [.hourAndMinute])
+                                    DatePicker("", selection: $commitDiaryList[idx].startTime, in: ...commitDiaryList[idx].endTime, displayedComponents: [.hourAndMinute])
                                     Text("종료")
                                         .foregroundColor(.secondary)
                                     Text(dateFormatter.string(from:commitDiaryList[idx].endTime))
@@ -59,11 +58,9 @@ struct CommitDiary: View {
                                 Label("submit", systemImage: "arrow.right.circle.fill")
                             }
                             .buttonStyle(BorderlessButtonStyle())
+                            .disabled(isDuplicate(diary: commitDiaryList[idx]) ? true : false)
                         }
                     }
-                }
-                .toast(isPresenting: $showError) {
-                    AlertToast(displayMode: .alert, type: .error(.red), title: "중복된 시간!")
                 }
                 .onTapGesture {
                     storyFocused = false
@@ -82,7 +79,7 @@ struct CommitDiary: View {
             })
         }
     }
-    func addDiary(diary: Diary) {
+    func isDuplicate(diary: Diary)->Bool {
         //액션이 취소라면 무시
         //중복된 시간이 있는지 검사
         let timeRange = diary.startTime..<diary.endTime
@@ -90,9 +87,12 @@ struct CommitDiary: View {
             timeRange.overlaps($0.startTime..<$0.endTime)
         }
         if !duplicate.isEmpty {
-            showError.toggle()
-            return
+            return true
+        } else {
+            return false
         }
+    }
+    func addDiary(diary: Diary) {
         //중복된 시간이 없다면 다이어리를 temp에 push하고
         viewModel.tempDiaryList.append(diary)
         //정렬하고 가격 리스트를 새로 만든다.
