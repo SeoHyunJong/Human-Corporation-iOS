@@ -60,7 +60,7 @@ struct AddFriendView: View {
                     }
                 }
             }
-            MessageBox(message: "개발자 이메일: shj971219@gmail.com\n추가해서 테스트해봐!", leftSpeaker: true)
+            MessageBox(message: "개발자 이메일: shj971219@naver.com\n추가해서 테스트해봐!", leftSpeaker: true)
         }
         .listStyle(.plain)
         .onTapGesture {
