@@ -15,7 +15,7 @@ struct Diary: Equatable, Hashable {
         case productive = "productive"
         case unproductive = "unproductive"
         case neutral = "neutral"
-        case cancel
+        case cancel = "cancel"
         
         static func == (lhs: Self, rhs: Self) -> Bool {
                switch (lhs, rhs) {

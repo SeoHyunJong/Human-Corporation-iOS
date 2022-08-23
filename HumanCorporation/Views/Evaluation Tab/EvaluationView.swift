@@ -282,7 +282,7 @@ struct EvaluationView: View {
     }
     func addDiary() {
         //액션이 취소라면 무시
-        if eval == .cancel{
+        if eval.rawValue == "cancel"{
             return
         }
         //중복된 시간이 있는지 검사
