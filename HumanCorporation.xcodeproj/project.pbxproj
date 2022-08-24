@@ -536,7 +536,7 @@
 				CODE_SIGN_ENTITLEMENTS = HumanCorporation/HumanCorporation.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 220819.7;
+				CURRENT_PROJECT_VERSION = 220823.1;
 				DEVELOPMENT_ASSET_PATHS = "\"HumanCorporation/Preview Content\"";
 				DEVELOPMENT_TEAM = SAQDM96LSM;
 				ENABLE_PREVIEWS = YES;
@@ -573,7 +573,7 @@
 				CODE_SIGN_ENTITLEMENTS = HumanCorporation/HumanCorporation.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 220819.7;
+				CURRENT_PROJECT_VERSION = 220823.1;
 				DEVELOPMENT_ASSET_PATHS = "\"HumanCorporation/Preview Content\"";
 				DEVELOPMENT_TEAM = SAQDM96LSM;
 				ENABLE_PREVIEWS = YES;

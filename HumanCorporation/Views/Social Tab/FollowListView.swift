@@ -19,6 +19,7 @@ struct FollowListView: View {
                         FriendChartView(profile: profile, fetchCounter: fetchCounter)
                             .onAppear() {
                                 fetchCounter = 0
+                                viewModel.followOnePriceList.removeAll()
                                 viewModel.priceRead(uid: profile.id, mode: .Others, completion: { message in
                                     print(message)
                                     fetchCounter += 1
