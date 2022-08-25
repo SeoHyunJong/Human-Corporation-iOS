@@ -167,6 +167,7 @@
 				B42EA620288292B1009C5901 /* ContentView.swift */,
 				B4D87F4328868A7D00A2CCAB /* HomeView.swift */,
 				B45E0400289AD97A009C7601 /* LoadingView.swift */,
+				B442B7F8288978810064C0B1 /* Chart Tab */,
 				B4D87F342882E2A300A2CCAB /* Login */,
 				B45E041E289CF28E009C7601 /* Notification */,
 				B45E0421289D46F2009C7601 /* Statistic */,
@@ -174,7 +175,6 @@
 				B45E03F02896DECB009C7601 /* First */,
 				B4EB64F32892EECB004DD814 /* Record Tab */,
 				B46EF2E1288EAD0B00F38878 /* Evaluation Tab */,
-				B442B7F8288978810064C0B1 /* Chart Tab */,
 				B442B7E72887E21F0064C0B1 /* Profile */,
 			);
 			path = Views;

@@ -26,18 +26,20 @@ struct FriendChartView: View {
                             .font(.system(size: 20))
                             .padding()
                             .fixedSize(horizontal: true, vertical: false)
-                        Label(String(format: "%.2f", fluctuation) + "%", systemImage: fluctuation > 0 ? "arrowtriangle.up.circle.fill" : "arrowtriangle.down.circle.fill")
-                            .foregroundColor(fluctuation > 0 ? .red : .blue)
-                            .fixedSize(horizontal: true, vertical: false)
-                            .onChange(of: fetchCounter) { _ in
-                                let current = viewModel.followOnePriceList.last?.close ?? 1000
-                                let past_idx = viewModel.followOnePriceList.count - 2
-                                var past: Double = 1000
-                                if past_idx >= 0 {
-                                    past = viewModel.followOnePriceList[past_idx].close
-                                }
-                                fluctuation = (current / past) * 100 - 100
+                        if fetchCounter > 0 {
+                            Label(String(format: "%.2f", fluctuation) + "%", systemImage: fluctuation > 0 ? "arrowtriangle.up.circle.fill" : "arrowtriangle.down.circle.fill")
+                                .foregroundColor(fluctuation > 0 ? .red : .blue)
+                                .fixedSize(horizontal: true, vertical: false)
+                                .onAppear(){
+                                    let current = viewModel.followOnePriceList.last?.close ?? 1000
+                                    let past_idx = viewModel.followOnePriceList.count - 2
+                                    var past: Double = 1000
+                                    if past_idx >= 0 {
+                                        past = viewModel.followOnePriceList[past_idx].close
+                                    }
+                                    fluctuation = (current / past) * 100 - 100
                             }
+                        }
                     }
                     Text(profile.goal)
                         .font(.system(size: 15))
