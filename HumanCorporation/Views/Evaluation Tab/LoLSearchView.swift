@@ -14,6 +14,7 @@ struct LoLSearchView: View {
     @State private var summon_name = ""
     @State private var puuid = ""
     @State private var matchList: [String] = []
+    @State private var fetchCounter = 0
     @FocusState private var focused: Bool
     var date: Date
     
@@ -51,7 +52,12 @@ struct LoLSearchView: View {
                         Button {
                             loadData(completion: { message in
                                 print(message)
-                                loadMatch()
+                                matchList.removeAll()
+                                fetchCounter = 1
+                                loadMatch(completion: { message in
+                                    print(message)
+                                    fetchCounter += 1
+                                })
                             })
                         } label: {
                             Label("", systemImage: "magnifyingglass")
@@ -64,7 +70,11 @@ struct LoLSearchView: View {
                 Button{
                     
                 } label: {
-                    Label("총 \(String(matchList.count))건의 비생산성 적발!", systemImage: "arrow.right.circle.fill")
+                    if fetchCounter == 1 {
+                        Text("데이터를 불러오는 중...")
+                    } else if fetchCounter == 2{
+                        Label("총 \(String(matchList.count))건의 비생산성 적발!", systemImage: "arrow.right.circle.fill")
+                    }
                 }
                 .padding()
                 .disabled(matchList.isEmpty ? true:false)
@@ -93,7 +103,7 @@ struct LoLSearchView: View {
         }.resume()
     }
     
-    func loadMatch() {
+    func loadMatch(completion: @escaping (_ message: String) -> Void) {
         let startTime = String(format: "%.0f", Calendar.current.startOfDay(for: date).timeIntervalSince1970)
         print(startTime)
         guard let url = URL(string: "https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/\(puuid)/ids?startTime=\(startTime)&start=0&count=20&api_key=\(rgApiKey)") else {
@@ -104,10 +114,11 @@ struct LoLSearchView: View {
         
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let data = data {
-                self.matchList.removeAll()
                 if let response = try? JSONDecoder().decode([String].self, from: data) {
-                    self.matchList = response
-                    print(matchList)
+                    DispatchQueue.global(qos: .userInteractive).sync {
+                        self.matchList = response
+                    }
+                    completion("유저의 롤 경기기록 가져오기 성공!")
                     return
                 }
             }
