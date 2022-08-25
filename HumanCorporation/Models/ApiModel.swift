@@ -30,3 +30,11 @@ struct Commit: Codable {
 struct Summoner: Codable {
     let puuid: String
 }
+
+struct Match: Codable {
+    let info: info
+    struct info: Codable {
+        let gameEndTimestamp: UInt64
+        let gameStartTimestamp: UInt64
+    }
+}
