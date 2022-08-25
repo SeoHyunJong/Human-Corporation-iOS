@@ -52,7 +52,7 @@ struct EvaluationView: View {
         NavigationView {
             VStack {
                 List{
-                    Section("시간별로 일기를 작성하여 실적을 완성하세요!") {
+                    Section("날짜 선택후 시간별로 일기를 작성하세요!") {
                         DatePicker("일기 시작 시간", selection: $startTime, displayedComponents: [.hourAndMinute])
                         DatePicker("일기 종료 시간", selection: $endTime, in: startTime..., displayedComponents: [.hourAndMinute])
                         HStack {
@@ -68,6 +68,7 @@ struct EvaluationView: View {
                             .buttonStyle(BorderlessButtonStyle())
                             .disabled(endTime.timeIntervalSince(startTime) > 0 ? false:true)
                         }
+                        
                         HStack{
                             NavigationLink {
                                 GithubDiary(date: date)
@@ -85,6 +86,19 @@ struct EvaluationView: View {
                                     .foregroundColor(.blue)
                                 Spacer()
                                 Image(colorScheme == .dark ? "octocat_light" : "octocat_dark")
+                                    .resizable()
+                                    .frame(width: 20, height: 20)
+                            }
+                        }
+                        HStack{
+                            NavigationLink {
+                                LoLSearchView(date: date)
+                            } label: {
+                                Text("리그 오브 레전드 유저라면 클릭!")
+                                    .fixedSize(horizontal: true, vertical: false)
+                                    .foregroundColor(.blue)
+                                Spacer()
+                                Image("LoL_logo")
                                     .resizable()
                                     .frame(width: 20, height: 20)
                             }

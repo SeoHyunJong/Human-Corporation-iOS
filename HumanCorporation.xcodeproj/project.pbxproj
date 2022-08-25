@@ -44,6 +44,7 @@
 		B45E045F28AD0A9D009C7601 /* CommitDiary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45E045E28AD0A9D009C7601 /* CommitDiary.swift */; };
 		B46EF2DE288A89A500F38878 /* AlertToast in Frameworks */ = {isa = PBXBuildFile; productRef = B46EF2DD288A89A500F38878 /* AlertToast */; };
 		B46EF2E0288E9C3E00F38878 /* Diary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46EF2DF288E9C3E00F38878 /* Diary.swift */; };
+		B4CB18AB28B7624D00CC6194 /* LoLSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4CB18AA28B7624D00CC6194 /* LoLSearchView.swift */; };
 		B4D87F2E2882B1D300A2CCAB /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = B4D87F2D2882B1D300A2CCAB /* GoogleSignIn */; };
 		B4D87F302882B1D300A2CCAB /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B4D87F2F2882B1D300A2CCAB /* GoogleSignInSwift */; };
 		B4D87F322882D86800A2CCAB /* GoogleSignInButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D87F312882D86800A2CCAB /* GoogleSignInButton.swift */; };
@@ -92,6 +93,7 @@
 		B45E045C28ACDB1D009C7601 /* GithubDiary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GithubDiary.swift; sourceTree = "<group>"; };
 		B45E045E28AD0A9D009C7601 /* CommitDiary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommitDiary.swift; sourceTree = "<group>"; };
 		B46EF2DF288E9C3E00F38878 /* Diary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Diary.swift; sourceTree = "<group>"; };
+		B4CB18AA28B7624D00CC6194 /* LoLSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoLSearchView.swift; sourceTree = "<group>"; };
 		B4D87F312882D86800A2CCAB /* GoogleSignInButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleSignInButton.swift; sourceTree = "<group>"; };
 		B4D87F352882E8B700A2CCAB /* FirstComeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstComeView.swift; sourceTree = "<group>"; };
 		B4D87F3D288573E500A2CCAB /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
@@ -259,6 +261,7 @@
 				B4EB64F128914BFA004DD814 /* miniBar.swift */,
 				B45E045C28ACDB1D009C7601 /* GithubDiary.swift */,
 				B45E045E28AD0A9D009C7601 /* CommitDiary.swift */,
+				B4CB18AA28B7624D00CC6194 /* LoLSearchView.swift */,
 			);
 			path = "Evaluation Tab";
 			sourceTree = "<group>";
@@ -391,6 +394,7 @@
 				B442B7DC2886D5960064C0B1 /* ProfileImage.swift in Sources */,
 				B45E045B28ACD75B009C7601 /* ApiModel.swift in Sources */,
 				B45E03EF2896DE5F009C7601 /* NewCommerView.swift in Sources */,
+				B4CB18AB28B7624D00CC6194 /* LoLSearchView.swift in Sources */,
 				B4D87F3E288573E500A2CCAB /* Profile.swift in Sources */,
 				B45E03F42896E380009C7601 /* Triangle.swift in Sources */,
 				B45E0403289BA93E009C7601 /* CircleTimeView.swift in Sources */,

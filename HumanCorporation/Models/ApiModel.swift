@@ -26,3 +26,7 @@ struct Commit: Codable {
         let message: String
     }
 }
+
+struct Summoner: Codable {
+    let puuid: String
+}
