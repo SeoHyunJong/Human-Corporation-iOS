@@ -10,7 +10,9 @@
 import SwiftUI
 
 struct LoLSearchView: View {
-    private let rgApiKey = "RGAPI-c23dcccc-903b-45b9-b4d7-2b3de3c96561"
+    @EnvironmentObject var viewModel: ViewModel
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    private let rgApiKey = "RGAPI-b79535a6-0fe4-4b47-83a9-58349fc392fd"
     @State private var summon_name = ""
     @State private var puuid = ""
     @State private var matchList: [String] = []
@@ -68,7 +70,10 @@ struct LoLSearchView: View {
                 }
                 .frame(width: 300, height: 44)
                 Button{
-                    
+                    for match in matchList {
+                        addDiary(matchID: match)
+                    }
+                    self.presentationMode.wrappedValue.dismiss()
                 } label: {
                     if fetchCounter == 1 {
                         Text("데이터를 불러오는 중...")
@@ -124,10 +129,45 @@ struct LoLSearchView: View {
             }
         }.resume()
     }
+    
+    func addDiary(matchID: String) {
+        guard let url = URL(string: "https://asia.api.riotgames.com/lol/match/v5/matches/\(matchID)?api_key=\(rgApiKey)")
+        else {
+            print("Invalid URL")
+            return
+        }
+        let request = URLRequest(url: url)
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let data = data {
+                if let response = try? JSONDecoder().decode(Match.self, from: data) {
+                    DispatchQueue.main.async {
+                        let startTime = Date(timeIntervalSince1970: Double(response.info.gameStartTimestamp)*0.001)
+                        let endTime = Date(timeIntervalSince1970: Double(response.info.gameEndTimestamp)*0.001)
+                        let timeRange = startTime..<endTime
+                        let duplicate = viewModel.tempDiaryList.filter{
+                            timeRange.overlaps($0.startTime..<$0.endTime)
+                        }
+                        if duplicate.isEmpty {
+                            let diary = Diary(story: "사회악(?) 리그 오브 레전드 플레이!", startTime: startTime, endTime: endTime, eval: .unproductive, concentration: 2)
+                            //중복된 시간이 없다면 다이어리를 temp에 push하고
+                            viewModel.tempDiaryList.append(diary)
+                            //정렬하고 가격 리스트를 새로 만든다.
+                            //db에 임시 저장
+                            viewModel.addTempDiary()
+                            //시간 세팅
+                        }
+                    }
+                    return
+                }
+            }
+        }.resume()
+    }
 }
 
 struct LoLSearchView_Previews: PreviewProvider {
     static var previews: some View {
         LoLSearchView(date: Date())
+            .environmentObject(ViewModel())
     }
 }

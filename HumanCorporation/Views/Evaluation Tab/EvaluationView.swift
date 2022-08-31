@@ -93,6 +93,14 @@ struct EvaluationView: View {
                         HStack{
                             NavigationLink {
                                 LoLSearchView(date: date)
+                                    .onDisappear() {
+                                        if !viewModel.tempDiaryList.isEmpty {
+                                            sortTempDiaryAndCreatePriceList()
+                                            //4. 시간 세팅하기
+                                            endTime = sortedDiary.last!.endTime
+                                            startTime = endTime
+                                        }
+                                    }
                             } label: {
                                 Text("리그 오브 레전드 유저라면 클릭!")
                                     .fixedSize(horizontal: true, vertical: false)
