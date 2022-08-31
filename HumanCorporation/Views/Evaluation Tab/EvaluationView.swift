@@ -61,9 +61,8 @@ struct EvaluationView: View {
                     }
                     Section("Step 2. 일과를 추가하세요!") {
                         HStack {
-                            DatePicker("일과시작", selection: $startTime, displayedComponents: [.hourAndMinute])
-                            Divider()
-                            DatePicker("일과종료", selection: $endTime, in: startTime..., displayedComponents: [.hourAndMinute])
+                            DatePicker("시작시간", selection: $startTime, displayedComponents: [.hourAndMinute])
+                            DatePicker("종료시간", selection: $endTime, in: startTime..., displayedComponents: [.hourAndMinute])
                         }
                         HStack {
                             Label(String(format: "%.0f", endTime.timeIntervalSince(startTime) / 60)+" min", systemImage: "clock")
