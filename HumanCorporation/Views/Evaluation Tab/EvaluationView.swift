@@ -80,7 +80,7 @@ struct EvaluationView: View {
                     }
                     Section("Step 3. 일과 추가를 반복해서 하루를 완성하세요!") {
                         HStack(spacing: 30) {
-                            CircleTimeView()
+                            CircleTimeView(diaryList: viewModel.tempDiaryList)
                             VStack(alignment: .leading) {
                                 HStack {
                                     Label("", systemImage: "plus.circle")
