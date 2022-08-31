@@ -9,6 +9,11 @@ struct miniBar: UIViewRepresentable {
     func makeUIView(context: Context) -> CandleStickChartView {
         let chart = CandleStickChartView()
         chart.data = addData()
+        
+        chart.xAxis.setLabelCount(1, force: true)
+        chart.xAxis.labelPosition = .bottom
+        chart.rightAxis.enabled = false
+        chart.leftAxis.enabled = true
         return chart
     }
     

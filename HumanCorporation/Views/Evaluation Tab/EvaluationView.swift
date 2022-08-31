@@ -52,9 +52,19 @@ struct EvaluationView: View {
         NavigationView {
             VStack {
                 List{
-                    Section("날짜 선택후 시간별로 일기를 작성하세요!") {
-                        DatePicker("일기 시작 시간", selection: $startTime, displayedComponents: [.hourAndMinute])
-                        DatePicker("일기 종료 시간", selection: $endTime, in: startTime..., displayedComponents: [.hourAndMinute])
+                    Section("Step 1. 날짜를 선택하세요!") {
+                        Button {
+                            showCalendarAlert.toggle()
+                        } label: {
+                            Label(strDate, systemImage: "calendar")
+                        }
+                    }
+                    Section("Step 2. 일과를 추가하세요!") {
+                        HStack {
+                            DatePicker("일과시작", selection: $startTime, displayedComponents: [.hourAndMinute])
+                            Divider()
+                            DatePicker("일과종료", selection: $endTime, in: startTime..., displayedComponents: [.hourAndMinute])
+                        }
                         HStack {
                             Label(String(format: "%.0f", endTime.timeIntervalSince(startTime) / 60)+" min", systemImage: "clock")
                             Spacer()
@@ -63,12 +73,33 @@ struct EvaluationView: View {
                                 concentration = 2
                                 showDiary.toggle()
                             } label: {
-                                Label("미니 일기 작성", systemImage: "plus.circle.fill")
+                                Label("일과 추가하기", systemImage: "plus.circle.fill")
                             }
                             .buttonStyle(BorderlessButtonStyle())
                             .disabled(endTime.timeIntervalSince(startTime) > 0 ? false:true)
                         }
-                        
+                    }
+                    Section("Step 3. 일과 추가를 반복해서 하루를 완성하세요!") {
+                        HStack(spacing: 30) {
+                            CircleTimeView()
+                            VStack(alignment: .leading) {
+                                HStack {
+                                    Label("", systemImage: "plus.circle")
+                                    Text(String(format: "%.1f", amountOfProductive)+" h")
+                                }.foregroundColor(.red)
+                                HStack {
+                                    Label("", systemImage: "minus.circle")
+                                    Text(String(format: "%.1f", amountOfUnproductive)+" h")
+                                }.foregroundColor(.blue)
+                                HStack {
+                                    Label("", systemImage: "moon.zzz")
+                                    Text(String(format: "%.1f", amountOfNeutral)+" h")
+                                }.foregroundColor(.green)
+                            }
+                            .padding()
+                        }
+                    }
+                    Section("휴코앱이 제공하는 부가 기능 (Step 2)") {
                         HStack{
                             NavigationLink {
                                 GithubDiary(date: date)
@@ -111,24 +142,6 @@ struct EvaluationView: View {
                                     .frame(width: 20, height: 20)
                             }
                         }
-                        HStack(spacing: 30) {
-                            CircleTimeView()
-                            VStack(alignment: .leading) {
-                                HStack {
-                                    Label("", systemImage: "plus.circle")
-                                    Text(String(format: "%.1f", amountOfProductive)+" h")
-                                }.foregroundColor(.red)
-                                HStack {
-                                    Label("", systemImage: "minus.circle")
-                                    Text(String(format: "%.1f", amountOfUnproductive)+" h")
-                                }.foregroundColor(.blue)
-                                HStack {
-                                    Label("", systemImage: "moon.zzz")
-                                    Text(String(format: "%.1f", amountOfNeutral)+" h")
-                                }.foregroundColor(.green)
-                            }
-                            
-                        }
                     }
                     Section("현재 가격") {
                         Label(String(format: "%.0f", currentPrice), systemImage: "dollarsign.circle.fill")
@@ -142,19 +155,13 @@ struct EvaluationView: View {
                     }
                 }
                 .listStyle(.plain)
-                .navigationBarTitle(strDate)
-                .toolbar{
-                    Button {
-                        showCalendarAlert.toggle()
-                    } label: {
-                        Label("", systemImage: "calendar")
-                    }
-                }
+                .navigationBarTitle("당신의 하루를 심판합니다.", displayMode: .inline)
+                
                 HStack() {
                     Button{
                         showAlert.toggle()
                     } label: {
-                        Text("완성하기")
+                        Text("실적완성")
                             .padding(.vertical,10)
                             .padding(.horizontal,15)
                             .background(viewModel.tempDiaryList.count > 0 ? Color.green:Color.gray)
@@ -234,7 +241,7 @@ struct EvaluationView: View {
             Button("취소", role: .cancel) {
             }
         }
-        .alert("날짜를 다시 선택하면 임시 저장된 데이터가 초기화됩니다. 계속하시겠습니까?", isPresented: $showCalendarAlert) {
+        .alert("주의! 날짜를 재선택하는 경우 임시 저장된 데이터가 초기화됩니다.", isPresented: $showCalendarAlert) {
             Button("계속") {
                 showCalendar.toggle()
             }
