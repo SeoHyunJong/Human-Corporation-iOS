@@ -18,6 +18,7 @@ struct RecordRow: View {
             ForEach(items, id: \.self.startTime) { diary in
                 VStack(alignment: .leading){
                     Label("\(dateFormatter.string(from: diary.startTime))  ~  \(dateFormatter.string(from: diary.endTime))", systemImage: switchIcon(eval: diary.eval))
+                        .foregroundColor(switchColor(eval: diary.eval))
                         .padding(.vertical)
                     Text(diary.story)
                         .foregroundColor(.secondary)
@@ -43,6 +44,18 @@ struct RecordRow: View {
             return "moon.zzz"
         case .cancel:
             return ""
+        }
+    }
+    func switchColor(eval: Diary.Evaluation) -> Color {
+        switch eval {
+        case .productive:
+            return .pink
+        case .unproductive:
+            return .indigo
+        case .neutral:
+            return .green
+        case .cancel:
+            return .black
         }
     }
 }
