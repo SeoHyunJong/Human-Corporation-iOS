@@ -36,7 +36,6 @@ struct MessageBox: View {
                         .frame(width: 20, height: 20)
                 }
                 Text(message)
-                    .font(.system(size: 18))
                     .fixedSize(horizontal: false, vertical: true)
                     .foregroundColor(.white)
                     .padding()
