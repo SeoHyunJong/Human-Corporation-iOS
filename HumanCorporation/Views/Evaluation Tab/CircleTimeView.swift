@@ -10,6 +10,9 @@ import AlertToast
 struct CircleTimeView: View {
     var diaryList: [Diary]
     @State private var amount = 0
+    @State private var showTime = false
+    @State private var viewDiary: Diary = Diary(story: "", startTime: Date(), endTime: Date())
+    @State private var dateFormatter = DateFormatter()
     
     var body: some View {
         HStack {
@@ -36,7 +39,7 @@ struct CircleTimeView: View {
                                 return Color.green
                             }
                         }
-                        CircleTabView(from: from, to: to, color: color(), diary: diary)
+                        CircleTabView(from: from, to: to, color: color(), diary: diary, showTime: $showTime, viewDiary: $viewDiary)
                     }
                 }
                 Text("12")
@@ -45,7 +48,14 @@ struct CircleTimeView: View {
             Text("6")
                 .foregroundColor(.secondary)
         }
+        .onAppear(){
+            dateFormatter.dateFormat = "hh시 mm분 a"
+        }
         .fixedSize(horizontal: true, vertical: true)
+        .toast(isPresenting: $showTime) {
+            AlertToast(displayMode: .alert, type: .regular, title: dateFormatter.string(from: viewDiary.startTime) + "\n" +
+                       dateFormatter.string(from: viewDiary.endTime))
+        }
     }
 }
 

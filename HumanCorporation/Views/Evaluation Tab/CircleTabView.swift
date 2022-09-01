@@ -13,8 +13,8 @@ struct CircleTabView: View {
     var to: Double
     var color: Color
     var diary: Diary
-    @State private var dateFormatter = DateFormatter()
-    @State private var showTime = false
+    @Binding var showTime: Bool
+    @Binding var viewDiary: Diary
     
     var body: some View {
         Circle()
@@ -23,15 +23,9 @@ struct CircleTabView: View {
             .foregroundColor(color)
             .frame(width: 130, height: 130)
             .rotationEffect(.degrees(-90))
-            .onAppear(){
-                dateFormatter.dateFormat = "hh시 mm분 a"
-            }
             .onTapGesture {
+                viewDiary = diary
                 showTime.toggle()
-            }
-            .toast(isPresenting: $showTime) {
-                AlertToast(displayMode: .alert, type: .regular, title: dateFormatter.string(from: diary.startTime) + "\n" +
-                           dateFormatter.string(from: diary.endTime))
             }
     }
 }
