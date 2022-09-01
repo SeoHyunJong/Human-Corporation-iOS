@@ -45,6 +45,7 @@
 		B46EF2DE288A89A500F38878 /* AlertToast in Frameworks */ = {isa = PBXBuildFile; productRef = B46EF2DD288A89A500F38878 /* AlertToast */; };
 		B46EF2E0288E9C3E00F38878 /* Diary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46EF2DF288E9C3E00F38878 /* Diary.swift */; };
 		B4CB18AB28B7624D00CC6194 /* LoLSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4CB18AA28B7624D00CC6194 /* LoLSearchView.swift */; };
+		B4CB18AF28C0C12500CC6194 /* riot.txt in Resources */ = {isa = PBXBuildFile; fileRef = B4CB18AE28C0C12500CC6194 /* riot.txt */; };
 		B4D87F2E2882B1D300A2CCAB /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = B4D87F2D2882B1D300A2CCAB /* GoogleSignIn */; };
 		B4D87F302882B1D300A2CCAB /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B4D87F2F2882B1D300A2CCAB /* GoogleSignInSwift */; };
 		B4D87F322882D86800A2CCAB /* GoogleSignInButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D87F312882D86800A2CCAB /* GoogleSignInButton.swift */; };
@@ -94,6 +95,7 @@
 		B45E045E28AD0A9D009C7601 /* CommitDiary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommitDiary.swift; sourceTree = "<group>"; };
 		B46EF2DF288E9C3E00F38878 /* Diary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Diary.swift; sourceTree = "<group>"; };
 		B4CB18AA28B7624D00CC6194 /* LoLSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoLSearchView.swift; sourceTree = "<group>"; };
+		B4CB18AE28C0C12500CC6194 /* riot.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = riot.txt; sourceTree = SOURCE_ROOT; };
 		B4D87F312882D86800A2CCAB /* GoogleSignInButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleSignInButton.swift; sourceTree = "<group>"; };
 		B4D87F352882E8B700A2CCAB /* FirstComeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstComeView.swift; sourceTree = "<group>"; };
 		B4D87F3D288573E500A2CCAB /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
@@ -143,6 +145,7 @@
 		B42EA61D288292B1009C5901 /* HumanCorporation */ = {
 			isa = PBXGroup;
 			children = (
+				B4CB18AE28C0C12500CC6194 /* riot.txt */,
 				B45E041B289CC809009C7601 /* HumanCorporation.entitlements */,
 				B42EA6342882A9C6009C5901 /* Info.plist */,
 				B442B7EF288812C90064C0B1 /* GoogleService-Info.plist */,
@@ -363,6 +366,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B4CB18AF28C0C12500CC6194 /* riot.txt in Resources */,
 				B42EA626288292B3009C5901 /* Preview Assets.xcassets in Resources */,
 				B442B7F0288812C90064C0B1 /* GoogleService-Info.plist in Resources */,
 				B42EA623288292B3009C5901 /* Assets.xcassets in Resources */,

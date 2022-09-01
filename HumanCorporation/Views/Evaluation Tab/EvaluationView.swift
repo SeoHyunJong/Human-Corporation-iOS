@@ -148,8 +148,8 @@ struct EvaluationView: View {
                     miniBar(priceList: sortedPrice)
                         .scaledToFit()
                     VStack {
-                        MessageBox(message: "잠깐! 완성하기를 누르기 전에 그 날 자정부터 오후 11:59분까지 꼼꼼하게 일기를 작성했는지 확인해라!", leftSpeaker: true)
-                        MessageBox(message: "오늘 일기를 먼저 쓰고 제출해버렸어. 어제 일기도 쓰고 싶은데, 그게 안되네...", leftSpeaker: false)
+                        MessageBox(message: "잠깐! 완성하기를 누르기 전에 그 날 자정부터 오후 11:59분까지 충분히 일과를 추가했는지 확인해라!", leftSpeaker: true)
+                        MessageBox(message: "오늘 실적을 먼저 쓰고 제출해버렸어. 어제 실적도 추가하고 싶은데, 그게 안되네...", leftSpeaker: false)
                         MessageBox(message: "날짜 선택은 최근 추가된 실적을 기준으로 범위가 제한된다! 이건 분식회계를 방지하기 위한 최소조치지.", leftSpeaker: true)
                     }
                 }
@@ -207,7 +207,7 @@ struct EvaluationView: View {
                 updateSelectedDate()
             }
         }
-        .alert("잠깐! 이 날의 자정부터 오후 11:59분까지 꼼꼼하게 일기를 쓰셨나요? 제출하면 더 이상 수정은 불가합니다!", isPresented: $showAlert) {
+        .alert("잠깐! 이 날의 자정부터 오후 11:59분까지 충분히 일과를 추가하셨나요? 제출하면 더 이상 수정은 불가합니다!", isPresented: $showAlert) {
             Button("제출") {
                 //값 타입으로 전달하여 리스트가 초기화 될 때 비동기 처리에서 문제가 안생기게 하여야...
                 //0. Firebase에 데이터 업로드
@@ -256,7 +256,7 @@ struct EvaluationView: View {
             DiaryFieldView(story: $story, eval: $eval, showDiary: $showDiary, concentration: $concentration)
         }
         .toast(isPresenting: $showToast) {
-            AlertToast(displayMode: .banner(.slide), type: .regular, title:"작성 완료! 다른 시간의 일기들도 작성해주세요.")
+            AlertToast(displayMode: .banner(.slide), type: .regular, title:"작성 완료! 다른 시간의 일과들도 추가해주세요.")
         }
         .toast(isPresenting: $showSuccess) {
             AlertToast(displayMode: .alert, type: .complete(.green), title: "실적 제출 성공!")

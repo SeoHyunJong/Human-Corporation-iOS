@@ -15,6 +15,7 @@ struct CommitDiary: View {
     @FocusState private var storyFocused: Bool
     @EnvironmentObject var viewModel: ViewModel
     @State var fetchCounter:Double = 0
+    @State private var showComplete: Bool = false
     
     var date: Date
     var repoName: String
@@ -54,6 +55,7 @@ struct CommitDiary: View {
                             }
                             Button{
                                 addDiary(diary: commitDiaryList[idx])
+                                showComplete.toggle()
                             } label: {
                                 Label("submit", systemImage: "arrow.right.circle.fill")
                             }
@@ -67,6 +69,9 @@ struct CommitDiary: View {
                 }
                 
             }
+        }
+        .toast(isPresenting: $showComplete) {
+            AlertToast(displayMode: .alert, type: .complete(.green), title: "커밋 기록 추가 완료!")
         }
         .onAppear(){
             fetchCounter = 0
