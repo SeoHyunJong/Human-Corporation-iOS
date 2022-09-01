@@ -132,7 +132,7 @@ struct EvaluationView: View {
                                         }
                                     }
                             } label: {
-                                Text("리그 오브 레전드 유저라면 클릭!")
+                                Text("곧 추가될 기능(라이엇 승인 대기중)")
                                     .fixedSize(horizontal: true, vertical: false)
                                     .foregroundColor(.blue)
                                 Spacer()
@@ -140,6 +140,7 @@ struct EvaluationView: View {
                                     .resizable()
                                     .frame(width: 20, height: 20)
                             }
+                            .disabled(true)
                         }
                     }
                     Section("현재 가격") {
