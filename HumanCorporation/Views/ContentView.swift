@@ -12,7 +12,7 @@ import UserNotifications
 struct ContentView: View {
     @EnvironmentObject var viewModel: ViewModel
     @State private var fetchCounter: Double = 0
-    @State private var completeNum: Double = 5
+    @State private var completeNum: Double = 6
     
     func setNotification() {
         print("알림 설정 시작")
@@ -49,6 +49,10 @@ struct ContentView: View {
                             })
                             //임시 저장 데이터 로드
                             viewModel.readTempDiaryList(completion: { message in
+                                print(message)
+                                fetchCounter += 1
+                            })
+                            viewModel.readToDoList(completion: { message in
                                 print(message)
                                 fetchCounter += 1
                             })

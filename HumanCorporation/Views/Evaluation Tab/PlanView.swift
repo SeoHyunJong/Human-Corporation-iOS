@@ -30,25 +30,35 @@ struct PlanView: View {
     var body: some View {
         VStack {
             List {
-                Section("Step 1. 날짜를 선택하세요!") {
+                Section("날짜를 선택하세요.") {
                     Button {
                         showCalendarAlert.toggle()
                     } label: {
                         Label(strDate, systemImage: "calendar")
                     }
                 }
-            }
-            .alert("주의! 날짜를 재선택하는 경우 임시 저장된 데이터가 초기화됩니다.", isPresented: $showCalendarAlert) {
-                Button("계속") {
-                    showCalendar.toggle()
-                }
-                Button("취소", role: .cancel) {
+                ForEach(sortedList.indices, id: \.self) { idx in
+                    
                 }
             }
-            .sheet(isPresented: $showCalendar, onDismiss: updateSelectedDate){
-                DatePicker("날짜를 고르세요.", selection: $date, in: viewModel.recentDay...Date(), displayedComponents: [.date])
-                    .datePickerStyle(.graphical)
+            .listStyle(.plain)
+            Button {
+                
+            } label: {
+                Label("여기를 눌러 추가", systemImage: "plus.circle.fill")
+            }.padding()
+        }
+        .navigationTitle("To Do List Style")
+        .alert("주의! 날짜를 재선택하는 경우 임시 저장된 데이터가 초기화됩니다.", isPresented: $showCalendarAlert) {
+            Button("계속") {
+                showCalendar.toggle()
             }
+            Button("취소", role: .cancel) {
+            }
+        }
+        .sheet(isPresented: $showCalendar, onDismiss: updateSelectedDate){
+            DatePicker("날짜를 고르세요.", selection: $date, in: viewModel.recentDay...Date(), displayedComponents: [.date])
+                .datePickerStyle(.graphical)
         }
         .onAppear(){
             //자동으로 임시저장된 데이터를 불러온다.

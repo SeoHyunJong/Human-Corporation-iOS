@@ -91,7 +91,7 @@ struct HomeView: View {
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        HomeView(fetchCounter: 3, completeNumber: 5)
+        HomeView(fetchCounter: 3, completeNumber: 6)
             .environmentObject(ViewModel())
     }
 }
