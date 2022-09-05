@@ -35,6 +35,8 @@ class ViewModel: ObservableObject {
     @Published var recentDay = Date(timeIntervalSince1970: 0)
     //임시 저장
     @Published var tempDiaryList: [Diary] = []
+    //To do list
+    @Published var todoList: [Diary] = []
     //일기장
     @Published var diaryListFromFirebase: [Diary] = []
     var diaryListByDate: [Date: [Diary]] {
@@ -258,6 +260,7 @@ class ViewModel: ObservableObject {
             print(error.localizedDescription)
         }
     }
+    // MARK: Temp Diary
     func addTempDiary() {
         let dateformatter = DateFormatter()
         dateformatter.dateFormat = "yyyy-MM-dd HH:mm"
@@ -294,6 +297,7 @@ class ViewModel: ObservableObject {
             print(error.localizedDescription)
         }
     }
+    //일기와 to do list 동시에 일괄 삭제
     func removeTemp() {
         guard let uid = Auth.auth().currentUser?.uid else {return}
         ref.child("temp").child(uid).removeValue()
@@ -309,7 +313,6 @@ class ViewModel: ObservableObject {
             let endTime = value["endTime"] as? String
             let lastDay = dateformatter.date(from: endTime!)
             let rawRecentDay = Calendar.current.date(byAdding: .day, value: 1, to: lastDay!)!
-            
             self.recentDay = Calendar.current.startOfDay(for: rawRecentDay)
             completion("최신 날짜 찾기가 완료됨.")
         }){ error in
@@ -317,6 +320,45 @@ class ViewModel: ObservableObject {
         }
     }
     
+    // MARK: Temp To Do List
+    func addToDoList() {
+        let dateformatter = DateFormatter()
+        dateformatter.dateFormat = "yyyy-MM-dd HH:mm"
+        guard let diary = self.todoList.last else {return}//최근에 추가된 To do
+        let values: [String: Any] = ["story":diary.story, "startTime":dateformatter.string(from: diary.startTime), "endTime":dateformatter.string(from: diary.endTime), "eval":diary.eval.rawValue, "concentration":diary.concentration]
+        self.ref.child("temp").child(userProfile.id).child("todolist").childByAutoId().setValue(values)
+    }
+    
+    func deleteToDo(endTime: String) {
+        ref.child("temp").child(userProfile.id).child("todolist").queryOrdered(byChild: "endTime").queryEqual(toValue: endTime).observeSingleEvent(of: .value, with: { [self]
+            snapshot in
+            for child in snapshot.children.allObjects as! [DataSnapshot] {
+                let key = child.key
+                self.ref.child("temp").child(self.userProfile.id).child("todolist").child(key).removeValue()
+            }
+        })
+    }
+    
+    func readToDoList(completion: @escaping (_ message: String) -> Void) {
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        let dateformatter = DateFormatter()
+        dateformatter.dateFormat = "yyyy-MM-dd HH:mm"
+        ref.child("temp").child(uid).child("todolist").observeSingleEvent(of: .value, with: { snapshot in
+            for child in snapshot.children.allObjects as! [DataSnapshot] {
+                guard let value = child.value as? NSDictionary else {return}
+                let story = value["story"] as? String
+                let startTime = value["startTime"] as? String
+                let endTime = value["endTime"] as? String
+                let eval = value["eval"] as? String
+                let concentration = value["concentration"] as? Double ?? 2
+                let diary = Diary(story: story!, startTime: dateformatter.date(from: startTime!)!, endTime: dateformatter.date(from: endTime!)!, eval: Diary.Evaluation(rawValue: eval!)!, concentration: concentration)
+                self.tempDiaryList.append(diary)
+            }
+            completion("임시 저장된 to do list들이 로드됨.")
+        }) { error in
+            print(error.localizedDescription)
+        }
+    }
     // MARK: Price
     func priceAdd(price: CandleChartDataEntry, completion: @escaping (_ message: String) -> Void) {
         self.priceList.append(price)

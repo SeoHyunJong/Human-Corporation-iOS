@@ -10,8 +10,9 @@
  시간 선택에 자유를 주었으니 대신,
  시스템에서 다이어리 리스트 정렬과 가격 리스트를 새로 생성해야.
  */
-//24hr == 86400
-//1 min == 0.01% ~ 0.04%
+//24hr == 86400s == 1440m
+//1 min == 0.01% ~ 0.04% => 최대 14.4% ~ 57.6%
+//하락 1 min == 0.02%
 import SwiftUI
 import AlertToast
 import Charts
@@ -59,7 +60,7 @@ struct EvaluationView: View {
                             Label(strDate, systemImage: "calendar")
                         }
                     }
-                    Section("Step 2. 일과를 추가하세요!") {
+                    Section("Step 2. 일기를 추가하세요!") {
                         HStack {
                             DatePicker("시작시간", selection: $startTime, displayedComponents: [.hourAndMinute])
                             DatePicker("종료시간", selection: $endTime, in: startTime..., displayedComponents: [.hourAndMinute])
@@ -72,13 +73,13 @@ struct EvaluationView: View {
                                 concentration = 2
                                 showDiary.toggle()
                             } label: {
-                                Label("일과 추가하기", systemImage: "plus.circle.fill")
+                                Label("일기 추가하기", systemImage: "plus.circle.fill")
                             }
                             .buttonStyle(BorderlessButtonStyle())
                             .disabled(endTime.timeIntervalSince(startTime) > 0 ? false:true)
                         }
                     }
-                    Section("Step 3. 일과 추가를 반복해서 하루를 완성하세요!") {
+                    Section("Step 3. 일기 추가를 반복해서 하루를 완성하세요!") {
                         HStack(spacing: 30) {
                             CircleTimeView(diaryList: viewModel.tempDiaryList)
                             VStack(alignment: .leading) {
@@ -155,7 +156,7 @@ struct EvaluationView: View {
                     }
                 }
                 .listStyle(.plain)
-                .navigationBarTitle("당신의 하루를 심판합니다.", displayMode: .inline)
+                .navigationBarTitle("Diary Style", displayMode: .inline)
                 
                 HStack() {
                     Button{
@@ -257,7 +258,7 @@ struct EvaluationView: View {
             DiaryFieldView(story: $story, eval: $eval, showDiary: $showDiary, concentration: $concentration)
         }
         .toast(isPresenting: $showToast) {
-            AlertToast(displayMode: .banner(.slide), type: .regular, title:"작성 완료! 다른 시간의 일과들도 추가해주세요.")
+            AlertToast(displayMode: .banner(.slide), type: .regular, title:"작성 완료! 다른 시간의 일기들도 추가해주세요.")
         }
         .toast(isPresenting: $showSuccess) {
             AlertToast(displayMode: .alert, type: .complete(.green), title: "실적 제출 성공!")
