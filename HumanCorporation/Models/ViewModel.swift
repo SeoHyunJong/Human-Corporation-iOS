@@ -329,8 +329,11 @@ class ViewModel: ObservableObject {
         self.ref.child("temp").child(userProfile.id).child("todolist").childByAutoId().setValue(values)
     }
     
-    func deleteToDo(endTime: String) {
-        ref.child("temp").child(userProfile.id).child("todolist").queryOrdered(byChild: "endTime").queryEqual(toValue: endTime).observeSingleEvent(of: .value, with: { [self]
+    func deleteToDo(endTime: Date) {
+        let dateformatter = DateFormatter()
+        dateformatter.dateFormat = "yyyy-MM-dd HH:mm"
+        let search = dateformatter.string(from: endTime)
+        ref.child("temp").child(userProfile.id).child("todolist").queryOrdered(byChild: "endTime").queryEqual(toValue: search).observeSingleEvent(of: .value, with: { [self]
             snapshot in
             for child in snapshot.children.allObjects as! [DataSnapshot] {
                 let key = child.key
@@ -344,6 +347,7 @@ class ViewModel: ObservableObject {
         let dateformatter = DateFormatter()
         dateformatter.dateFormat = "yyyy-MM-dd HH:mm"
         ref.child("temp").child(uid).child("todolist").observeSingleEvent(of: .value, with: { snapshot in
+            self.todoList.removeAll()
             for child in snapshot.children.allObjects as! [DataSnapshot] {
                 guard let value = child.value as? NSDictionary else {return}
                 let story = value["story"] as? String
@@ -352,7 +356,7 @@ class ViewModel: ObservableObject {
                 let eval = value["eval"] as? String
                 let concentration = value["concentration"] as? Double ?? 2
                 let diary = Diary(story: story!, startTime: dateformatter.date(from: startTime!)!, endTime: dateformatter.date(from: endTime!)!, eval: Diary.Evaluation(rawValue: eval!)!, concentration: concentration)
-                self.tempDiaryList.append(diary)
+                self.todoList.append(diary)
             }
             completion("임시 저장된 to do list들이 로드됨.")
         }) { error in

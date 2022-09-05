@@ -35,18 +35,21 @@ struct DiaryFieldView: View {
                                 showDiary.toggle()
                             } label: {
                                 Label("생산적", systemImage: "plus.circle")
+                                    .foregroundColor(.red)
                             }.buttonStyle(BorderlessButtonStyle())
                             Button{
                                 eval =  .unproductive
                                 showDiary.toggle()
                             } label: {
                                 Label("비생산/여가", systemImage: "minus.circle")
+                                    .foregroundColor(.blue)
                             }.buttonStyle(BorderlessButtonStyle())
                             Button{
                                 eval = .neutral
                                 showDiary.toggle()
                             } label: {
                                 Label("생리현상", systemImage: "moon.zzz")
+                                    .foregroundColor(.green)
                             }.buttonStyle(BorderlessButtonStyle())
                         }
                     }
