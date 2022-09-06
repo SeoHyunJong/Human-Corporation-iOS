@@ -27,7 +27,8 @@ struct PlanView: View {
     @State private var showCalendarAlert = false
     @State private var date = Date()
     @State private var strDate = "2022.07.22.Fri"
-    @State private var sortedList: [Diary] = [Diary(story: "테스트", startTime: Calendar.current.date(byAdding: .minute, value: -60, to: Date())!, endTime: Date(), eval: .productive), Diary(story: "1234567890!@#$%^&*()abcdefghijklmnopqrstuvwx", startTime: Date(), endTime: Calendar.current.date(byAdding: .minute, value: 60, to: Date())!, eval: .unproductive)]
+    @State private var sortedList: [Diary] = []
+    @State private var showHide: [Bool] = []
     @FocusState private var storyFocused: Bool
     @Environment(\.colorScheme) var colorScheme
     
@@ -41,11 +42,12 @@ struct PlanView: View {
                         showCalendarAlert.toggle()
                     } label: {
                         Label(strDate, systemImage: "calendar")
-                    }
+                    }.buttonStyle(BorderlessButtonStyle())
                     if sortedList.isEmpty {
                         Button {
                             let diary = Diary(story: "할 일을 적어주세요.", startTime: Calendar.current.startOfDay(for: date), endTime: Calendar.current.startOfDay(for: date))
                             sortedList.append(diary)
+                            showHide.append(true)
                         } label: {
                             Label("할 일 추가하기", systemImage: "plus.circle.fill")
                         }
@@ -53,8 +55,15 @@ struct PlanView: View {
                     }
                 }
                 ForEach(sortedList.indices, id: \.self) { idx in
-                    Section(sortedList[idx].story) {
-                        VStack(spacing: 20){
+                    VStack(spacing: 20){
+                        Button {
+                            showHide[idx].toggle()
+                        } label: {
+                            Label(sortedList[idx].story, systemImage: showHide[idx] ? "chevron.down.circle.fill":"chevron.forward.circle.fill")
+                                .foregroundColor(.orange)
+                        }.buttonStyle(BorderlessButtonStyle())
+                        
+                        if showHide[idx] {
                             HStack{
                                 DatePicker("시작시간", selection: $sortedList[idx].startTime, displayedComponents: [.hourAndMinute])
                                 DatePicker("종료시간", selection: $sortedList[idx].endTime, in: sortedList[idx].startTime..., displayedComponents: [.hourAndMinute])
@@ -110,6 +119,7 @@ struct PlanView: View {
                                 Button {
                                     let diary = Diary(story: "할 일을 적어주세요.", startTime: sortedList[idx].endTime, endTime: sortedList[idx].endTime)
                                     sortedList.append(diary)
+                                    showHide.append(true)
                                 } label: {
                                     Label("할 일 추가하기", systemImage: "plus.circle.fill")
                                 }
@@ -120,7 +130,7 @@ struct PlanView: View {
                     }
                 }
             }
-            .listStyle(.sidebar)
+            .listStyle(.inset)
         }
         .onTapGesture {
             storyFocused = false
@@ -134,7 +144,7 @@ struct PlanView: View {
             }
         }
         .sheet(isPresented: $showCalendar, onDismiss: updateSelectedDate){
-            DatePicker("날짜를 고르세요.", selection: $date, in: viewModel.recentDay...Date(), displayedComponents: [.date])
+            DatePicker("날짜를 고르세요.", selection: $date, in: viewModel.recentDay..., displayedComponents: [.date])
                 .datePickerStyle(.graphical)
         }
         .onAppear(){
@@ -161,10 +171,10 @@ struct PlanView: View {
     }
     func updateSelectedDate(){
         //0. 임시 저장된 데이터 삭제하기 (날짜를 새로 선택했으므로)
+        sortedList.removeAll()
         if viewModel.todoList.isEmpty == false {
             viewModel.removeTemp()
             viewModel.todoList.removeAll()
-            sortedList.removeAll()
         }
         //1. 캘린더 날짜 선택기간 제한
         if viewModel.priceList.isEmpty == false {
