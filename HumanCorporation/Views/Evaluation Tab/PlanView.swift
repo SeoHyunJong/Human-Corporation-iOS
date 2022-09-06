@@ -42,17 +42,8 @@ struct PlanView: View {
                         showCalendarAlert.toggle()
                     } label: {
                         Label(strDate, systemImage: "calendar")
+                            .tint(.primary)
                     }.buttonStyle(BorderlessButtonStyle())
-                    if sortedList.isEmpty {
-                        Button {
-                            let diary = Diary(story: "할 일을 적어주세요.", startTime: Calendar.current.startOfDay(for: date), endTime: Calendar.current.startOfDay(for: date))
-                            sortedList.append(diary)
-                            showHide.append(true)
-                        } label: {
-                            Label("할 일 추가하기", systemImage: "plus.circle.fill")
-                        }
-                        .buttonStyle(BorderlessButtonStyle())
-                    }
                 }
                 ForEach(sortedList.indices, id: \.self) { idx in
                     VStack(spacing: 20){
@@ -115,19 +106,23 @@ struct PlanView: View {
                                     .tint(.green)
                                 Text("집중도(생산성)")
                             }
-                            if idx+1 == self.sortedList.count {
-                                Button {
-                                    let diary = Diary(story: "할 일을 적어주세요.", startTime: sortedList[idx].endTime, endTime: sortedList[idx].endTime)
-                                    sortedList.append(diary)
-                                    showHide.append(true)
-                                } label: {
-                                    Label("할 일 추가하기", systemImage: "plus.circle.fill")
-                                }
-                                .padding()
-                                .buttonStyle(BorderlessButtonStyle())
-                            }
                         }
                     }
+                }
+                Section {
+                    Button {
+                        if sortedList.isEmpty {
+                            let diary = Diary(story: "할 일을 적어주세요.", startTime: Calendar.current.startOfDay(for: date), endTime: Calendar.current.startOfDay(for: date))
+                            sortedList.append(diary)
+                        } else {
+                            let diary = Diary(story: "할 일을 적어주세요.", startTime: sortedList.last!.endTime, endTime: sortedList.last!.endTime)
+                            sortedList.append(diary)
+                        }
+                        showHide.append(true)
+                    } label: {
+                        Label("할 일 추가하기", systemImage: "plus.circle.fill")
+                    }
+                    .buttonStyle(BorderlessButtonStyle())
                 }
             }
             .listStyle(.inset)
