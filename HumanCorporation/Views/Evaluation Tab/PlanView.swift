@@ -12,6 +12,12 @@
  내용     생산적, 비생산적, 생리현상
  이행률(생산성)    삭제하기
  Complete! Failed -> 시간이 지나야 활성화
+ 
+ 먼저 sortedList에 추가 -> 유저가 추가하기 및 알림설정 누를시
+ -> viewModel.todoList에도 추가 및 firebase에 등록
+ 
+ 삭제시 -> sortedList에서 삭제 -> viewModel.todoList 초기화 및 파이어베이스에서 데이터 삭제
+ -> firebase에서 다시 데이터를 읽어들인다.
  */
 
 import SwiftUI
@@ -21,12 +27,8 @@ struct PlanView: View {
     @State private var showCalendarAlert = false
     @State private var date = Date()
     @State private var strDate = "2022.07.22.Fri"
-    @State private var sortedList: [Diary] = [Diary(story: "배고파요", startTime: Calendar.current.date(byAdding: .minute, value: -60, to: Date())!, endTime: Date(), eval: .productive)]
-    @State private var startTime = Date()
-    @State private var endTime = Date()
+    @State private var sortedList: [Diary] = [Diary(story: "테스트", startTime: Calendar.current.date(byAdding: .minute, value: -60, to: Date())!, endTime: Date(), eval: .productive), Diary(story: "1234567890!@#$%^&*()abcdefghijklmnopqrstuvwx", startTime: Date(), endTime: Calendar.current.date(byAdding: .minute, value: 60, to: Date())!, eval: .unproductive)]
     @FocusState private var storyFocused: Bool
-    @State var sliderColor: Color = .green
-    @State var sliderText: String = "보통"
     @Environment(\.colorScheme) var colorScheme
     
     @EnvironmentObject var viewModel: ViewModel
@@ -40,96 +42,85 @@ struct PlanView: View {
                     } label: {
                         Label(strDate, systemImage: "calendar")
                     }
+                    if sortedList.isEmpty {
+                        Button {
+                            let diary = Diary(story: "할 일을 적어주세요.", startTime: Calendar.current.startOfDay(for: date), endTime: Calendar.current.startOfDay(for: date))
+                            sortedList.append(diary)
+                        } label: {
+                            Label("할 일 추가하기", systemImage: "plus.circle.fill")
+                        }
+                        .buttonStyle(BorderlessButtonStyle())
+                    }
                 }
                 ForEach(sortedList.indices, id: \.self) { idx in
-                    VStack(spacing: 20){
-                        HStack{
-                            DatePicker("시작시간", selection: $sortedList[idx].startTime, displayedComponents: [.hourAndMinute])
-                            DatePicker("종료시간", selection: $sortedList[idx].endTime, in: sortedList[idx].startTime..., displayedComponents: [.hourAndMinute])
-                        }
-                        VStack{
-                            ZStack{
-                                HStack{
-                                    TextEditor(text: $sortedList[idx].story)
-                                        .focused($storyFocused)
-                                        .padding(.horizontal)
-                                        .foregroundColor(.secondary)
+                    Section(sortedList[idx].story) {
+                        VStack(spacing: 20){
+                            HStack{
+                                DatePicker("시작시간", selection: $sortedList[idx].startTime, displayedComponents: [.hourAndMinute])
+                                DatePicker("종료시간", selection: $sortedList[idx].endTime, in: sortedList[idx].startTime..., displayedComponents: [.hourAndMinute])
+                            }
+                            VStack{
+                                ZStack{
+                                    HStack{
+                                        TextEditor(text: $sortedList[idx].story)
+                                            .focused($storyFocused)
+                                            .foregroundColor(.secondary)
+                                        Button{
+                                            viewModel.deleteToDo(endTime: sortedList[idx].endTime)
+                                            sortedList.remove(at: idx)
+                                            viewModel.readToDoList(completion: { message in
+                                                print(message)
+                                            })
+                                        } label: {
+                                            Label("", systemImage: "trash.fill")
+                                                .foregroundColor(.purple)
+                                        }.buttonStyle(BorderlessButtonStyle())
+                                    }
+                                    Rectangle()
+                                        .fill(.clear)
+                                        .border(.orange, width: 1)
+                                }
+                                HStack(){
                                     Button{
-                                        viewModel.deleteToDo(endTime: sortedList[idx].endTime)
-                                        sortedList.remove(at: idx)
-                                        viewModel.readToDoList(completion: { message in
-                                            print(message)
-                                        })
+                                        sortedList[idx].eval = .productive
                                     } label: {
-                                        Label("", systemImage: "trash.fill")
-                                            .foregroundColor(.purple)
+                                        Label("생산적", systemImage: sortedList[idx].eval == .productive ?  "checkmark.circle.fill":"plus.circle")
+                                            .foregroundColor(.red)
+                                    }.buttonStyle(BorderlessButtonStyle())
+                                    Button{
+                                        sortedList[idx].eval = .unproductive
+                                    } label: {
+                                        Label("비생산/여가", systemImage: sortedList[idx].eval == .unproductive ?  "checkmark.circle.fill":"minus.circle")
+                                            .foregroundColor(.blue)
+                                    }.buttonStyle(BorderlessButtonStyle())
+                                    Button{
+                                        sortedList[idx].eval = .neutral
+                                    } label: {
+                                        Label("생리현상", systemImage: sortedList[idx].eval == .neutral ?  "checkmark.circle.fill":"moon.zzz")
+                                            .foregroundColor(.green)
                                     }.buttonStyle(BorderlessButtonStyle())
                                 }
-                                Rectangle()
-                                    .fill(.clear)
-                                    .border(.orange, width: 1)
                             }
-                            HStack(){
-                                Button{
-                                    sortedList[idx].eval = .productive
+                            VStack {
+                                Slider(value: $sortedList[idx].concentration, in: 1...4, step: 1)
+                                    .tint(.green)
+                                Text("집중도(생산성)")
+                            }
+                            if idx+1 == self.sortedList.count {
+                                Button {
+                                    let diary = Diary(story: "할 일을 적어주세요.", startTime: sortedList[idx].endTime, endTime: sortedList[idx].endTime)
+                                    sortedList.append(diary)
                                 } label: {
-                                    Label("생산적", systemImage: sortedList[idx].eval == .productive ?  "checkmark.circle.fill":"plus.circle")
-                                        .foregroundColor(.red)
-                                }.buttonStyle(BorderlessButtonStyle())
-                                Button{
-                                    sortedList[idx].eval = .unproductive
-                                } label: {
-                                    Label("비생산/여가", systemImage: sortedList[idx].eval == .unproductive ?  "checkmark.circle.fill":"minus.circle")
-                                        .foregroundColor(.blue)
-                                }.buttonStyle(BorderlessButtonStyle())
-                                Button{
-                                    sortedList[idx].eval = .neutral
-                                } label: {
-                                    Label("생리현상", systemImage: sortedList[idx].eval == .neutral ?  "checkmark.circle.fill":"moon.zzz")
-                                        .foregroundColor(.green)
-                                }.buttonStyle(BorderlessButtonStyle())
+                                    Label("할 일 추가하기", systemImage: "plus.circle.fill")
+                                }
+                                .padding()
+                                .buttonStyle(BorderlessButtonStyle())
                             }
-                        }
-                        VStack {
-                            Slider(value: $sortedList[idx].concentration, in: 1...4, step: 1)
-                                .tint(.green)
-                            Text("집중도(생산성)")
-                        }
-                        HStack{
-                            Button{
-                                
-                            } label: {
-                                Text("Complete!")
-                                    .padding(.vertical,10)
-                                    .padding(.horizontal,15)
-                                    .background(Date() > sortedList[idx].endTime ? Color.orange:Color.gray)
-                                    .cornerRadius(45)
-                                    .foregroundColor(.white)
-                            }
-                            .disabled(Date() > sortedList[idx].endTime ? false : true)
-                            .buttonStyle(BorderlessButtonStyle())
-                            Button{
-                                
-                            } label: {
-                                Text("Failed...")
-                                    .padding(.vertical,10)
-                                    .padding(.horizontal,15)
-                                    .background(Date() > sortedList[idx].endTime ? Color.purple:Color.gray)
-                                    .cornerRadius(45)
-                                    .foregroundColor(.white)
-                            }
-                            .disabled(Date() > sortedList[idx].endTime ? false : true)
-                            .buttonStyle(BorderlessButtonStyle())
                         }
                     }
                 }
             }
-            .listStyle(.grouped)
-            Button {
-                
-            } label: {
-                Label("할 일 추가하기", systemImage: "plus.circle.fill")
-            }.padding()
+            .listStyle(.sidebar)
         }
         .onTapGesture {
             storyFocused = false
@@ -158,10 +149,8 @@ struct PlanView: View {
                 //정렬한다.
                 sortToDoList()
                 //시간 세팅하기
-                endTime = sortedList.last!.endTime
-                startTime = endTime
                 //뷰 타이틀 변경하기
-                date = endTime
+                date = sortedList.last!.endTime
                 let dateFormatter = DateFormatter()
                 dateFormatter.dateFormat = "YYYY.MM.dd.E"
                 strDate = dateFormatter.string(from: date)
@@ -184,8 +173,6 @@ struct PlanView: View {
             })
         }
         //4. 시간 세팅하기
-        endTime = Calendar.current.startOfDay(for: date)
-        startTime = endTime
         //5. 뷰 타이틀 변경하기
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "YYYY.MM.dd.E"
