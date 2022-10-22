@@ -44,7 +44,6 @@ struct Bar: UIViewRepresentable {
     }
     
     func addData() -> CandleChartData {
-        let data = CandleChartData()
         let dataset = CandleChartDataSet(entries: entries, label: "인간가치")
         //customize candle chart
         dataset.decreasingColor = .blue
@@ -54,7 +53,8 @@ struct Bar: UIViewRepresentable {
         dataset.neutralColor = .green
         dataset.shadowColorSameAsCandle = true
         dataset.shadowWidth = 1.5
-        data.addDataSet(dataset)
+        
+        let data = CandleChartData(dataSet: dataset)
         return data
     }
 }

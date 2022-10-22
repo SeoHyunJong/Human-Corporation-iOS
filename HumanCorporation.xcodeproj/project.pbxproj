@@ -12,7 +12,6 @@
 		B42EA623288292B3009C5901 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B42EA622288292B3009C5901 /* Assets.xcassets */; };
 		B42EA626288292B3009C5901 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B42EA625288292B3009C5901 /* Preview Assets.xcassets */; };
 		B42EA62E28829669009C5901 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B42EA62D28829669009C5901 /* LoginView.swift */; };
-		B42EA63328829B38009C5901 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = B42EA63228829B38009C5901 /* FirebaseAnalytics */; };
 		B42EA6362882AB3B009C5901 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B42EA6352882AB3B009C5901 /* ViewModel.swift */; };
 		B42EA63A2882AC44009C5901 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = B42EA6392882AC44009C5901 /* FirebaseAuth */; };
 		B442B7DC2886D5960064C0B1 /* ProfileImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B442B7DB2886D5960064C0B1 /* ProfileImage.swift */; };
@@ -25,7 +24,6 @@
 		B442B7EC288810420064C0B1 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = B442B7EB288810420064C0B1 /* FirebaseStorage */; };
 		B442B7EE288810420064C0B1 /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = B442B7ED288810420064C0B1 /* FirebaseStorageCombine-Community */; };
 		B442B7F0288812C90064C0B1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B442B7EF288812C90064C0B1 /* GoogleService-Info.plist */; };
-		B442B7F528896B320064C0B1 /* Charts in Frameworks */ = {isa = PBXBuildFile; productRef = B442B7F428896B320064C0B1 /* Charts */; };
 		B442B7F72889702F0064C0B1 /* Bar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B442B7F62889702F0064C0B1 /* Bar.swift */; };
 		B45E03ED2893CFF6009C7601 /* RecordRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45E03EC2893CFF6009C7601 /* RecordRow.swift */; };
 		B45E03EF2896DE5F009C7601 /* NewCommerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45E03EE2896DE5F009C7601 /* NewCommerView.swift */; };
@@ -44,6 +42,7 @@
 		B45E045F28AD0A9D009C7601 /* CommitDiary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45E045E28AD0A9D009C7601 /* CommitDiary.swift */; };
 		B46EF2DE288A89A500F38878 /* AlertToast in Frameworks */ = {isa = PBXBuildFile; productRef = B46EF2DD288A89A500F38878 /* AlertToast */; };
 		B46EF2E0288E9C3E00F38878 /* Diary.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46EF2DF288E9C3E00F38878 /* Diary.swift */; };
+		B48ED729290427BD00C54D3F /* Charts in Frameworks */ = {isa = PBXBuildFile; productRef = B48ED728290427BD00C54D3F /* Charts */; };
 		B4CB18AB28B7624D00CC6194 /* LoLSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4CB18AA28B7624D00CC6194 /* LoLSearchView.swift */; };
 		B4CB18AF28C0C12500CC6194 /* riot.txt in Resources */ = {isa = PBXBuildFile; fileRef = B4CB18AE28C0C12500CC6194 /* riot.txt */; };
 		B4CB18F528C5F7EE00CC6194 /* PlanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4CB18F428C5F7EE00CC6194 /* PlanView.swift */; };
@@ -116,8 +115,7 @@
 				B4D87F39288567C500A2CCAB /* FirebaseDatabase in Frameworks */,
 				B442B7EE288810420064C0B1 /* FirebaseStorageCombine-Community in Frameworks */,
 				B46EF2DE288A89A500F38878 /* AlertToast in Frameworks */,
-				B42EA63328829B38009C5901 /* FirebaseAnalytics in Frameworks */,
-				B442B7F528896B320064C0B1 /* Charts in Frameworks */,
+				B48ED729290427BD00C54D3F /* Charts in Frameworks */,
 				B42EA63A2882AC44009C5901 /* FirebaseAuth in Frameworks */,
 				B442B7EC288810420064C0B1 /* FirebaseStorage in Frameworks */,
 				B4D87F2E2882B1D300A2CCAB /* GoogleSignIn in Frameworks */,
@@ -307,7 +305,6 @@
 			);
 			name = HumanCorporation;
 			packageProductDependencies = (
-				B42EA63228829B38009C5901 /* FirebaseAnalytics */,
 				B42EA6392882AC44009C5901 /* FirebaseAuth */,
 				B4D87F2D2882B1D300A2CCAB /* GoogleSignIn */,
 				B4D87F2F2882B1D300A2CCAB /* GoogleSignInSwift */,
@@ -315,8 +312,8 @@
 				B4D87F3A288567C500A2CCAB /* FirebaseDatabaseSwift */,
 				B442B7EB288810420064C0B1 /* FirebaseStorage */,
 				B442B7ED288810420064C0B1 /* FirebaseStorageCombine-Community */,
-				B442B7F428896B320064C0B1 /* Charts */,
 				B46EF2DD288A89A500F38878 /* AlertToast */,
+				B48ED728290427BD00C54D3F /* Charts */,
 			);
 			productName = HumanCorporation;
 			productReference = B42EA61B288292B1009C5901 /* HumanCorporation.app */;
@@ -347,13 +344,10 @@
 			);
 			mainGroup = B42EA612288292B1009C5901;
 			packageReferences = (
-				B42EA63128829B38009C5901 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				B42EA6382882AC44009C5901 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				B4D87F2C2882B1D200A2CCAB /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
-				B4D87F37288567C500A2CCAB /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
-				B442B7EA288810420064C0B1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
-				B442B7F328896B310064C0B1 /* XCRemoteSwiftPackageReference "Charts" */,
 				B46EF2DC288A89A500F38878 /* XCRemoteSwiftPackageReference "AlertToast" */,
+				B48ED727290427BD00C54D3F /* XCRemoteSwiftPackageReference "Charts" */,
 			);
 			productRefGroup = B42EA61C288292B1009C5901 /* Products */;
 			projectDirPath = "";
@@ -638,14 +632,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		B42EA63128829B38009C5901 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 9.0.0;
-			};
-		};
 		B42EA6382882AC44009C5901 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
@@ -654,25 +640,17 @@
 				kind = branch;
 			};
 		};
-		B442B7EA288810420064C0B1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+		B46EF2DC288A89A500F38878 /* XCRemoteSwiftPackageReference "AlertToast" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			repositoryURL = "https://github.com/elai950/AlertToast.git";
 			requirement = {
 				branch = master;
 				kind = branch;
 			};
 		};
-		B442B7F328896B310064C0B1 /* XCRemoteSwiftPackageReference "Charts" */ = {
+		B48ED727290427BD00C54D3F /* XCRemoteSwiftPackageReference "Charts" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/danielgindi/Charts.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 3.0.0;
-			};
-		};
-		B46EF2DC288A89A500F38878 /* XCRemoteSwiftPackageReference "AlertToast" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/elai950/AlertToast.git";
 			requirement = {
 				branch = master;
 				kind = branch;
@@ -686,22 +664,9 @@
 				minimumVersion = 6.0.0;
 			};
 		};
-		B4D87F37288567C500A2CCAB /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
-			requirement = {
-				branch = master;
-				kind = branch;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		B42EA63228829B38009C5901 /* FirebaseAnalytics */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B42EA63128829B38009C5901 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseAnalytics;
-		};
 		B42EA6392882AC44009C5901 /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = B42EA6382882AC44009C5901 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
@@ -717,15 +682,15 @@
 			package = B42EA6382882AC44009C5901 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = "FirebaseStorageCombine-Community";
 		};
-		B442B7F428896B320064C0B1 /* Charts */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B442B7F328896B310064C0B1 /* XCRemoteSwiftPackageReference "Charts" */;
-			productName = Charts;
-		};
 		B46EF2DD288A89A500F38878 /* AlertToast */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = B46EF2DC288A89A500F38878 /* XCRemoteSwiftPackageReference "AlertToast" */;
 			productName = AlertToast;
+		};
+		B48ED728290427BD00C54D3F /* Charts */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B48ED727290427BD00C54D3F /* XCRemoteSwiftPackageReference "Charts" */;
+			productName = Charts;
 		};
 		B4D87F2D2882B1D300A2CCAB /* GoogleSignIn */ = {
 			isa = XCSwiftPackageProductDependency;

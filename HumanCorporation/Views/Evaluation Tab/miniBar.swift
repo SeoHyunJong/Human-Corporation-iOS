@@ -22,7 +22,6 @@ struct miniBar: UIViewRepresentable {
     }
     
     func addData() -> CandleChartData {
-        let data = CandleChartData()
         let entry = CandleChartDataEntry(x: 0, shadowH: priceList.max() ?? 1000, shadowL: priceList.min() ?? 1000, open: priceList.first ?? 1000, close: priceList.last ?? 1000)
         let dataset = CandleChartDataSet(entries: [entry])
         //customize candle chart
@@ -35,7 +34,7 @@ struct miniBar: UIViewRepresentable {
         dataset.shadowWidth = 1.5
         dataset.axisDependency = .left
         //
-        data.addDataSet(dataset)
+        let data = CandleChartData(dataSet: dataset)
         return data
     }
 }
